@@ -73,6 +73,7 @@ add_action( 'wp_enqueue_scripts', function () {
         'Body.css',
         'Graphic_Elements.css',
         'Body.js',
+        'Foleo_Modules.js',
         'SnapScroll.js',
     ];
 

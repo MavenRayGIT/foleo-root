@@ -551,9 +551,9 @@ body.foleo-mode-standalone .hamburger {
     backdrop-filter: blur(10px);
 
     transition:
-      background-color .15s ease .35s,
-      padding .15s ease .35s,
-      gap .15s ease .35s,
+      background-color .15s ease .50s,
+      padding .15s ease .50s,
+      gap .15s ease .50s,
       opacity .18s ease;
   }
 
@@ -619,8 +619,27 @@ body.foleo-mode-standalone .hamburger {
 
     opacity: 0;
     visibility: hidden;
-    transition: opacity .12s ease, transform .12s ease;
+    transition:
+      opacity .12s ease,
+      transform .12s ease,
+      visibility 0s linear;
     pointer-events: none;
+  }
+
+  .foleo-vnav__item.is-active::after{
+    transition:
+      opacity .20s ease,
+      transform .12s ease,
+      visibility 0s linear;
+  }
+
+  .foleo-vnav:not(:hover) .foleo-vnav__item.is-active::after{
+    visibility: visible;
+    transition:
+      opacity .18s ease .60s,
+      transform .12s ease .60s,
+      visibility 0s linear .78s;
+    opacity: 0;
   }
 
   .foleo-vnav__item.is-active::after{
@@ -636,6 +655,11 @@ body.foleo-mode-standalone .hamburger {
     opacity: 1;
     visibility: visible;
     transform: translateY(-50%) translateX(2px);
+    transition:
+      opacity .20s ease,
+      transform .12s ease,
+      visibility 0s linear;
+    transition-delay: 0s;
   }
 
   .foleo-vnav__item:hover::after{
@@ -643,6 +667,11 @@ body.foleo-mode-standalone .hamburger {
     visibility: visible;
     transform: translateY(-50%) translateX(2px);
     background: rgba(0,0,0,0.60);
+    transition:
+      opacity .20s ease,
+      transform .12s ease,
+      visibility 0s linear;
+    transition-delay: 0s;
   }
 
   .foleo-vnav__item.is-active:hover::after{
@@ -743,4 +772,19 @@ iframe[src*="cloudflarestream"],
 video{
   position: relative;
   z-index: 1;
+}
+
+/* FOLEO MODULES DEBUG */
+.foleo-dynamic-table { outline: 2px solid rgba(0,0,0,.35); padding: 12px; }
+.foleo-dynamic-table .fdt { display: grid; gap: 12px; outline: 2px solid rgba(0,0,0,.25); padding: 8px; }
+.foleo-dynamic-table .fdt-row { display: grid; grid-template-columns: 1.1fr 2fr 0.6fr; gap: 16px; outline: 1px dashed rgba(0,0,0,.25); padding: 8px; border-radius: 10px; }
+.foleo-dynamic-table .fdt-cell { outline: 1px dotted rgba(0,0,0,.25); padding: 6px; border-radius: 8px; }
+.foleo-dynamic-table .fdt-badge { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(0,0,0,.25); font-size: 12px; line-height: 1; }
+.foleo-dynamic-table .fdt-badge.is-ongoing { }
+.foleo-dynamic-table .fdt-badge.is-hold { }
+.foleo-dynamic-table .fdt-badge.is-complete { }
+.foleo-dynamic-table .fdt-badge.is-in-progress { }
+
+@media (max-width: 768px) {
+  .foleo-dynamic-table .fdt-row { grid-template-columns: 1fr; }
 }

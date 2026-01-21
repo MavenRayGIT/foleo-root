@@ -442,9 +442,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setInitialFoleoVnavActive();
     scheduleOnce(setInitialFoleoVnavActive, [250]);
     window.addEventListener('load', setInitialFoleoVnavActive, { once: true });
-    initFoleoCinemaModeAllVideos();
+  initFoleoCinemaModeAllVideos();
+  if (window.FoleoModules && typeof window.FoleoModules.init === "function") {
+    window.FoleoModules.init();
+    window.initFoleoModules = window.FoleoModules.init;
+  }
 
-    (() => {
+  (() => {
       const binderState = window.getFoleoNavState?.();
       if (!binderState || binderState.mode !== 'binder') return;
 
