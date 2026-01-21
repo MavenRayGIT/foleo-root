@@ -550,13 +550,18 @@ body.foleo-mode-standalone .hamburger {
     background: rgba(0,0,0,0.35);
     backdrop-filter: blur(10px);
 
-    transition: background-color .15s ease, padding .15s ease, gap .15s ease, opacity .18s ease;
+    transition:
+      background-color .15s ease .35s,
+      padding .15s ease .35s,
+      gap .15s ease .35s,
+      opacity .18s ease;
   }
 
   .foleo-vnav:hover{
     background: rgba(0,0,0,0.60);
     padding: 34px 14px;
     gap: 28px;
+    transition-delay: 0s;
   }
 
   .foleo-vnav__item{
