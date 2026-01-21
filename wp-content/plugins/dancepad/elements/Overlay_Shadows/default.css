@@ -1,0 +1,38 @@
+.breakdance .dan-overlay-shadows {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.breakdance .dan-overlay-shadows__background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    filter: url(#displacement);
+}
+.breakdance .dan-overlay-shadows__mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    mask-size: cover;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-size: cover;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+}
+.breakdance .dan-overlay-shadows__noise {
+    position: absolute;
+    inset: 0;
+    background-size: 200px;
+    background-repeat: repeat;
+    opacity: 0.25;
+    pointer-events: none;
+}
+.breakdance .dan-overlay-shadows[data-include-noise="false"] .dan-overlay-shadows__noise{
+    display: none;
+}
+.breakdance .dan-overlay-shadows[data-flickering="1"]{
+    opacity: 0;
+}

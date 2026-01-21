@@ -1,0 +1,24 @@
+%%SELECTOR%%{
+    white-space: {{ content.content.white_space }};
+    --colortransition: {{ content.animation.color_out_duration.style }};
+    --colortransition-ida: {{ content.animation.color_in_duration.style }};
+    --pathtransition: {{ content.animation.path_out_duration.style }};
+    --pathtransition-ida: {{ content.animation.path_in_duration.style }};
+    --easing: {{ content.animation.css_easing }};
+    --hover-color: {{ content.animation.hover_color }};
+    --click-dimensions: {{ design.mask.click_dimensions.style }};
+    background-color: {{ design.button_colors.background }};
+
+    {{ macros.spacing_padding_all(design.padding) }}
+
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-anyside-button__anyside-div {
+    background-color: {{ design.mask.background }};
+}
+%%SELECTOR%%[data-type='click'] .dan-anyside-button__anyside-span {
+    background-color: {{ design.mask.background }};
+}

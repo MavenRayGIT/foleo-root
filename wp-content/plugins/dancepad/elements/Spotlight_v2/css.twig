@@ -1,0 +1,24 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+
+    {{ macros.background(design.background) }}
+
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-spotlight-v2{
+    z-index: {{ design.spotlight.zindex }}; /**/
+    top: {{ design.spotlight.top.style }}; /**/
+    left: {{ design.spotlight.left.style }}; /**/
+
+    --width: {{ design.spotlight.width.style }};
+    --height: {{ design.spotlight.height.style }};
+
+    --from-scale: {{ content.animation.from_scale }};
+}
+%%SELECTOR%% .dan-spotlight-v2 ellipse{
+    fill: {{ design.spotlight.color }};
+    fill-opacity: {{ design.spotlight.opacity }};
+}

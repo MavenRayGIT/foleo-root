@@ -1,0 +1,18 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+
+    --ripple-duration: {{ content.ripple_animation.duration.style }};
+    --ripple-ease: {{ content.ripple_animation.css_easing }};
+
+    --text-translate: {{ content.swap_animation.translate.style }};
+    --text-translate-duration: {{ content.swap_animation.duration.style }};
+    --text-translate-ease: {{ content.swap_animation.css_easing }};
+}
+%%SELECTOR%% .dan-ripple-button-v7__mask{
+    background: {{ content.ripple_animation.color }}
+}

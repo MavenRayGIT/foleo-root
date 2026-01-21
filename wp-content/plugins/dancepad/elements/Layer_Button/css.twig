@@ -1,0 +1,104 @@
+%%SELECTOR%%{
+    white-space: {{ content.content.white_space }};
+
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-layer-button__original-layer{
+    background-color: {{ content.button_styles.background }};
+    color: {{ content.button_styles.text_color }};
+    {{ macros.spacing_complex(content.button_styles.padding, 'padding') }}
+    {{ macros.border_radius(content.button_styles.border_radius) }}
+
+	--translate3dpxto: {{ content.button_hover_styles.slug_cant_start_with_number_3d_translate_to.style }}; /*from*/
+    --color: {{ content.button_hover_styles.text_color }};
+    --background: {{ content.button_hover_styles.background }};
+    transition-duration: {{ content.button_hover_styles.transition_duration.style }} !important;
+
+    z-index: {{ content.button_styles.zindex }}; /*z-index*/ /**/
+    --z-index: {{ content.button_hover_styles.zindex }};
+}
+%%SELECTOR%% .dan-layer-button__first-layer {
+	width: {{ content.first_layer_styles.width.style }}; /**/ /**/
+	height: {{ content.first_layer_styles.height.style }}; /**/ /**/
+	{{ macros.spacing_complex(content.first_layer_styles.padding, 'padding') }}
+
+	background: {{ content.first_layer_styles.background }}; /**/
+	{{ macros.border_radius(content.first_layer_styles.border_radius) }}
+    {{ macros.border_complex(content.first_layer_styles.border) }}
+
+	color: {{ content.first_layer_styles.text_color }};
+
+    --translate3dpxfrom: {{ content.first_layer_styles.slug_cant_start_with_number_3d_translate_from.style }}; /*from*/
+	--translate3dpxto: {{ content.first_layer_hover_styles.slug_cant_start_with_number_3d_translate_to.style }}; /*from*/
+
+    --color: {{ content.first_layer_hover_styles.text_color }};
+    --background: {{ content.first_layer_hover_styles.background }};
+
+    transition-duration: {{ content.first_layer_hover_styles.transition_duration.style }} !important; /*s*/
+
+    z-index: {{ content.first_layer_styles.zindex }}; /*z-index*/ /**/
+    --z-index: {{ content.first_layer_hover_styles.zindex }};
+}
+%%SELECTOR%% .dan-layer-button__second-layer {
+	width: {{ content.second_layer_styles.width.style }};
+	height: {{ content.second_layer_styles.height.style }};
+	{{ macros.spacing_complex(content.second_layer_styles.padding, 'padding') }}
+
+	background: {{ content.second_layer_styles.background }};
+	{{ macros.border_radius(content.second_layer_styles.border_radius) }}
+    {{ macros.border_complex(content.second_layer_styles.border) }}
+
+	color: {{ content.second_layer_styles.text_color }};
+
+    --translate3dpxfrom: {{ content.second_layer_styles.slug_cant_start_with_number_3d_translate_from.style }};
+	--translate3dpxto: {{ content.second_layer_hover_styles.slug_cant_start_with_number_3d_translate_to.style }};
+    --color: {{ content.second_layer_hover_styles.text_color }};
+    --background: {{ content.second_layer_hover_styles.background }};
+    transition-duration: {{ content.second_layer_hover_styles.transition_duration.style }} !important;
+
+    z-index: {{ content.second_layer_styles.zindex }};
+    --z-index: {{ content.second_layer_hover_styles.zindex }};
+}
+%%SELECTOR%% .dan-layer-button__third-layer {
+	width: {{ content.third_layer_styles.width.style }};
+	height: {{ content.third_layer_styles.height.style }};
+	{{ macros.spacing_complex(content.third_layer_styles.padding, 'padding') }}
+
+	background: {{ content.third_layer_styles.background }};
+	{{ macros.border_radius(content.third_layer_styles.border_radius) }}
+    {{ macros.border_complex(content.third_layer_styles.border) }}
+
+	color: {{ content.third_layer_styles.text_color }};
+
+    --translate3dpxfrom: {{ content.third_layer_styles.slug_cant_start_with_number_3d_translate_from.style }};
+	--translate3dpxto: {{ content.third_layer_hover_styles.slug_cant_start_with_number_3d_translate_to.style }};
+    --color: {{ content.third_layer_hover_styles.text_color }};
+    --background: {{ content.third_layer_hover_styles.background }};
+
+    transition-duration: {{ content.third_layer_hover_styles.transition_duration.style }} !important;
+
+    z-index: {{ content.third_layer_styles.zindex }};
+    --z-index: {{ content.third_layer_hover_styles.zindex }};
+}
+%%SELECTOR%% .dan-layer-button__fourth-layer {
+	width: {{ content.fourth_layer_styles.width.style }};
+	height: {{ content.fourth_layer_styles.height.style }};
+	{{ macros.spacing_complex(content.fourth_layer_styles.padding, 'padding') }}
+
+	background: {{ content.fourth_layer_styles.background }};
+	{{ macros.border_radius(content.fourth_layer_styles.border_radius) }}
+    {{ macros.border_complex(content.fourth_layer_styles.border) }}
+
+	color: {{ content.fourth_layer_styles.text_color }};
+
+    --translate3dpxfrom: {{ content.fourth_layer_styles.slug_cant_start_with_number_3d_translate_from.style }};
+	--translate3dpxto: {{ content.fourth_layer_hover_styles.slug_cant_start_with_number_3d_translate_to.style }};
+    --color: {{ content.fourth_layer_hover_styles.text_color }};
+    --background: {{ content.fourth_layer_hover_styles.background }};
+
+    transition-duration: {{ content.fourth_layer_hover_styles.transition_duration.style }} !important;
+
+    z-index: {{ content.fourth_layer_styles.zindex }};
+    --z-index: {{ content.fourth_layer_hover_styles.zindex }};
+}

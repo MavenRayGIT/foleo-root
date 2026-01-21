@@ -1,0 +1,17 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .tippy-box{
+    background-color: {{ design.tooltip_styles.background }};
+    {{ macros.spacing_padding_all(design.tooltip_styles.padding) }}
+    {{ macros.borders(design.tooltip_styles.borders) }}
+    {{ macros.typography(design.tooltip_styles.typography, globalSettings) }}
+}
+%%SELECTOR%% .tippy-box > .tippy-arrow{
+    color: {{ design.tooltip_styles.arrow_color }}
+}

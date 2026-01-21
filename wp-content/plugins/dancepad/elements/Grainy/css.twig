@@ -1,0 +1,14 @@
+%%SELECTOR%%{
+    {{ macros.layout(design.layout) }}
+
+    {{ macros.size(design.size) }}
+
+    {{ macros.background(design.background) }}
+
+	{{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-grainy__canvas {
+    opacity: {{ content.animation.grain_opacity }};
+}

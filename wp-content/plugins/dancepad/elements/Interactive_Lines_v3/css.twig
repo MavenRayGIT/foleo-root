@@ -1,0 +1,12 @@
+%%SELECTOR%%{
+{{ macros.spacing_margin_all(design.margin) }}
+  {{ macros.spacing_padding_all(design.padding) }}
+  {{ macros.size(design.size) }}
+  {{ macros.background(design.background) }}
+  {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-interactive-lines-v3__magnet span{
+width: {{ design.lines.width.style }};
+  height: {{ design.lines.height.style }};
+  background-color: {{ design.lines.color }}
+}

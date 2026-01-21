@@ -1,0 +1,9 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-ripple-button-v7__anchor') }}
+    <span class='dan-ripple-button-v7__text'>{{ content.content.text }}</span>
+    <div class='dan-ripple-button-v7__mask'></div>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-ripple-button-v7__text'>{{ content.content.text }}</span>
+    <div class='dan-ripple-button-v7__mask'></div>
+{% endif %}

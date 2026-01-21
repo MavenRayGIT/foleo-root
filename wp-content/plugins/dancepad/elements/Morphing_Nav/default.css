@@ -1,0 +1,45 @@
+.breakdance .dan-morphing-nav {
+    position: relative;
+
+    width: fit-content;
+}
+.breakdance .dan-morphing-nav > *{
+    height: fit-content;
+    position: relative;
+    z-index: 2;
+}
+.breakdance .dan-morphing-nav .dan-morphing-nav__item--active{
+    transition: color var(--transition-duration);
+}
+.breakdance .dan-morphing-nav .dan-morphing-nav__morphing-div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1px;
+    width: 1px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--transition-duration); /**/
+    transform-origin: left top;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    z-index: 1;
+}
+.breakdance .dan-morphing-nav .demo-morph-bg-target {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: var(--height); /*box height*/
+    pointer-events: none;
+}
+.breakdance .dan-morphing-nav .morph-bg--visible {
+    opacity: 1;
+}
+.breakdance .dan-morphing-nav .morph-bg--has-transition {
+    transition: var(--transition-duration); /**/
+    will-change: transform, border-radius, height, width;
+}
+.breakdance .dan-morphing-nav .dan-morphing-nav__item a{
+    text-decoration: unset !important;
+}

@@ -1,0 +1,75 @@
+.breakdance .dan-squeezy-radius-button {
+    z-index: 1;
+    padding: var(--padding-top) var(--padding-right) var(--padding-bottom) var(--padding-left);
+
+    -webkit-user-select: none;
+    user-select: none;
+    place-content: center;
+
+    display: flex;
+    width: fit-content;
+    position: relative;
+    cursor: pointer;
+
+    --ease: cubic-bezier(0.34, 2.27, 0.64, 1);
+    --border-radius-ease: cubic-bezier(0.34, 1.37, 0.64, 1);
+    --color-ease: cubic-bezier(0.215, 0.61, 0.355, 1);
+    --text-ease: cubic-bezier(.21, 1, .34, 1);
+
+    transition: transform var(--squeezy-duration) cubic-bezier(0.34, 2.27, 0.64, 1);
+    
+    place-content: center;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.breakdance .dan-squeezy-radius-button__container {
+    padding: var(--padding-top) 0 var(--padding-bottom) 0; 
+    z-index: 1;
+    position: relative;
+    overflow: clip;
+}
+.breakdance .dan-squeezy-radius-button__text {
+    display: block;
+}
+@media (hover: hover) and (pointer: fine) {
+    .breakdance .dan-squeezy-radius-button .dan-squeezy-radius-button__text {
+        color: var(--background);
+        text-shadow: 0 calc(var(--swap-translate) * -1) 0 var(--text-color);
+        transform: translateY(var(--swap-translate));
+        transition: transform calc(var(--swap-duration) * 1.5) var(--text-ease), 
+                    text-shadow calc(var(--swap-duration) * 0.5) var(--color-ease), 
+                    color calc(var(--swap-duration) * 0.5) var(--color-ease);
+    }
+    
+    .breakdance .dan-squeezy-radius-button:hover .dan-squeezy-radius-button__text, 
+    .breakdance .dan-squeezy-radius-button:focus-visible .dan-squeezy-radius-button__text {
+        color: var(--text-color);
+        transform: translateY(0);
+        text-shadow: 0 calc(var(--swap-translate) * -1) 0 var(--background);
+    }
+}
+.breakdance .dan-squeezy-radius-button__background {
+    z-index: -1;
+    background-color: var(--background);
+    place-self: center;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 0;
+    padding-right: 0;
+    position: absolute;
+}
+.breakdance .dan-squeezy-radius-button__background--bubblegum-dash {
+    transition: border-radius calc(var(--squeezy-duration) * 1.5) var(--border-radius-ease), 
+                transform var(--squeezy-duration) var(--ease), 
+                width calc(var(--squeezy-duration) * 1.5) var(--ease);
+}
+.breakdance .dan-squeezy-radius-button:hover .dan-squeezy-radius-button__background, 
+.breakdance .dan-squeezy-radius-button:focus-visible .dan-squeezy-radius-button__background {
+    transform: scaleX(1.05) scaleY(1.075);
+    width: calc(100% + 0.75em);
+}
+.breakdance .dan-squeezy-radius-button::after {
+    content: "";
+    display: block;
+    position: absolute;
+}

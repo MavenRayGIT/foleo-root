@@ -1,0 +1,15 @@
+%%SELECTOR%%{
+{{ macros.spacing_margin_all(design.margin) }}
+  --c-radial-inner: {{ design.colors.inner_background }};
+  --c-radial-outer: {{ design.colors.outer_background }};
+  --border-radius: {{ design.border.border_radius.style }};;
+}
+%%SELECTOR%% .dan-bubbles-button__wrapper{
+{{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-bubbles-button__label{
+  {{ macros.typography(design.typography, globalSettings) }}
+}
+%%SELECTOR%%::before {
+  box-shadow: 0 {{ design.border.shadow_offset.style }} {{ design.border.shadow_blur.style }} 0 {{ design.border.shadow_color }} inset;
+}

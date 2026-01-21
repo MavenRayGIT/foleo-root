@@ -1,0 +1,23 @@
+%%SELECTOR%%{
+    --dimensions: {{ content.spark.dimensions.style }};
+
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-glowing-button__background{
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.borders(design.borders) }}
+
+    background-color: {{ design.button_colors.background }}; /*background button*/
+}
+%%SELECTOR%% .dan-glowing-button__title{
+    --color: {{ design.button_colors.text_color }};
+
+    {{ macros.typography(design.typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-glowing-button__border-gradient{
+    --animation-duration: {{ content.spark.animation_duration.style }};
+
+    --first-color: {{ content.spark.color }}; /*first color*/
+    --second-color: {{ content.spark.path_color }}; /*second color*/
+}

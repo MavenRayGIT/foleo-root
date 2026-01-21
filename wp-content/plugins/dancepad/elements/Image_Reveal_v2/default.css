@@ -1,0 +1,32 @@
+.breakdance .dan-image-reveal-v2{
+    position: relative;
+    overflow: hidden;
+}
+.breakdance .dan-image-reveal-v2[data-flickering="1"]{
+    opacity: 0;
+}
+.breakdance .dan-image-reveal-v2__mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.breakdance .dan-image-reveal-v2 .breakdance-image-object {
+    width: 100%;
+    height: 100%;
+}
+.breakdance .dan-image-reveal-v2[data-from="left"] .dan-image-reveal-v2__mask,
+.breakdance .dan-image-reveal-v2[data-from="left"] .breakdance-image-object {
+    transform: translateX(-150%);
+}
+.breakdance .dan-image-reveal-v2[data-from="right"] .dan-image-reveal-v2__mask,
+.breakdance .dan-image-reveal-v2[data-from="right"] .breakdance-image-object {
+    transform: translateX(150%);
+}
+.breakdance .dan-image-reveal-v2[data-from="top"] .dan-image-reveal-v2__mask,
+.breakdance .dan-image-reveal-v2[data-from="top"] .breakdance-image-object {
+    transform: translateY(-150%);
+}
+.breakdance .dan-image-reveal-v2[data-from="bottom"] .dan-image-reveal-v2__mask,
+.breakdance .dan-image-reveal-v2[data-from="bottom"] .breakdance-image-object {
+    transform: translateY(150%);
+}

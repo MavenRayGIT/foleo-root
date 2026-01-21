@@ -1,0 +1,239 @@
+%%SELECTOR%% .dan-burger-style1--opened,
+%%SELECTOR%% .dan-burger-style2--opened,
+%%SELECTOR%% .dan-burger-style3--opened,
+%%SELECTOR%% .dan-burger-style4--opened,
+%%SELECTOR%% .dan-burger-style5--opened, 
+%%SELECTOR%% .dan-burger-style6--opened,
+%%SELECTOR%% .dan-burger-style7--opened,
+%%SELECTOR%% .dan-burger-style8--opened,
+%%SELECTOR%% .dan-burger-style9--opened,
+%%SELECTOR%% .dan-burger-style10--opened, 
+%%SELECTOR%% .hamburger--slider--opened,
+%%SELECTOR%% .hamburger--squeeze--opened,
+%%SELECTOR%% .hamburger--arrow--opened,
+%%SELECTOR%% .hamburger--arrowalt--opened,
+%%SELECTOR%% .hamburger--arrowturn--opened,
+%%SELECTOR%% .hamburger--spin--opened,
+%%SELECTOR%% .hamburger--elastic--opened,
+%%SELECTOR%% .hamburger--emphatic--opened,
+%%SELECTOR%% .hamburger--collapse--opened,
+%%SELECTOR%% .hamburger--vortex--opened,
+%%SELECTOR%% .hamburger--stand--opened,
+%%SELECTOR%% .hamburger--spring--opened,
+%%SELECTOR%% .hamburger--minus--opened,
+%%SELECTOR%% .hamburger--boring--opened,
+%%SELECTOR%% .hamburger--3dx--opened,
+%%SELECTOR%% .hamburger--3dy--opened,
+%%SELECTOR%% .hamburger--slider-r--opened,
+%%SELECTOR%% .hamburger--squeeze-r--opened,
+%%SELECTOR%% .hamburger--arrow-r--opened,
+%%SELECTOR%% .hamburger--arrowalt-r--opened,
+%%SELECTOR%% .hamburger--arrowturn-r--opened,
+%%SELECTOR%% .hamburger--spin-r--opened,
+%%SELECTOR%% .hamburger--elastic-r--opened,
+%%SELECTOR%% .hamburger--emphatic-r--opened,
+%%SELECTOR%% .hamburger--collapse-r--opened,
+%%SELECTOR%% .hamburger--vortex-r--opened,
+%%SELECTOR%% .hamburger--stand-r--opened,
+%%SELECTOR%% .hamburger--spring-r--opened,
+%%SELECTOR%% .hamburger--minus-r--opened,
+%%SELECTOR%% .hamburger--3dx-r--opened,
+%%SELECTOR%% .hamburger--3dy-r--opened,
+%%SELECTOR%% .hamburger--3dxy-r--opened,
+%%SELECTOR%% .dan-burger-animated--1--opened,
+%%SELECTOR%% .dan-burger-animated--2--opened,
+%%SELECTOR%% .dan-burger-animated--3--opened,
+%%SELECTOR%% .dan-burger-animated--4--opened,
+%%SELECTOR%% .dan-burger-animated--distorsionv3--opened,
+%%SELECTOR%% .dan-burger-animated--chevron--opened,
+%%SELECTOR%% .dan-burger-flipped--flipping--opened,
+%%SELECTOR%% .dan-burger-flipped--flippingv2--opened,
+%%SELECTOR%% .dan-burger-flipped--flippingv3--opened,
+%%SELECTOR%% .dan-burger-flipped--flippingv4--opened,
+%%SELECTOR%% .dan-burger-flipped--flippingv5--opened,
+%%SELECTOR%% .dan-burger-disfigured--bottom-arrow--opened,
+%%SELECTOR%% .dan-burger-disfigured--right-arrow--opened,
+%%SELECTOR%% .dan-burger-disfigured--left-arrow--opened,
+%%SELECTOR%% .dan-burger-disfigured--chevron--opened,
+%%SELECTOR%% .dan-burger-disfigured--plus--opened,
+%%SELECTOR%% .dan-burger-disfigured--minus--opened,
+%%SELECTOR%% .dan-burger-arrow--up--opened,
+%%SELECTOR%% .dan-burger-arrow--down--opened,
+%%SELECTOR%% .dan-burger-arrow--left--opened,
+%%SELECTOR%% .dan-burger-arrow--right--opened,
+%%SELECTOR%% .dan-burger-bounce--opened{
+    {% if design.burger_styles.stroke_color_on_toggle %}
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color_on_toggle }} !important;
+    {% endif %}
+}
+
+%%SELECTOR%%{
+    position: {{ design.position.position }};
+    z-index: {{ design.position.zindex }};
+    top: {{ design.position.top.style }};
+    left: {{ design.position.left.style }};
+    right: {{ design.position.right.style }};
+    bottom: {{ design.position.bottom.style }};
+
+    {{ macros.background(design.background) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+
+/*
+* TASTY HAMBURGERS
+*/
+%%SELECTOR%%.hamburger {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }};
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    /*TASTY HAMBURGERS SPECIFIC*/
+    --hamburger-layer-spacing: {{ design.burger_styles.stroke_spacing.style }};
+    --hamburger-layer-height: {{ design.burger_styles.stroke_height.style }};
+    --hamburger-border-radius: {{ design.burger_styles.stroke_radius.style }};
+}
+
+/*
+* ANIMATED
+*/
+%%SELECTOR%% .dan-burger-animated{
+    --burguer-rounded:{% if design.burger_styles.rounded %}round{% else %}square{% endif %}; /*redondeado*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    /*ANIMATED HAMBURGERS SPECIFIC*/
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }};
+    --hamburger-layer-height: {{ design.burger_styles.stroke_height.style }};
+}
+
+/*
+* ANIMATED - DISTORSION V3
+*/
+%%SELECTOR%% .dan-burger-animated--distorsionv3 {
+    --burguer-rounded:{% if design.burger_styles.rounded %}round{% else %}square{% endif %}; /*redondeado*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    /*ANIMATED HAMBURGERS SPECIFIC*/
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }};
+    --hamburger-layer-height: {{ design.burger_styles.stroke_height.style }};
+}
+
+/*
+* ANIMATED - CHEVRON
+*/
+%%SELECTOR%% .dan-burger-animated--chevron {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }};
+    --burguer-rounded:{% if design.burger_styles.rounded %}round{% else %}square{% endif %}; /*redondeado*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    /*ANIMATED HAMBURGERS SPECIFIC*/
+    --hamburger-layer-height: {{ design.burger_styles.stroke_height.style }};
+}
+
+/*
+* FLIPPED
+*/
+%%SELECTOR%% .dan-burger-flipped {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }};
+    --burguer-rounded: {% if design.burger_styles.rounded %}round{% else %}square{% endif %}; /*redondeado*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    /*FLIPPED HAMBURGERS SPECIFIC*/
+    --hamburger-layer-height: {{ design.burger_styles.stroke_height.style }};
+}
+
+/*
+* DISFIGURED
+*/
+%%SELECTOR%% .dan-burger-disfigured{
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }};
+    --hamburger-layer-height: {{ design.burger_styles.stroke_height.style }};
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+    --hamburger-border-radius: {{ design.burger_styles.stroke_radius.style }};
+}
+
+/*
+* ARROWS
+*/
+%%SELECTOR%% .dan-burger-arrow {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }};
+    --hamburger-layer-height: {{ design.burger_styles.stroke_height.style }};
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+    --hamburger-border-radius: {{ design.burger_styles.stroke_radius.style }};
+}
+
+/*
+* BOUNCE
+*/
+%%SELECTOR%% .dan-burger-bounce {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }};
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+}
+%%SELECTOR%% .dan-burger-style3 {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }}; /*dimensiones*/
+    --burguer-stroke-width: {{ design.burger_styles.stroke_height.style }}; /*!!!establecer un maximo de 4px!!!*/ /*stroke width*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    --burguer-rounded: {{ design.burger_styles.stroke_radius.style }}; /*redondeado*/
+}
+%%SELECTOR%% .dan-burger-style4 {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }}; /*dimensiones*/
+    --burguer-stroke-width: {{ design.burger_styles.stroke_height.style }}; /*stroke width*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    --burguer-rounded: {{ design.burger_styles.stroke_radius.style }}; /*redondeado*/
+}
+%%SELECTOR%% .dan-burger-style5 {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }}; /*dimensiones*/
+    --burguer-stroke-width: {{ design.burger_styles.stroke_height.style }}; /*stroke width*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    --burguer-rounded: {{ design.burger_styles.stroke_radius.style }}; /*redondeado*/
+}
+%%SELECTOR%% .dan-burger-style7 {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }}; /*dimensiones*/
+    --burguer-stroke-width: {{ design.burger_styles.stroke_height.style }}; /*stroke width*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    --burguer-rounded: {{ design.burger_styles.stroke_radius.style }}; /*redondeado*/
+}
+%%SELECTOR%% .dan-burger-style8 {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }}; /*dimensiones*/
+    --burguer-stroke-width: {{ design.burger_styles.stroke_height.style }}; /*stroke width*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    --burguer-rounded: {{ design.burger_styles.stroke_radius.style }}; /*redondeado*/
+}
+%%SELECTOR%% .dan-burger-style9 {
+    --burguer-dimensions: {{ design.burger_styles.dimensions.style }}; /*dimensiones*/
+    --burguer-stroke-width: {{ design.burger_styles.stroke_height.style }}; /*stroke width*/
+    --burguer-stroke-color: {{ design.burger_styles.stroke_color }}; /*stroke color*/
+    --burguer-duration: {{ content.animation.duration.style }}; /*animation duration*/
+    --burguer-easing: {{ content.animation.css_easing }}; /*animation ease*/
+
+    --burguer-rounded: {{ design.burger_styles.stroke_radius.style }}; /*redondeado*/
+}

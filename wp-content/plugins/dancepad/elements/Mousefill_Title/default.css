@@ -1,0 +1,29 @@
+.breakdance .dan-mousefill-title{
+    display: flex;
+    
+    -webkit-text-stroke: var(--stroke-width) var(--stroke-color);
+    background: linear-gradient(to right, var(--fill-color) 0 100%) left / 0 no-repeat;
+    color: transparent;
+    background-clip: text;
+    background-size: 0% 100%;
+    position: relative;
+}
+.breakdance .dan-mousefill-title:not(:has(> a)),
+.breakdance .dan-mousefill-title > a{
+
+    color: transparent !important;
+    text-decoration: unset;
+}
+.breakdance .dan-mousefill-title .dan-mousefill-title__anchor{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-mousefill-title[data-shadow='1'],
+.breakdance .dan-mousefill-title[data-shadow=true]{
+    background: linear-gradient(to right, var(--fill-color), transparent 75%, transparent) left / 0 no-repeat;
+    background-clip: text;
+} 

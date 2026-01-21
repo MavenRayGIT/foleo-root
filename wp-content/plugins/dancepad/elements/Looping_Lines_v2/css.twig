@@ -1,0 +1,16 @@
+%%SELECTOR%% {
+  {{ macros.spacing_margin_all(design.margin) }}
+  {{ macros.spacing_padding_all(design.padding) }}
+
+  gap: {{ content.content.gap.style }};
+  --horizontal-padding: {{ design.box.horizontal_padding.style }};
+  --vertical-padding: {{ design.box.vertical_padding.style }};
+}
+%%SELECTOR%% .dan-looping-lines-v2__prefix {
+  {{ macros.typography(design.prefix_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-looping-lines-v2__animated-container{
+  {{ macros.typography(design.lines_typography, globalSettings) }}
+  {{ macros.background(design.box.background) }}
+  {{ macros.borders(design.box.borders) }}
+}

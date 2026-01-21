@@ -1,0 +1,34 @@
+%%SELECTOR%%{
+    --scale: {{ content.animation.scale }};
+    --scale-animation-duration: {{ content.animation.scale_duration.style }}; /**/
+    --scale-animation-easing: {{ content.animation.scale_easing }}; /**/
+    --scale-animation-delay: {{ content.animation.scale_delay.style }}; /**/
+
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-ripple-button-v2__ripple-masks{
+    --text-translate: {{ content.animation.translate.style }};
+    --translate-animation-duration: {{ content.animation.translate_duration.style }}; /**/
+    --translate-animation-easing: {{ content.animation.translate_easing }}; /**/
+    --translate-animation-delay:  {{ content.animation.translate_delay.style }}; /**/
+
+    --text-rotate: {{ content.animation.rotate.style }};
+    --text-rotate-animation-duration: {{ content.animation.rotate_duration.style }}; /**/
+    --text-rotate-animation-easing: {{ content.animation.rotate_easing }}; /**/
+    --text-rotate-animation-delay: {{ content.animation.rotate_delay.style }}; /**/
+}
+%%SELECTOR%% .dan-ripple-button-v2__ripple-mask--top,
+%%SELECTOR%% .dan-ripple-button-v2__ripple-mask--bottom{
+    {{ macros.spacing_padding_all(design.padding) }}
+    /*typography*/
+}
+%%SELECTOR%% .dan-ripple-button-v2__ripple-mask--top{
+    background: {{ design.button_colors.background }}; /*background*/
+    color: {{ design.button_colors.text_color }}; /*color*/
+}
+%%SELECTOR%% .dan-ripple-button-v2__ripple-mask--bottom{
+    background: {{ design.mask_colors.background }}; /*background*/
+    color: {{ design.mask_colors.text_color }}; /*color*/
+}

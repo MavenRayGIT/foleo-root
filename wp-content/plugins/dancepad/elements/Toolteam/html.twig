@@ -1,0 +1,9 @@
+{% for item in content.team_members.members %}
+    <div class="dan-toolteam__member">
+        <div class="dan-toolteam__tooltip">
+            <div class="dan-toolteam__name">{{ item.name }}</div>
+            <div class="dan-toolteam__role">{{ item.role }}</div>
+        </div>
+        {{ macros.getMedia(item.image, content.content.size, content.content.lazyLoad) }}
+    </div>
+{% endfor %}

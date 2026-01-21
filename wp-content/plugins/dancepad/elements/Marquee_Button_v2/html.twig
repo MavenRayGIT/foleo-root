@@ -1,0 +1,21 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-marquee-button-v2__anchor') }}
+    <div class='dan-marquee-button-v2__wrapper'>
+      <div class='dan-marquee-button-v2__marquee'>
+          <span>{{ content.content.marquee_text }}</span>
+          <span>{{ content.content.marquee_text }}</span>
+      </div>
+
+      <div class='dan-marquee-button-v2__swap' data-content="{{ content.content.swap_text }}">{{ content.content.swap_text }}</div>
+    </div>
+  {{ macros.linkEnd() }}
+{% else %}
+  <div class='dan-marquee-button-v2__wrapper'>
+    <div class='dan-marquee-button-v2__marquee'>
+        <span>{{ content.content.marquee_text }}</span>
+        <span>{{ content.content.marquee_text }}</span>
+    </div>
+
+    <div class='dan-marquee-button-v2__swap' data-content="{{ content.content.swap_text }}">{{ content.content.swap_text }}</div>
+  </div>
+{% endif %}

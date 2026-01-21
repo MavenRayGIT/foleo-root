@@ -1,0 +1,26 @@
+%%SELECTOR%%[data-disable-touch-devices] {
+    --base: {{ content.glow_hsl_color.base }}; /*base hue*/
+    --spread: {{ content.glow_hsl_color.spread }}; /*hue spread*/
+    --saturation: {{ content.glow_hsl_color.saturation }}; /*saturation*/
+    --lightness: {{ content.glow_hsl_color.lightness }}; /*lightness*/
+
+    --outer: {% if content.glow.outer %}1{% else %}0{% endif %}; /*outer glow via checkbox*/
+    --size: {{ content.glow.size }}; /*spotlight size*/
+
+    --cardblur: {{ content.backdrop.blur }}; /*backdrop blur*/
+    --backdrop: {{ content.backdrop.background }}; /*border y backdrop color*/
+    --bg-spot-opacity: {{ content.backdrop.spot_alpha }}; /*backdrop spot alpha*/
+
+    --get-border-radius: {{ content.border.radius }}; /*border radius*/
+    --border-width: {{ content.border.width }}; /*border width*/
+    --border-spot-opacity: {{ content.border.spot_alpha }}; /*border spot alpha*/
+    --border-light-opacity: {{ content.border.light_alpha }}; /*border light alpha*/
+    
+    {{ macros.size(design.size) }}
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }} /*padding*/
+    {{ macros.borders(design.borders) }}
+
+    background-color: {{ design.colors.background }};
+}

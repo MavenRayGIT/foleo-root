@@ -1,0 +1,22 @@
+%%SELECTOR%% {
+    z-index: {{ design.position.zindex }}; /*z-index*/
+    top: {{ design.position.top.style }}; /*top*/
+    left: {{ design.position.left.style }}; /*left*/
+	right: {{ design.position.right.style }}; /*posicion respecto la derecha*/
+	bottom: {{ design.position.bottom.style }}; /*posicion respecto abajo*/
+
+    width: {{ design.progress.width.style }};
+    height: {{ design.progress.height.style }};
+
+    background: {{ design.progress.path_color }}; /*path color*/
+}
+%%SELECTOR%% .dan-progress-bar__inner {
+    background: {{ design.progress.fill_color }}; /*fill color*/
+}
+%%SELECTOR%% .dan-progress-bar__number {
+    --top: {{ design.number.top.style }}; /*number top*/
+
+    left: {{ design.number.left.style }}; /*number left*/
+
+	{{ macros.typography(design.number.typography, globalSettings) }}
+}

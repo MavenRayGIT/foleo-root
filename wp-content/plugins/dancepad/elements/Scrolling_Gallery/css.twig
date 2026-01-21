@@ -1,0 +1,34 @@
+%%SELECTOR%%{
+{{ macros.spacing_margin_all(design.margin) }}
+  {{ macros.spacing_padding_all(design.padding) }}
+  {{ macros.layout(design.layout) }}
+  {{ macros.size(design.size) }}
+  {{ macros.background(design.background) }}
+}
+%%SELECTOR%% .dan-scrolling-gallery__map{
+{{ macros.spacing_padding_all(design.thumbnails_container.padding) }}
+  {{ macros.size(design.thumbnails_container.size) }}
+}
+%%SELECTOR%% .dan-scrolling-gallery__preview{
+{{ macros.layout(design.thumbnails_container.layout) }}
+}
+%%SELECTOR%% .dan-scrolling-gallery__thumbnail{
+width: {{ design.thumbnail.width.style }};
+  {{ macros.borders(design.thumbnail.border) }}
+  opacity: {{ design.thumbnail.opacity }};
+  --active-scale: {{ design.thumbnail.active_scale }};
+  --active-duration: {{ design.thumbnail.active_duration.style }};
+  --active-easing: {{ design.thumbnail.active_css_easing }};
+}
+%%SELECTOR%% .dan-scrolling-gallery__thumbnail--active{
+{{ macros.borders(design.thumbnail.active_border) }}
+}
+%%SELECTOR%% .dan-scrolling-gallery__images{
+{{ macros.spacing_padding_all(design.images_container.padding) }}
+  {{ macros.layout(design.images_container.layout) }}
+  width: {{ design.images_container.width.style }};
+}
+%%SELECTOR%% .dan-scrolling-gallery__image{
+{{ macros.size(design.image.size) }}
+  {{ macros.borders(design.image.border) }}
+}

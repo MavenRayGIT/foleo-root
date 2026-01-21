@@ -1,0 +1,37 @@
+.breakdance .dan-crosshair {
+    overflow: hidden;
+    position: relative;
+}
+.breakdance .dan-crosshair__cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.breakdance .dan-crosshair__line-horizontal,
+.breakdance .dan-crosshair__line-vertical {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+}
+.breakdance .dan-crosshair__line-horizontal {
+    width: 100%;
+    height: var(--crosshair-dimensions);
+    transform: translateY(50%);
+}
+.breakdance .dan-crosshair__line-vertical {
+    width: var(--crosshair-dimensions);
+    height: 100%;
+    transform: translateX(50%);
+}
+.breakdance .dan-crosshair__content{
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

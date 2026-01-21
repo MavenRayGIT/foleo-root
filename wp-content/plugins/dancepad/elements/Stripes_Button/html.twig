@@ -1,0 +1,13 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-stripes-button__anchor') }}
+    <span class='dan-stripes-button__container'>
+        <span class='dan-stripes-button__text'>{{ content.content.text }}</span>
+    </span>
+    <span class='dan-stripes-button__background' data-from='{{ content.stripes_animation.from }}'></span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-stripes-button__container'>
+        <span class='dan-stripes-button__text'>{{ content.content.text }}</span>
+    </span>
+    <span class='dan-stripes-button__background' data-from='{{ content.stripes_animation.from }}'></span>
+{% endif %}

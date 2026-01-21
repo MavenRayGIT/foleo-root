@@ -1,0 +1,19 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-shading-lines-title__anchor') }}
+    {% if content.content.prefix %}
+      <span class="dan-shading-lines-title__prefix">{{ content.content.prefix }}</span>
+    {% endif %}
+    <span class="dan-shading-lines-title__lines" data-text="{{ content.content.text }}">{{ content.content.text }}</span>
+    {% if content.content.suffix %}
+      <span class="dan-shading-lines-title__suffix">{{ content.content.suffix }}</span>
+    {% endif %}
+  {{ macros.linkEnd() }}
+{% else %}
+  {% if content.content.prefix %}
+    <span class="dan-shading-lines-title__prefix">{{ content.content.prefix }}</span>
+  {% endif %}
+  <span class="dan-shading-lines-title__lines" data-text="{{ content.content.text }}">{{ content.content.text }}</span>
+  {% if content.content.suffix %}
+    <span class="dan-shading-lines-title__suffix">{{ content.content.suffix }}</span>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,21 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-marquee-button__anchor') }}
+    <span class='dan-marquee-button__title'>{{ content.content.text }}</span>
+    <div class="dan-marquee-button__marquee" aria-hidden='true'>
+        <div class='dan-marquee-button__units-wrapper'>
+            {% for i in 1..content.animation.repeats %}
+                <span class='dan-marquee-button__unit'>{{ content.content.text }}</span>
+            {% endfor %}
+        </div>
+    </div>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class='dan-marquee-button__title'>{{ content.content.text }}</span>
+  <div class="dan-marquee-button__marquee" aria-hidden='true'>
+      <div class='dan-marquee-button__units-wrapper'>
+          {% for i in 1..content.animation.repeats %}
+              <span class='dan-marquee-button__unit'>{{ content.content.text }}</span>
+          {% endfor %}
+      </div>
+  </div>
+{% endif %}

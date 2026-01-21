@@ -1,0 +1,21 @@
+%%SELECTOR%%{
+    --transition-duration-backdrop: {{ content.backdrop.duration.style }};
+    --transition-easing-backdrop: {{ content.backdrop.css_easing }};
+    --slide-duration: {{ content.animation.duration.style }};
+    --slide-easing: {{ content.animation.css_easing }};
+    --width: {{ design.content_styles.width.style }}; /*width items wrapper*/
+}
+%%SELECTOR%% .dan-multi-offcanvas-menu__backdrop {
+    z-index: {{ content.settings.backdrop_zindex }};
+
+    background: {{ content.backdrop.background }};
+}
+
+/*añadir accesibilidad*/
+%%SELECTOR%% .dan-multi-offcanvas-menu__items-wrapper{
+    height: {{ design.content_styles.height.style }}; /*height*/
+  
+    --background: {{ design.content_styles.background }}; 
+
+    z-index: {{ content.settings.content_zindex }};
+}

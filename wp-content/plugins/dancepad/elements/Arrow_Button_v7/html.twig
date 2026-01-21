@@ -1,0 +1,89 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-arrow-button-v3__anchor') }}
+    {% set arrow = '' %}
+    {% if design.arrow_styles.type == 'type1' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25'>
+          <path d='m17.5 5.999-.707.707 5.293 5.293H1v1h21.086l-5.294 5.295.707.707L24 12.499l-6.5-6.5z'/>
+        </svg>
+      {% endset %}
+    {% elseif design.arrow_styles.type == 'type2' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>
+          <path d='M11.293 4.707 17.586 11H4v2h13.586l-6.293 6.293 1.414 1.414L21.414 12l-8.707-8.707-1.414 1.414z'/>
+        </svg>
+      {% endset %}
+    {% elseif design.arrow_styles.type == 'type3' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'>
+          <path d='M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z'/>
+        </svg>
+      {% endset %}
+    {% elseif design.arrow_styles.type == 'type4' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+          <path d='M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z'/>
+        </svg>
+      {% endset %}
+    {% elseif design.arrow_styles.type == 'type5' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' style='fill: none !important'>
+          <path d='M0.985771 9.98158L19.9713 9.98162' stroke-miterlimit='10'/>
+          <path d='M19.6589 9.97797C15.1624 9.978 11.5176 6.33315 11.5176 1.83661' stroke-miterlimit='10'/>
+          <path d='M11.5174 18.1213C11.5175 13.6248 15.1623 9.97997 19.6588 9.97995' stroke-miterlimit='10'/>
+        </svg>
+      {% endset %}
+    {% endif %}
+
+    <div class='dan-arrow-button-v7__text-container'>
+        <span class='dan-arrow-button-v7__text'>{{ content.content.text }}</span>
+        <span class='dan-arrow-button-v7__text-swap'>{{ content.content.swap_text }}</span>
+    </div>
+    <div class='dan-arrow-button-v7__arrow'>
+        {{ arrow|raw }}
+    </div>
+  {{ macros.linkEnd() }}
+{% else %}
+    {% set arrow = '' %}
+    {% if design.arrow_styles.type == 'type1' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25'>
+          <path d='m17.5 5.999-.707.707 5.293 5.293H1v1h21.086l-5.294 5.295.707.707L24 12.499l-6.5-6.5z'/>
+        </svg>
+      {% endset %}
+    {% elseif design.arrow_styles.type == 'type2' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>
+          <path d='M11.293 4.707 17.586 11H4v2h13.586l-6.293 6.293 1.414 1.414L21.414 12l-8.707-8.707-1.414 1.414z'/>
+        </svg>
+      {% endset %}
+    {% elseif design.arrow_styles.type == 'type3' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'>
+          <path d='M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z'/>
+        </svg>
+      {% endset %}
+    {% elseif design.arrow_styles.type == 'type4' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+          <path d='M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z'/>
+        </svg>
+      {% endset %}
+    {% elseif design.arrow_styles.type == 'type5' %}
+      {% set arrow %}
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' style='fill: none !important'>
+          <path d='M0.985771 9.98158L19.9713 9.98162' stroke-miterlimit='10'/>
+          <path d='M19.6589 9.97797C15.1624 9.978 11.5176 6.33315 11.5176 1.83661' stroke-miterlimit='10'/>
+          <path d='M11.5174 18.1213C11.5175 13.6248 15.1623 9.97997 19.6588 9.97995' stroke-miterlimit='10'/>
+        </svg>
+      {% endset %}
+    {% endif %}
+
+    <div class='dan-arrow-button-v7__text-container'>
+        <span class='dan-arrow-button-v7__text'>{{ content.content.text }}</span>
+        <span class='dan-arrow-button-v7__text-swap'>{{ content.content.swap_text }}</span>
+    </div>
+    <div class='dan-arrow-button-v7__arrow'>
+        {{ arrow|raw }}
+    </div>
+{% endif %}

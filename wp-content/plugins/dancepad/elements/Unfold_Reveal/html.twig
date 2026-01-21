@@ -1,0 +1,7 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-unfold-reveal__anchor') }}
+  <span class="dan-unfold-reveal__inner" data-content="{{ content.content.text|escape('html_attr') }}">{{ content.content.text|raw }}</span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class="dan-unfold-reveal__inner" data-content="{{ content.content.text|escape('html_attr') }}">{{ content.content.text|raw }}</span>
+{% endif %}

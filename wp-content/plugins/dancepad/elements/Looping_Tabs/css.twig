@@ -1,0 +1,24 @@
+%%SELECTOR%%{
+{{ macros.spacing_margin_all(design.margin) }}
+  {{ macros.spacing_padding_all(design.padding) }}
+  {{ macros.layout(design.layout) }}
+  {{ macros.size(design.size) }}
+  {{ macros.background(design.background) }}
+  {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-looping-tabs__loop{
+--padding: {{ design.progress.padding.style }};
+  width: {{ design.progress.width_horizontal_.style }};
+  height: {{ design.progress.height_horizontal_.style }};
+    background-color: {{ design.progress.path_outer_color }};
+  {{ macros.border_complex(design.progress.border) }}
+  --shared-progress-radius: {{ design.progress.border_radius.style }};
+  box-shadow: {{ design.progress.box_shadow.style }};
+}
+%%SELECTOR%%[data-mode="vertical"] .dan-looping-tabs__loop{
+  width: {{ design.progress.width_vertical_.style }};
+  height: {{ design.progress.height_vertical_.style }};
+}
+%%SELECTOR%% .dan-looping-tabs__loop-mask{
+background-color: {{ design.progress.path_inner_color }};
+}

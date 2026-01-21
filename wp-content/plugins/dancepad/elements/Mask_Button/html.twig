@@ -1,0 +1,13 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-mask-button__anchor') }}
+    <span class='dan-mask-button__back'>
+        <span></span>
+    </span>
+    <span class='dan-mask-button__title'>{{ content.content.text }}</span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class='dan-mask-button__back'>
+      <span></span>
+  </span>
+  <span class='dan-mask-button__title'>{{ content.content.text }}</span>
+{% endif %}

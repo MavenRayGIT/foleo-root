@@ -1,0 +1,11 @@
+%%SELECTOR%%{
+    --easing: {{ content.animation.css_easing }};
+    --duration: {{ content.animation.duration.style }};
+
+    {{ macros.size(design.size) }}
+    
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-mask-hover__content-wrapper{
+    background: {{ design.colors.mask_color }};
+}

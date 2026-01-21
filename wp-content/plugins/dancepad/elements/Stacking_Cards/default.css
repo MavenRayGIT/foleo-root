@@ -1,0 +1,17 @@
+.breakdance .dan-stacking-cards{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  
+    width: 100%;
+  }
+  .breakdance .dan-stacking-cards .dan-stacking-cards__card{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+  
+      position: sticky;
+      top: var(--offset);
+  } 

@@ -1,0 +1,28 @@
+%%SELECTOR%% {    
+    {{ macros.size(design.size) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+
+    --content-size: {{ content.content_mask.size.style }};
+    --content-radius: {{ content.content_mask.radius.style }};
+    --content-blur: {{ content.content_mask.blur.style }};
+    --content-color: {{ content.content_mask.color }};
+
+    --fade-duration: {{ content.decode_settings.duration.style }};
+    --fade-easing: {{ content.decode_settings.css_easing }};
+
+    --backdrop-filter: {{ content.decode_settings.backdrop_blur.style }};
+    --gradient-left: {{ content.decode_settings.gradient_left }};
+    --gradient-right: {{ content.decode_settings.gradient_right }};
+}
+%%SELECTOR%% .dan-decode-card__inner{
+    {{ macros.spacing_padding_all(design.padding) }} /*padding*/
+    {{ macros.borders(design.borders) }}
+
+    background-color: {{ design.colors.background }};
+}
+%%SELECTOR%% .dan-decode-card__random-text{
+    {{ macros.typography(content.decode_settings.typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-decode-card__hover-container{
+    {{ macros.typography(content.content_mask.typography, globalSettings) }}
+}

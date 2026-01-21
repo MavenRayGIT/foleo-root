@@ -1,0 +1,20 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --blur: {{ content.blur_animation.blur.style }};
+    --blur-scale: {{ content.blur_animation.scale }};
+    --blur-duration: {{ content.blur_animation.duration.style }};
+}
+%%SELECTOR%%::after{
+    {{ macros.typography(design.blurry_typography, globalSettings) }}
+    {{ macros.borders(design.blurry_border) }}
+    {{ macros.background(design.blurry_background) }}
+}
+%%SELECTOR%% .dan-blurry-button__text{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-blurry-button__background{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}

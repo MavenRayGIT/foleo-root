@@ -1,0 +1,161 @@
+{% if content.site_loader.type == 'type1' %}
+<div class='dan-site-loader--type1__progress-container'>
+  <div class='dan-site-loader--type1__progress-bar'></div>
+</div>
+<div class='dan-site-loader--type1__text-container'>
+  <div class='dan-site-loader--type1__loading-text dan-site-loader--type1__loading-text--initial'>{{ content.settings_type_1.loading_text }}</div>
+  <div class='dan-site-loader--type1__loading-text dan-site-loader--type1__loading-text--complete'>{{ content.settings_type_1.complete_text }}</div>
+</div>
+<div class='dan-site-loader--type1__percentage'>0</div>
+{% elseif content.site_loader.type == 'type2' %}
+<div class='dan-site-loader--type2__progress-bar'></div>
+<div class='dan-site-loader--type2__percentage-wrap'>
+  <div class='dan-site-loader--type2__percentage dan-site-loader--type2__percentage--display'>0</div>
+  <div class='dan-site-loader--type2__percentage dan-site-loader--type2__percentage--calc-100'>100</div>
+</div>
+{% elseif content.site_loader.type == 'type3' %}
+<div class='dan-site-loader--type3__terminal'>
+  <div class='dan-site-loader--type3__terminal-content'>
+    <div class='dan-site-loader--type3__commands-container'>
+      <div class='dan-site-loader--type3__command-line dan-site-loader--type3__command-line--1'>
+        <span class='dan-site-loader--type3__prompt'>{{ content.settings_type_3.symbol }}</span>
+        <span class='dan-site-loader--type3__command'>{{ content.settings_type_3.line_1 }}</span>
+        <span class='dan-site-loader--type3__cursor'></span>
+      </div>
+      <div class='dan-site-loader--type3__command-line dan-site-loader--type3__command-line--2'>
+        <span class='dan-site-loader--type3__prompt'>{{ content.settings_type_3.symbol }}</span>
+        <span class='dan-site-loader--type3__command'>{{ content.settings_type_3.line_2 }}</span>
+        <span class='dan-site-loader--type3__cursor'></span>
+      </div>
+      <div class='dan-site-loader--type3__command-line dan-site-loader--type3__command-line--3'>
+        <span class='dan-site-loader--type3__prompt'>{{ content.settings_type_3.symbol }}</span>
+        <span class='dan-site-loader--type3__command'>{{ content.settings_type_3.line_3 }}</span>
+        <span class='dan-site-loader--type3__cursor'></span>
+      </div>
+      <div class='dan-site-loader--type3__command-line dan-site-loader--type3__command-line--4'>
+        <span class='dan-site-loader--type3__prompt'>{{ content.settings_type_3.symbol }}</span>
+        <span class='dan-site-loader--type3__command'>{{ content.settings_type_3.line_4 }}</span>
+        <span class='dan-site-loader--type3__cursor'></span>
+      </div>
+    </div>
+    <div class='dan-site-loader--type3__loading-container'>
+      <div class='dan-site-loader--type3__loading-bar'>
+        <div class='dan-site-loader--type3__loading-progress'></div>
+      </div>
+    </div>
+    <div class='dan-site-loader--type3__percentage-wrap'>
+      <div class='dan-site-loader--type3__percentage'>00%</div>
+    </div>
+  </div>
+</div>
+{% elseif content.site_loader.type == 'type4' %}
+<div class='dan-site-loader--type4__mask-top'></div>
+<div class='dan-site-loader--type4__mask-bottom'></div>
+
+<div class='dan-site-loader--type4__container'>
+  <div class='dan-site-loader--type4__progress-bar'>
+    <span>{{ content.settings_type_4.progress_text }}</span>
+    <span>/<span class='dan-site-loader--type4__counter'>0</span></span>
+  </div>
+</div>
+{% elseif content.site_loader.type == 'type5' %}
+<div class='dan-site-loader--type5__pre-loader'>
+  <div class='dan-site-loader--type5__loader'></div>
+  <div class='dan-site-loader--type5__loader-bg'></div>
+</div>
+<div class='dan-site-loader--type5__loader-content'>
+  <div class='dan-site-loader--type5__count'>
+    <span>0</span>
+  </div>
+  <div class='dan-site-loader--type5__copy'>
+    <div class='dan-site-loader--type5__ml16'>{{ content.settings_type_5.brand_text }}</div>
+  </div>
+</div>
+<div class='dan-site-loader--type5__loader-2'></div>
+{% elseif content.site_loader.type == 'type6' %}
+<div class='dan-site-loader--type6__counter'>
+  <div class='dan-site-loader--type6__counter-1 dan-site-loader--type6__digit'>
+    <div class='dan-site-loader--type6__num'>0</div>
+    <div class='dan-site-loader--type6__num dan-site-loader--type6__num1offset1'>1</div>
+  </div>
+  <div class='dan-site-loader--type6__counter-2 dan-site-loader--type6__digit'>
+    <div class='dan-site-loader--type6__num'>0</div>
+    <div class='dan-site-loader--type6__num dan-site-loader--type6__num1offset2'>1</div>
+    <div class='dan-site-loader--type6__num'>2</div>
+    <div class='dan-site-loader--type6__num'>3</div>
+    <div class='dan-site-loader--type6__num'>4</div>
+    <div class='dan-site-loader--type6__num'>5</div>
+    <div class='dan-site-loader--type6__num'>6</div>
+    <div class='dan-site-loader--type6__num'>7</div>
+    <div class='dan-site-loader--type6__num'>8</div>
+    <div class='dan-site-loader--type6__num'>9</div>
+    <div class='dan-site-loader--type6__num'>0</div>
+  </div>
+  <div class='dan-site-loader--type6__counter-3 dan-site-loader--type6__digit'>
+    <div class='dan-site-loader--type6__num'>0</div>
+    <div class='dan-site-loader--type6__num'>1</div>
+    <div class='dan-site-loader--type6__num'>2</div>
+    <div class='dan-site-loader--type6__num'>3</div>
+    <div class='dan-site-loader--type6__num'>4</div>
+    <div class='dan-site-loader--type6__num'>5</div>
+    <div class='dan-site-loader--type6__num'>6</div>
+    <div class='dan-site-loader--type6__num'>7</div>
+    <div class='dan-site-loader--type6__num'>8</div>
+    <div class='dan-site-loader--type6__num'>9</div>
+  </div>
+</div>
+{% elseif content.site_loader.type == 'type7' %}
+<div class='dan-site-loader--type7__logo-loader'>
+  <img class='dan-site-loader--type7__logo' src='{{ content.settings_type_7.image.url }}' alt='{{ content.settings_type_7.alt }}'>
+
+  <div class='dan-site-loader--type7__loader'>
+    <div class='dan-site-loader--type7__loader-1 dan-site-loader--type7__bar'></div>
+  </div>
+</div>
+{% elseif content.site_loader.type == 'type8' %}
+<span class='dan-site-loader--type8__counter'>00</span>
+<div class='dan-site-loader--type8__overlay'>
+  {% for i in 0..(design.styles_type_8.bars_number - 1) %}
+      <div class='dan-site-loader--type8__bar'></div>
+  {% endfor %}
+</div>
+{% elseif content.site_loader.type == 'type9' %}
+<span class='dan-site-loader--type9__counter'>00</span>
+<div class='dan-site-loader--type9__overlay'>
+  {% for i in 0..(design.styles_type_9.bars_number - 1) %}
+      <div class='dan-site-loader--type9__bar'></div>
+  {% endfor %}
+</div>
+{% elseif content.site_loader.type == 'type10' %}
+<div class='dan-site-loader--type10__preloader-container'>
+  <div class='dan-site-loader--type10__image-wrapper'>
+    <img src='https://cdn.cosmos.so/5f8d5539-943c-4df5-bae8-8e714633ddd0.jpeg' alt='Image 1'>
+  </div>
+  <div class='dan-site-loader--type10__image-wrapper'>
+    <img src='https://cdn.cosmos.so/0098a074-f8a2-4821-bcb0-433c093ae255.jpeg' alt='Image 2'>
+  </div>
+  <div class='dan-site-loader--type10__image-wrapper'>
+    <img src='https://cdn.cosmos.so/ce9f9fd7-a2a5-476d-9757-481ca01b5861.jpeg' alt='Image 3'>
+  </div>
+  <div class='dan-site-loader--type10__image-wrapper'>
+    <img src='https://cdn.cosmos.so/94579ea4-daee-43f9-b778-84156b731361.jpeg' alt='Image 4'>
+  </div>
+</div>
+{% elseif content.site_loader.type == 'type11' %}
+<div class='dan-site-loader--type11__pre-loader'>
+  <div class='dan-site-loader--type11__loader-wrapper'>
+    <div class='dan-site-loader--type11__loader'></div>
+  </div>
+</div>
+<div class='dan-site-loader--type11__clipper-left'>
+  <div class='dan-site-loader--type11__loader-text'>{{ content.settings_type_11.left_text }}</div>
+</div>
+<div class='dan-site-loader--type11__clipper-right'>
+  <div class='dan-site-loader--type11__loader-text'>{{ content.settings_type_11.right_text }}</div>
+</div>
+{% elseif content.site_loader.type == 'type12' %}
+<div class='dan-site-loader--type12__logo-wrapper'>
+  <img class='dan-site-loader--type12__logo' src='{{ content.settings_type_12.logo.url }}' alt='{{ content.settings_type_12.alt }}'>
+  <div class='dan-site-loader--type12__logo-fill'></div>
+</div>
+{% endif %}

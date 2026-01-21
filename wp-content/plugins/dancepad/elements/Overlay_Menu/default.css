@@ -1,0 +1,13 @@
+html[dan-burger--body-toggled]{
+    overflow: hidden !important;
+}
+html[dan-burger--body-toggled] > body > .os-scrollbar-horizontal,
+html[dan-burger--body-toggled] > body > .os-scrollbar-vertical{
+    display: none !important;
+}
+.breakdance .dan-overlay-menu .dan-overlay-menu__content {
+    position: absolute;
+    pointer-events: none;
+
+    opacity: 0;
+} 

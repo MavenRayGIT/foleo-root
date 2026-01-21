@@ -1,0 +1,102 @@
+
+.breakdance .dan-arrow-button{
+    white-space: wrap;
+    text-decoration: unset !important;
+    color: unset !important;
+
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-arrow-button:not(:has(> a)),
+.breakdance .dan-arrow-button > a{
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.breakdance .dan-arrow-button .dan-arrow-button__anchor{
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+/*Title*/
+.breakdance .dan-arrow-button .dan-arrow-button_title-wrapper{
+    width: 100%;
+}
+.breakdance .dan-arrow-button .dan-arrow-button_title-wrap{
+    position: relative;
+    overflow: hidden;
+}
+.breakdance .dan-arrow-button .dan-arrow-button__title{
+    display: block;
+    outline: none;
+    border: none;
+
+    transition: transform;
+    transition-duration: var(--transitiondurationswap);
+    transition-timing-function: var(--easeswap);
+}
+
+/*Swap Title*/
+.breakdance .dan-arrow-button[data-swap='enable'] .dan-arrow-button__title::after{
+    display: block;
+    content: attr(data-content);
+
+    position: absolute;
+    top: 100%;
+
+    width: 100%;
+}
+.breakdance .dan-arrow-button[data-swap='enable']:hover .dan-arrow-button__title{
+    transform: translateY(-100%);
+}
+.breakdance .dan-arrow-button[data-swap='enable']:hover .dan-arrow-button__title::after{
+    transform: translateY(0%);
+}
+
+/*Arrow*/
+.breakdance .dan-arrow-button .dan-arrow-button__circle{
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: var(--dimensions) !important;
+  min-height: var(--dimensions) !important;
+
+  transition: scale;
+  transition-duration: var(--transitionduration);
+  transition-timing-function: var(--ease);
+}
+.breakdance .dan-arrow-button .dan-arrow-button__arrow{
+  position: absolute;
+  transition: transform;
+  transition-duration: var(--transitionduration);
+  transition-timing-function: var(--ease);
+
+  min-width: var(--dimensions) !important;
+  min-height: var(--dimensions) !important;
+  max-width: var(--dimensions) !important;
+  max-height: var(--dimensions) !important;
+
+  stroke: var(--fill);
+  fill: var(--fill);
+}
+.breakdance .dan-arrow-button .dan-arrow-button__arrow-right{
+    transform: translateX(calc(var(--arrow-distance) * -1));
+}
+.breakdance .dan-arrow-button:hover .dan-arrow-button__circle{
+    scale: var(--scale); /**/
+}
+.breakdance .dan-arrow-button:hover .dan-arrow-button__arrow-left{
+    transform: translateX(var(--arrow-distance));
+}
+.breakdance .dan-arrow-button:hover .dan-arrow-button__arrow-right{
+    transform: translateX(0%);
+} 

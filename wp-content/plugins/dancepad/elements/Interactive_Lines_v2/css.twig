@@ -1,0 +1,13 @@
+%%SELECTOR%%{
+{{ macros.spacing_margin_all(design.margin) }}
+  {{ macros.spacing_padding_all(design.padding) }}
+  {{ macros.size(design.size) }}
+  {{ macros.background(design.background) }}
+  {{ macros.borders(design.borders) }}
+  --lines-color: {{ design.lines.color }}
+}
+%%SELECTOR%% .dan-interactive-lines-v2__ball{
+--dimensions: {{ design.ball.size.style }};
+  background-color: {{ design.ball.color }};
+  {{ macros.borders(design.ball.border) }}
+}

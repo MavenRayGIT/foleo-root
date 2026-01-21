@@ -1,0 +1,13 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-blurry-button__anchor') }}
+    <span class='dan-blurry-button__container'>
+        <span class='dan-blurry-button__text'>{{ content.content.text }}</span>
+        <span class='dan-blurry-button__background'></span>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-blurry-button__container'>
+        <span class='dan-blurry-button__text'>{{ content.content.text }}</span>
+        <span class='dan-blurry-button__background'></span>
+    </span>
+{% endif %}

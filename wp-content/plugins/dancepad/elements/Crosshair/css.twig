@@ -1,0 +1,14 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+  {{ macros.background(design.background) }}
+}
+%%SELECTOR%% .dan-crosshair__cursor{
+    --crosshair-z-index: {{ design.crosshair_style.zindex }};
+  --crosshair-dimensions: {{ design.crosshair_style.thickness.style }};
+}
+%%SELECTOR%% .dan-crosshair__line-horizontal{
+  background-color: {{ design.crosshair_style.color }}
+}
+%%SELECTOR%% .dan-crosshair__line-vertical{
+  background-color: {{ design.crosshair_style.color }}
+}

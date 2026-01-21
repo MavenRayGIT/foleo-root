@@ -1,0 +1,25 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_all(design.padding) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+    {{ macros.simpleLayout(design.layout, breakpoint) }}
+}
+%%SELECTOR%% .dan-arrow-button-v7__text-container span{
+    {{ macros.typography(design.typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-arrow-button-v7__arrow{
+    {{ macros.border_complex(design.arrow_styles.border) }}
+    {{ macros.border_radius(design.arrow_styles.border_radius) }}
+    --dimensions: {{ design.arrow_styles.dimensions.style }};
+    background: {{ design.arrow_styles.background }};
+
+    --arrow-scale: {{ content.arrow_animation.scale }};
+    --arrow-duration: {{ content.arrow_animation.duration.style }};
+    --arrow-easing: {{ content.arrow_animation.css_easing }};
+}
+%%SELECTOR%% .dan-arrow-button-v7__arrow svg{
+    {{ macros.spacing_complex(design.arrow_styles.padding, 'padding') }}
+    fill: {{ design.arrow_styles.color }};
+    stroke: {{ design.arrow_styles.color }};
+}

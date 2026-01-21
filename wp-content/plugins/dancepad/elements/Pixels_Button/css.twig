@@ -1,0 +1,21 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --padding-top: {{ design.padding.padding_top.style }};
+    --padding-left: {{ design.padding.padding_left.style }};
+    --padding-bottom: {{ design.padding.padding_bottom.style }};
+    --padding-right: {{ design.padding.padding_right.style }};
+
+    --pixels-duration: {{ design.pixels.duration.style }};
+    --pixels-ease: {{ design.pixels.css_easing }};
+}
+%%SELECTOR%% .dan-pixels-button__background{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+
+    --pixels-cells: {{ design.pixels.cells }};
+}
+%%SELECTOR%% .dan-pixels-button__pixel{
+    background-color: {{ design.pixels.color }};
+}

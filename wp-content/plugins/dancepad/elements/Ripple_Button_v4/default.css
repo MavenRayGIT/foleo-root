@@ -1,0 +1,86 @@
+.breakdance .dan-ripple-button-v4 {
+    position: relative;
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    cursor: pointer;
+
+    --layers-radius: 9999px;
+}
+.breakdance .dan-ripple-button-v4__bg {
+    background-color: var(--bg-color);
+
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: scale(1);
+}
+.breakdance .dan-ripple-button-v4__inner,
+.breakdance .dan-ripple-button-v4__inner-hover,
+.breakdance .dan-ripple-button-v4__inner-static {
+    pointer-events: none;
+    display: block;
+}
+.breakdance .dan-ripple-button-v4__inner {
+    position: relative;
+}
+.breakdance .dan-ripple-button-v4__inner-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transform: translateY(70%);
+}
+.breakdance .dan-ripple-button-v4__bg-layers {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    top: -60%;
+    aspect-ratio: 1 / 1;
+    width: max(200%, 10em);
+}
+.breakdance .dan-ripple-button-v4__bg-layer {
+    border-radius: var(--layers-radius);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: scale(0);
+}
+.breakdance .dan-ripple-button-v4:hover .dan-ripple-button-v4__inner-static {
+    opacity: 0;
+    transform: translateY(-70%);
+    transition:
+        transform var(--layers-transform-duration) var(--layers-transform-easing),
+        opacity 0.3s linear;
+}
+.breakdance .dan-ripple-button-v4:hover .dan-ripple-button-v4__inner-hover {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        transform var(--line-transform-duration) var(--line-transform-easing),
+        opacity var(--line-transform-duration) var(--line-transform-easing);
+}
+.breakdance .dan-ripple-button-v4:hover .dan-ripple-button-v4__bg-layer {
+    transition:
+        transform var(--layers-transform-duration) var(--layers-transform-easing),
+        opacity 0.3s linear;
+}
+.breakdance .dan-ripple-button-v4:hover .dan-ripple-button-v4__bg-layer--1 {
+    transform: scale(1);
+    background-color: var(--layer-1-color);
+}
+.breakdance .dan-ripple-button-v4:hover .dan-ripple-button-v4__bg-layer--2 {
+    transition-delay: var(--delay-between-layers);
+    transform: scale(1);
+    background-color: var(--layer-2-color);
+}
+.breakdance .dan-ripple-button-v4:hover .dan-ripple-button-v4__bg-layer--3 {
+    transition-delay: calc(var(--delay-between-layers) * 2);
+    transform: scale(1);
+    background-color: var(--bg-color);
+}

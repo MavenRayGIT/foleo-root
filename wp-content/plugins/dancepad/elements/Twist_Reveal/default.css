@@ -1,0 +1,21 @@
+.breakdance .dan-twist-reveal{
+    display: block;
+    width: fit-content;
+}
+.breakdance .dan-twist-reveal .dan-twist-reveal__anchor{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-twist-reveal .dan-twist-reveal__inner{
+    display: block;
+
+    transform-origin: center top;
+    transform-style: preserve-3d;
+}
+.breakdance .dan-twist-reveal[data-flickering="1"]{
+    opacity: 0;
+} 

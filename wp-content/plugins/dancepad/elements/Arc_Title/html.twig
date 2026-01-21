@@ -1,0 +1,7 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-arc-title__anchor') }}
+  <{{ content.content.tag }} class="dan-arc-title__inner" data-content="{{ content.content.text|escape('html_attr') }}">{{ content.content.text|raw }}</{{ content.content.tag }}>
+  {{ macros.linkEnd() }}
+{% else %}
+  <{{ content.content.tag }} class="dan-arc-title__inner" data-content="{{ content.content.text|escape('html_attr') }}">{{ content.content.text|raw }}</{{ content.content.tag }}>
+{% endif %}

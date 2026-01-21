@@ -1,0 +1,15 @@
+%%SELECTOR%%{  
+    {{ macros.size(design.size) }}
+  
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-distorsion-tabs__nav-item{
+    opacity: {{ content.nav_items_fade_animation.opacity }};
+    --opacity-duration: {{ content.nav_items_fade_animation.duration.style }};
+    --opacity-ease: {{ content.nav_items_fade_animation.css_easing }};
+}
+%%SELECTOR%% .dan-distorsion-tabs__tabs{
+    width: {{ design.tabs_element_dimensions.width.style }};
+    height: {{ design.tabs_element_dimensions.height.style }};
+}

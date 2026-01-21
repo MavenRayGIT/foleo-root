@@ -1,0 +1,24 @@
+%%SELECTOR%% {
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.borders(design.borders) }}
+
+    background: {{ design.background.button }}; /**/
+
+    --transition-duration: {{ content.animation.out_duration.style }};
+    --transition-duration-in: {{ content.animation.in_duration.style }};
+    --transition-ease: {{ content.animation.css_easing }};
+    --skew-text: {{ content.animation.skew.style }};
+
+    --amplitude: {{ content.animation.amplitude.style }};
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-ripple-button__pseudo::after {
+    {{ macros.typography(design.mask_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-ripple-button__hover-fill {
+    background: {{ design.background.mask }}; /**/
+}

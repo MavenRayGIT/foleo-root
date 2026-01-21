@@ -1,0 +1,31 @@
+# OS / editor
+.DS_Store
+.vscode/
+*.log
+
+# Server artifacts
+error_log
+php_errorlog
+*.zip
+
+# WordPress core (do not track)
+wp-admin/
+wp-includes/
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+
+# WP config and secrets (do not track)
+wp-config.php
+wp-config-*.php
+.htaccess
+.user.ini
+php.ini
+
+# Cloudflare / misc
+.ftppquota
+.ftpquota
+
+# Breakdance / misc caches (if present)
+wp-content/breakdance/cache/
+wp-content/breakdance/tmp/

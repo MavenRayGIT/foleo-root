@@ -1,0 +1,23 @@
+%%SELECTOR%%{
+    {{ macros.typography(design.general_typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+
+    --shadow-color: {{ content.animation.shading_color }};
+    --distance: {{ content.animation.distance.style }};
+    --degree: {{ content.animation.degree.style }};
+    --duration: {{ content.animation.duration.style }};
+    --easing: {{ content.animation.css_easing }};
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-shading-lines-title__prefix{
+    {{ macros.typography(design.prefix_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-shading-lines-title__suffix{
+    {{ macros.typography(design.suffix_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-shading-lines-title__lines{
+    {{ macros.typography(design.shading_title_typography, globalSettings) }}
+}

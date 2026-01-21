@@ -1,0 +1,21 @@
+%%SELECTOR%% {
+	right: {{ design.spacing.right.style }}; /*posicion respecto la derecha*/
+	bottom: {{ design.spacing.bottom.style }}; /*posicion respecto abajo*/
+	height: {{ design.dimensions.height.style }};
+	width: {{ design.dimensions.width.style }};
+
+    color: {{ design.colors.path_color }}; /*color del progress interior*/
+    background-color: {{ design.colors.circle_color }};
+
+    transition-duration: {{ content.animation.entrance_speed.style }}; /*s*/
+    transition-timing-function: {{ content.animation.entrance_css_easing }}; /*ease*/
+
+    {{ macros.borders(design.borders) }}
+}%%SELECTOR%% .dan-back-to-top__arrow-svg {
+    fill: {{ design.colors.arrow_color }};
+
+    width: {{ design.dimensions.arrow_dimensions.style }};
+}
+%%SELECTOR%% .dan-back-to-top__circle-path {
+    stroke: {{ design.colors.progress_color }}; /*color del progress*/
+}

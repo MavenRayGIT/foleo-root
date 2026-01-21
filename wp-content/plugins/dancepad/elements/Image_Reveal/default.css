@@ -1,0 +1,42 @@
+.breakdance .dan-image-reveal {
+    contain: paint;
+
+    display: block;
+}
+.breakdance .dan-image-reveal .dan-image-reveal__element {
+    visibility: hidden;
+    overflow: hidden;
+
+    width: 100%;
+    height: 100%;
+}
+.breakdance .dan-image-reveal[data-animation-direction='top'] .dan-image-reveal__element {
+    transform: translateY(-100%);
+}
+.breakdance .dan-image-reveal[data-animation-direction='bottom'] .dan-image-reveal__element {
+    transform: translateY(100%);
+}
+.breakdance .dan-image-reveal[data-animation-direction='left'] .dan-image-reveal__element {
+    transform: translateX(-100%);
+}
+.breakdance .dan-image-reveal[data-animation-direction='right'] .dan-image-reveal__element {
+    transform: translateX(100%);
+}
+.breakdance .dan-image-reveal .dan-image-reveal__element .breakdance-image-object {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transform-origin: left;
+}
+.breakdance .dan-image-reveal[data-animation-direction='top'] .dan-image-reveal__element .breakdance-image-object {
+    transform: translateY(100%) scale(var(--scale));
+}
+.breakdance .dan-image-reveal[data-animation-direction='bottom'] .dan-image-reveal__element .breakdance-image-object {
+    transform: translateY(-100%) scale(var(--scale));
+}
+.breakdance .dan-image-reveal[data-animation-direction='left'] .dan-image-reveal__element .breakdance-image-object {
+    transform: translateX(100%) scale(var(--scale));
+}
+.breakdance .dan-image-reveal[data-animation-direction='right'] .dan-image-reveal__element .breakdance-image-object {
+    transform: translateX(-100%) scale(var(--scale));
+} 

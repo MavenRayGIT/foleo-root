@@ -1,0 +1,34 @@
+.breakdance .dan-image-reveal-v3 {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    overflow: hidden;
+}
+.breakdance .dan-image-reveal-v3[data-flickering="1"]{
+    opacity: 0;
+}
+.breakdance .dan-image-reveal-v3 .breakdance-image-object {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.breakdance .dan-image-reveal-v3__col {
+    pointer-events: none;
+    position: relative;
+    z-index: 2;
+}
+.breakdance .dan-image-reveal-v3__col-bg {
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+}

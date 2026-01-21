@@ -1,0 +1,17 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-stretchy-button__anchor') }}
+    <span class='dan-stretchy-button__container'>
+        <span class='dan-stretchy-button__bg'></span>
+        <span data-text='{{ content.content.text }}' class='dan-stretchy-button__inner'>
+            <span class='dan-stretchy-button__text'>{{ content.content.text }}</span>
+        </span>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-stretchy-button__container'>
+        <span class='dan-stretchy-button__bg'></span>
+        <span data-text='{{ content.content.text }}' class='dan-stretchy-button__inner'>
+            <span class='dan-stretchy-button__text'>{{ content.content.text }}</span>
+        </span>
+    </span>
+{% endif %}

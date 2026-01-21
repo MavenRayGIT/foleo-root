@@ -1,0 +1,7 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-highlight-hover__anchor') }}
+  <span class="dan-highlight-hover__inner {% if content.highlight.type == 'Bottom to Full' %}dan-highlight-hover__bottom-to-full{% elseif content.highlight.type == 'Full to Bottom' %}dan-highlight-hover__full-to-bottom{% elseif content.highlight.type == 'Full to Left' %}dan-highlight-hover__full-to-left{% elseif content.highlight.type == 'Left to Full' %}dan-highlight-hover__left-to-full{% endif %}">{{ content.content.text }}</span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class="dan-highlight-hover__inner {% if content.highlight.type == 'Bottom to Full' %}dan-highlight-hover__bottom-to-full{% elseif content.highlight.type == 'Full to Bottom' %}dan-highlight-hover__full-to-bottom{% elseif content.highlight.type == 'Full to Left' %}dan-highlight-hover__full-to-left{% elseif content.highlight.type == 'Left to Full' %}dan-highlight-hover__left-to-full{% endif %}">{{ content.content.text }}</span>
+{% endif %}

@@ -1,0 +1,28 @@
+%%SELECTOR%% {
+    gap: {{ design.dimensions.gap.style }};
+
+    width: {{ design.dimensions.width.style }};
+
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-dock-menu__item {
+    --dimensions: {{ design.items_style.dimensions.style }};
+
+    {{ macros.background(design.items_style.background) }}
+    {{ macros.borders(design.items_style.borders) }}
+    {{ macros.layout(design.items_style.layout) }}
+    {{ macros.spacing_padding_all(design.items_style.padding) }}
+}
+%%SELECTOR%% .dan-dock-menu__item::before {
+    {{ macros.spacing_padding_all(design.tooltip_style.padding) }}
+    {{ macros.background(design.tooltip_style.background) }}
+    {{ macros.borders(design.tooltip_style.borders) }}
+
+    top: {{ design.tooltip_style.top.style }};
+
+    {{ macros.typography(design.tooltip_style.typography, globalSettings) }}
+}

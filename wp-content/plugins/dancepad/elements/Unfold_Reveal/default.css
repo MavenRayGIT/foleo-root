@@ -1,0 +1,21 @@
+.breakdance .dan-unfold-reveal{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-unfold-reveal .dan-unfold-reveal__anchor{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-unfold-reveal .dan-unfold-reveal__inner{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-unfold-reveal[data-flickering="1"]{
+    opacity: 0;
+} 

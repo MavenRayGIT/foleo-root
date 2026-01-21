@@ -1,0 +1,31 @@
+.breakdance .bde-container-link.dan-link-preview__wrapper {
+    display: inline-block;
+    width: fit-content;
+    position: relative;
+    overflow: visible;
+    text-decoration: none;
+}
+.breakdance .dan-link-preview__text {
+    transition: color var(--link-hover-duration) var(--link-hover-easing);
+}
+.breakdance .dan-link-preview__text:hover {
+    color: var(--link-hover-color);
+}
+.breakdance .dan-link-preview__image {
+    position: absolute;
+    transform-origin: bottom;
+
+    left: calc(50% - var(--width) / 2);
+    min-width: var(--width);
+    height: var(--height);
+    overflow: hidden;
+    opacity: 0;
+
+    transition: opacity var(--fade-duration) var(--fade-easing), bottom var(--transform-duration) var(--transform-easing);
+
+    pointer-events: none;
+    user-select: none;
+}
+.breakdance .dan-link-preview__text:hover + .dan-link-preview__image {
+    opacity: 1;
+}

@@ -1,0 +1,32 @@
+%%SELECTOR%%{
+    --arrow-duration: {{ content.animation.duration.style }};
+    --arrows-blur-stagger: {{ content.animation.stagger.style }};
+    --arrow-ease: {{ content.animation.css_easing }};
+
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --left: {{ design.arrow_styles.duplicated_arrow_left.style }};
+
+    --text-duration: {{ content.text_animation.duration.style }};
+}
+%%SELECTOR%% .dan-arrow-button-v6__inner{
+    {{ macros.spacing_all(design.padding) }}
+}
+%%SELECTOR%% .dan-arrow-button-v6__bg{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-arrow-button-v6__icon-mid{
+    width: {{ design.arrow_styles.weight.style }};
+}
+%%SELECTOR%% .dan-arrow-button-v6__icon{
+    --dimensions: {{ design.arrow_styles.dimensions.style }};
+    color: {{ design.arrow_styles.color }};
+    stroke: {{ design.arrow_styles.color }};
+
+    --translate-from: {{ content.arrow_animation.translate_from.style }};
+    --arrow-translate-duration: {{ content.arrow_animation.translate_duration.style }};
+    --arrow-animation-duration: {{ content.arrow_animation.animation_duration.style }};
+    --animation-ease: {{ content.arrow_animation.css_easing }};
+}

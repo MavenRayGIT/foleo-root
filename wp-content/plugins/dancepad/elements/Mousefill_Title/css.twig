@@ -1,0 +1,12 @@
+%%SELECTOR%%{
+    --stroke-color: {{ design.stroke_fill.stroke_color }}; /*stroke color*/
+    --fill-color: {{ design.stroke_fill.fill_color }}; /*fill color*/
+    --stroke-width: {{ design.stroke_fill.stroke_width.style }};
+
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}

@@ -1,0 +1,19 @@
+.breakdance .dan-physics[data-flickering]{
+    opacity: 0;
+}
+.breakdance .dan-physics{
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+.breakdance .dan-physics canvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+
+    background-color: var(--background-color) !important;
+}
+#breakdance_canvas .dan-physics{
+    opacity: 0.99;
+} 

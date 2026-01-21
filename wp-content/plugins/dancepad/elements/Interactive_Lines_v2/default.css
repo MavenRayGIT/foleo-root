@@ -1,0 +1,25 @@
+.breakdance .dan-interactive-lines-v2 {
+    position: relative;
+    overflow: hidden;
+}
+.breakdance .dan-interactive-lines-v2__canvas {
+    position: absolute;
+    inset: 0;
+}
+.breakdance .dan-interactive-lines-v2__ball {
+    position: absolute;
+    width: var(--dimensions);
+    height: var(--dimensions);
+    margin-left: calc(var(--dimensions) / -2);
+    margin-top: calc(var(--dimensions) / -2);
+}
+.breakdance .dan-interactive-lines-v2__content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+}

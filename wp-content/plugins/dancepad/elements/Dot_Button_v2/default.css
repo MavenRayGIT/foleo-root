@@ -1,0 +1,75 @@
+.breakdance .dan-dot-button-v2 {
+    display: inline-grid;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+
+    --dots-duration: 0.45s; /*dots duration*/
+    --dots-stagger: 0.017s; /*dots stagger*/
+
+    --elastic-ease-out: linear( 0, 0.5737 7.6%, 0.8382 11.87%, 0.9463 14.19%, 1.0292 16.54%, 1.0886 18.97%, 1.1258 21.53%, 1.137 22.97%, 1.1424 24.48%, 1.1423 26.1%, 1.1366 27.86%, 1.1165 31.01%, 1.0507 38.62%, 1.0219 42.57%, 0.9995 46.99%, 0.9872 51.63%, 0.9842 58.77%, 1.0011 81.26%, 1 );
+    --smooth-ease: cubic-bezier(.32, .72, 0, 1);
+}
+.breakdance .dan-dot-button-v2__dot-wrap {
+    pointer-events: none;
+    z-index: 2;
+    grid-area: 1 / 1;
+    justify-content: flex-start;
+    align-items: center;
+    display: grid;
+    transition: translate calc(var(--dots-duration) * 1.1) var(--smooth-ease);
+    transition-delay: calc(var(--parent-index) * var(--dots-stagger));
+}
+.breakdance .dan-dot-button-v2__dot {
+    height: var(--btn-color-blob-dot-size);
+    width: var(--btn-color-blob-dot-size);
+    transform-origin: top;
+    border-radius: 50%;
+    grid-area: 1 / 1;
+    margin-left: var(--dot-margin-left);
+    display: block;
+    transition: scale var(--dots-duration) calc(calc(var(--dots-duration) * 0.25) + (var(--index) * var(--dots-stagger))) var(--smooth-ease), translate var(--dots-duration) calc(calc(var(--dots-duration) * 0.25) + (var(--index) * var(--dots-stagger))) var(--smooth-ease), transform var(--dots-duration) var(--smooth-ease);
+}
+.breakdance .dan-dot-button-v2__dot:is(.dan-dot-button-v2__dot--is-second, .dan-dot-button-v2__dot--is-third) {
+    scale: .97;
+}
+.breakdance .dan-dot-button-v2__bg {
+    grid-area: 1 / 1;
+    transition: scale var(--dots-duration) var(--smooth-ease), box-shadow .35s var(--smooth-ease);
+}
+.breakdance .dan-dot-button-v2__inner {
+    padding: var(--padding-top) var(--padding-right) var(--padding-bottom) calc(var(--padding-left) + var(--btn-color-blob-dot-size));
+    pointer-events: none;
+    grid-area: 1 / 1;
+    display: grid;
+    transition-delay: calc(var(--dots-duration) * 0.33);
+}
+.breakdance .dan-dot-button-v2__inner,
+.breakdance .dan-dot-button-v2__text {
+    transition: transform calc(var(--dots-duration) * 1.1) var(--smooth-ease);
+}
+.breakdance .dan-dot-button-v2__text {
+    z-index: 1;
+    grid-area: 1 / 1;
+}
+@media (hover: hover) and (pointer: fine) {
+    .breakdance .dan-dot-button-v2:is(:hover, :focus-visible) .dan-dot-button-v2__inner {
+        transform: skew(12deg);
+    }
+    .breakdance .dan-dot-button-v2:is(:hover, :focus-visible) .dan-dot-button-v2__text {
+        transform: translate3d(calc(var(--btn-color-blob-dot-size) * -1), 0, 0) skew(-12deg);
+    }
+    .breakdance .dan-dot-button-v2:is(:hover, :focus-visible) .dan-dot-button-v2__dot-wrap {
+        scale: 1;
+        translate: calc(100% - var(--btn-color-blob-dot-size) - 1.25em) 0 0;
+    }
+    .breakdance .dan-dot-button-v2:is(:hover, :focus-visible) .dan-dot-button-v2__dot {
+        transition: scale var(--dots-duration) var(--smooth-ease), translate var(--dots-duration) var(--smooth-ease), transform var(--dots-duration) calc(calc(var(--dots-duration) * 0.25) + (var(--index) * var(--dots-stagger))) var(--smooth-ease);
+        scale: .3;
+        transform: scale(calc(1/.3)) translate3d(0, .5em, 0);
+        translate: 0 -.5em 0;
+    }
+    .breakdance .dan-dot-button-v2:is(:hover, :focus-visible) .dan-dot-button-v2__dot:is(.dan-dot-button-v2__dot--is-second, .dan-dot-button-v2__dot--is-third) {
+        scale: .3;
+        transform: scale(calc(1/.315)) translate3d(0, .5em, 0);
+    }
+}

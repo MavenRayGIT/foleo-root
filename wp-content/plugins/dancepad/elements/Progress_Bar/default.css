@@ -1,0 +1,14 @@
+.breakdance .dan-progress-bar {
+    position: fixed;
+}
+.breakdance .dan-progress-bar .dan-progress-bar__inner {
+    width: 100%;
+    height: 0%;
+    position: absolute;
+}
+.breakdance .dan-progress-bar .dan-progress-bar__number {
+    position: absolute;
+
+    transform: translateY(var(--top));
+    top: 0;
+} 

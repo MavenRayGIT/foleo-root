@@ -1,0 +1,16 @@
+%%SELECTOR%%{
+	{{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+	{{ macros.spacing_padding_all(design.padding) }}
+	{{ macros.size(design.size) }}
+	{{ macros.borders(design.borders) }}
+	{{ macros.background(design.background) }}
+}
+
+{% if content.touch.disable_pointer_events %}
+@media (pointer: coarse) {
+  %%SELECTOR%% {
+    pointer-events: none;
+  }
+}
+{% endif %}

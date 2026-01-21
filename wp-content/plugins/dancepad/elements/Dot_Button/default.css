@@ -1,0 +1,109 @@
+.breakdance .dan-dot-button {
+    -webkit-user-select: none;
+    user-select: none;
+    transform-style: preserve-3d;
+
+    display: grid;
+    position: relative;
+    cursor: pointer;
+    width: fit-content;
+}
+.breakdance .dan-dot-button__bg {
+    grid-area: 1 / 1;
+    overflow: clip;
+}
+.breakdance .dan-dot-button__inner {
+    z-index: 1;
+    grid-area: 1 / 1;
+    align-items: center;
+    display: grid;
+    overflow: clip;
+}
+.breakdance .dan-dot-button__dot-wrap {
+    grid-area: 1 / 1;
+    display: grid;
+}
+.breakdance .dan-dot-button__dot {
+    height: var(--btn-color-tunes-dot-size);
+    width: var(--btn-color-tunes-dot-size);
+    border-radius: 50%;
+    grid-area: 1 / 1;
+    display: block;
+}
+.breakdance .dan-dot-button__dot--third {
+    rotate: 120deg;
+}
+.breakdance .dan-dot-button__dot--second {
+    rotate: 120deg;
+}
+.breakdance .dan-dot-button__dot--first {
+    rotate: 120deg;
+}
+.breakdance .dan-dot-button__text {
+    transform-origin: 0%;
+    grid-area: 1 / 2;
+    display: block;
+}
+/* color tunes */
+.breakdance .dan-dot-button {
+    --elastic-ease-out: linear(0, 0.007 0.9%, 0.026 1.8%, 0.113 4%, 0.605 12.3%, 0.807 16.5%, 0.947 20.9%, 0.992 23.2%, 1.024 25.6%, 1.045 28.7%, 1.051 32.3%, 1.011 47.8%, 1 55.7%, 1);
+    --smooth-ease: cubic-bezier(.32, .72, 0, 1);
+    --color-ease: cubic-bezier(.216, .62, .356, 1);
+    
+    transition: transform var(--dot-duration) var(--elastic-ease-out);
+    -webkit-tap-highlight-color: transparent;
+}
+.breakdance .dan-dot-button__bg {
+    transition: scale var(--dot-duration) var(--smooth-ease), background-color calc(var(--dot-duration) * 0.5) var(--color-ease);
+}
+.breakdance .dan-dot-button__dot-wrap {
+    transition: rotate calc(var(--dot-duration) * 1.5) var(--elastic-ease-out);
+}
+.breakdance .dan-dot-button__dot {
+    transition: rotate calc(var(--dot-duration) * 1.5) var(--elastic-ease-out), scale calc(var(--dot-duration) * 1.5) var(--elastic-ease-out), opacity calc(var(--dot-duration) * 0.5) ease-out;
+}
+.breakdance .dan-dot-button__dot:is(.dan-dot-button__dot--first, .dan-dot-button__dot--second, .dan-dot-button__dot--third) {
+    opacity: 0;
+    scale: .25;
+}
+
+.breakdance .dan-dot-button__text {
+    transition: translate calc(var(--text-duration) * 1.5) var(--elastic-ease-out), rotate calc(var(--text-duration) * 1.5) var(--elastic-ease-out), opacity calc(var(--text-duration) * 0.5) ease-out, color calc(var(--text-duration) * 0.5) var(--color-ease);
+}
+
+.breakdance .dan-dot-button__inner::after {
+    content: attr(data-text);
+    display: block;
+    grid-area: 1 / 2;
+    translate: -1em 2em 0;
+    rotate: 40deg;
+    opacity: 0;
+    transform-origin: left center;
+    transition: translate calc(var(--text-duration) * 1.5) var(--elastic-ease-out), rotate calc(var(--text-duration) * 1.5) var(--elastic-ease-out), opacity calc(var(--text-duration) * 0.5) ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .breakdance .dan-dot-button:is(:hover, :focus-visible) .dan-dot-button__dot {
+        rotate: -120deg;
+        opacity: 0;
+    }
+    
+    .breakdance .dan-dot-button:is(:hover, :focus-visible) .dan-dot-button__dot:is(.dan-dot-button__dot--first, .dan-dot-button__dot--second, .dan-dot-button__dot--third) {
+        transition-delay: calc(var(--index) * .032s);
+        rotate: 0deg;
+        scale: .99;
+        opacity: 1;
+    }
+
+    .breakdance .dan-dot-button:is(:hover, :focus-visible) .dan-dot-button__text {
+        rotate: -40deg;
+        translate: -1em -2em 0;
+        opacity: 0;
+    }
+    
+    .breakdance .dan-dot-button:is(:hover, :focus-visible) .dan-dot-button__inner::after {
+        rotate: 0deg;
+        translate: 0 0 0;
+        opacity: 1;
+    }
+}

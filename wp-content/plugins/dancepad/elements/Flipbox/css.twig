@@ -1,0 +1,14 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+    
+    perspective: {{ content.animation.perspective.style }}; /*intensidad de la perspectiva*/
+
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-flipbox__wrapper{
+    {{ macros.borders(design.front_back_styles.borders) }}
+    /*box shadow*/
+
+    --trans-duration: {{ content.animation.duration.style }};
+    --trans-easing: {{ content.animation.css_easing }};
+}

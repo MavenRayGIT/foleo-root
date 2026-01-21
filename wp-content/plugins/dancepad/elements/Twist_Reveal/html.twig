@@ -1,0 +1,7 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-twist-reveal__anchor') }}
+  <span class="dan-twist-reveal__inner">{{ content.content.text }}</span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class="dan-twist-reveal__inner">{{ content.content.text }}</span>
+{% endif %}

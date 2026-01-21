@@ -1,0 +1,25 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-dot-button__anchor') }}
+    <span class='dan-dot-button__bg'></span>
+    <span data-text='{{ content.content.swap_text }}' class='dan-dot-button__inner'>
+        <span class='dan-dot-button__dot-wrap'>
+            <span class='dan-dot-button__dot'></span>
+            <span style='--index: 2;' class='dan-dot-button__dot dan-dot-button__dot--third'></span>
+            <span style='--index: 1;' class='dan-dot-button__dot dan-dot-button__dot--second'></span>
+            <span style='--index: 0;' class='dan-dot-button__dot dan-dot-button__dot--first'></span>
+        </span>
+        <span class='dan-dot-button__text'>{{ content.content.text }}</span>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-dot-button__bg'></span>
+    <span data-text='{{ content.content.swap_text }}' class='dan-dot-button__inner'>
+        <span class='dan-dot-button__dot-wrap'>
+            <span class='dan-dot-button__dot'></span>
+            <span style='--index: 2;' class='dan-dot-button__dot dan-dot-button__dot--third'></span>
+            <span style='--index: 1;' class='dan-dot-button__dot dan-dot-button__dot--second'></span>
+            <span style='--index: 0;' class='dan-dot-button__dot dan-dot-button__dot--first'></span>
+        </span>
+        <span class='dan-dot-button__text'>{{ content.content.text }}</span>
+    </span>
+{% endif %}

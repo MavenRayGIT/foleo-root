@@ -1,0 +1,49 @@
+.breakdance .dan-prism-button-v2 {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    width: fit-content;
+
+    --elastic-ease-out: linear( 0, 0.5737 7.6%, 0.8382 11.87%, 0.9463 14.19%, 1.0292 16.54%, 1.0886 18.97%, 1.1258 21.53%, 1.137 22.97%, 1.1424 24.48%, 1.1423 26.1%, 1.1366 27.86%, 1.1165 31.01%, 1.0507 38.62%, 1.0219 42.57%, 0.9995 46.99%, 0.9872 51.63%, 0.9842 58.77%, 1.0011 81.26%, 1 );
+    --bounce-cubic-ease: cubic-bezier(.34, 1.44, .64, 1);
+    -webkit-tap-highlight-color: transparent;
+}
+.breakdance .dan-prism-button-v2__inner {
+    pointer-events: none;
+    transform-style: preserve-3d;
+    display: grid;
+    transition: transform var(--translate-duration) var(--bounce-cubic-ease);
+}
+.breakdance .dan-prism-button-v2__inner::before,
+.breakdance .dan-prism-button-v2__inner::after {
+    content: attr(data-text);
+    text-align: center;
+    grid-area: 1 / 1;
+    pointer-events: none;
+    align-content: center;
+    backface-visibility: hidden;
+    display: block;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+.breakdance .dan-prism-button-v2__inner::before {
+    translate: 0 0 var(--translate);
+}
+.breakdance .dan-prism-button-v2__text {
+    backface-visibility: hidden;
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    translate: 0 0 calc(var(--translate) * -1);
+    rotate: x -180deg;
+}
+.breakdance .dan-prism-button-v2__inner::after {
+    translate: 0 50% 0;
+    rotate: x -90deg;
+}
+@media (hover: hover) and (pointer: fine) {
+    .breakdance .dan-prism-button-v2:is(:hover, :focus-visible) .dan-prism-button-v2__inner {
+        transform: rotateX(180deg);
+    }
+}

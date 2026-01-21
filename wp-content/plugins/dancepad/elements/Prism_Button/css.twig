@@ -1,0 +1,30 @@
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    white-space: {{ content.content.white_space }};
+
+    --padding-prism-top: {{ design.padding.padding_top.style }}; /**/
+    --padding-prism-bottom: {{ design.padding.padding_bottom.style }}; /**/
+    --padding-prism-left: {{ design.padding.padding_left.style }}; /**/
+    --padding-prism-right: {{ design.padding.padding_right.style }}; /**/
+
+    --font-size: {{ design.shared_font_size.font_size.style }}; /*font-size*/
+
+    height: calc(var(--padding-prism-top) + var(--padding-prism-bottom) + var(--font-size));
+
+    --perspective: {{ content.animation.perspective.style }}; /**/
+
+    --transition-duration: {{ content.animation.duration.style }}; /**/
+    --ease: {{ content.animation.css_easing }}; /**/
+
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-prism-button__front-text {
+    {{ macros.typography(design.front_typography, globalSettings) }}
+    background-color: {{ design.front_background.background }};
+    {{ macros.borders(design.front_border) }}
+}
+%%SELECTOR%% .dan-prism-button__back-text {
+    {{ macros.typography(design.back_typography, globalSettings) }}
+    background-color: {{ design.back_background.background }};
+    {{ macros.borders(design.back_border) }}
+}

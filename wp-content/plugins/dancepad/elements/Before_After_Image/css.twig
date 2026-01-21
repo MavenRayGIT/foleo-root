@@ -1,0 +1,27 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+    {{ macros.borders(design.borders) }}
+
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-before-after-image__scroller{
+    width: {{ content.thumb.thumb_width.style }}; /**/
+    height: {{ content.thumb.thumb_height.style }}; /**/
+
+    --transition-duration: {{ content.animation.opacity_duration.style }};
+
+    opacity: {{ content.animation.opacity }}; /**/
+    background: {{ content.thumb.thumb_background }};
+
+    {{ macros.borders(content.thumb.thumb_border) }}
+
+    --color-line: {{ content.line_separator.line_color }};
+    --width: {{ content.line_separator.line_width.style }};
+}
+%%SELECTOR%% .dan-before-after-image__scroller--thumb{
+    --dimensions: {{ content.thumb.arrow_dimensions.style }};
+
+    fill: {{ content.thumb.arrow_color }}; /**/
+
+    column-gap: {{ content.thumb.arrows_gap.style }};
+}

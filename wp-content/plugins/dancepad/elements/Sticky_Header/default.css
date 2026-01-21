@@ -1,0 +1,41 @@
+html[dan-burger--body-toggled]{
+    overflow: hidden !important;
+}
+html[dan-burger--body-toggled] > body > .os-scrollbar-horizontal,
+html[dan-burger--body-toggled] > body > .os-scrollbar-vertical{
+    display: none !important;
+}
+.breakdance .dan-sticky-header{
+    width: 100%;
+    height: fit-content;
+
+    position: fixed; /*Sticky*/
+    top: 0;
+    left: 0;
+
+    transition: transform var(--transition-duration) var(--transition-easing), height var(--transition-duration) var(--transition-easing); /*duration, delay y ease*/
+}
+.breakdance .dan-sticky-header .dan-sticky-header__items-wrapper{
+    position: relative;
+
+    transition: background var(--nav-transition-duration) var(--nav-transition-easing);
+}
+.breakdance .dan-sticky-header.dan-sticky-header--scroll-start .dan-sticky-header__items-wrapper{
+    -webkit-backdrop-filter: blur(var(--filter));
+    backdrop-filter: blur(var(--filter));
+}
+.breakdance .dan-sticky-header[data-sticky=dan-sticky-header--sticky]{
+    transform: translateY(-100%);
+}
+
+.breakdance .dan-sticky-header .dan-sticky-header__items-wrapper--show{ /*responsive en el front*/
+    opacity: 1 !important; /*Animacion opacity*/
+    top: 0 !important; /*Animacion translateY*/
+    left: 0 !important; /*Animacion translateX*/
+
+    pointer-events: all !important;
+}
+
+.breakdance .dan-sticky-header .dan-burger{
+    display: none;
+}

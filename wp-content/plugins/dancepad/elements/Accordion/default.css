@@ -1,0 +1,26 @@
+.breakdance .dan-accordion{
+    overflow: hidden;
+}
+.breakdance .dan-accordion .dan-accordion-container{
+    width: 100%; /**/
+    overflow: hidden;
+    max-height: fit-content;
+}
+.breakdance .dan-accordion .dan-accordion-question { 
+    position: relative;
+    width: 100%;
+
+    cursor: pointer;
+}
+.breakdance .dan-accordion .dan-accordion-question-icon {
+    transition: var(--icon-transition-duration); /**/
+}
+.breakdance .dan-accordion .dan-accordion-question.dan-accordion-active > .dan-accordion-question-icon {
+    transform: rotate(var(--rotate-degree)); /**/
+}
+.breakdance .dan-accordion .dan-accordion-answercont {
+    max-height: 0;
+    overflow: hidden;
+
+    width: 100%;
+} 

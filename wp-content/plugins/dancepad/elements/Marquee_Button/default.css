@@ -1,0 +1,82 @@
+.breakdance .dan-marquee-button{
+    display: block;
+    width: fit-content;
+
+	pointer-events: auto;
+	border: none;
+	position: relative;
+}
+.breakdance .dan-marquee-button:not(:has(> a)),
+.breakdance .dan-marquee-button > a{
+    cursor: pointer;
+}
+.breakdance .dan-marquee-button .dan-marquee-button__anchor{
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-marquee-button::before,
+.breakdance .dan-marquee-button::after {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.breakdance .dan-marquee-button .dan-marquee-button__title {
+	display: inline-block;
+}
+.breakdance .dan-marquee-button:hover .dan-marquee-button__title {
+	opacity: 0;
+}
+.breakdance .dan-marquee-button .dan-marquee-button__marquee {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+    height: 100%;
+	overflow: hidden;
+	pointer-events: none;
+}
+.breakdance .dan-marquee-button .dan-marquee-button__units-wrapper {
+	width: fit-content;
+    height: 100%;
+
+	display: flex;
+    align-items: center;
+    justify-content: center;
+
+	position: relative;
+	--offset: 1em;
+	--move-initial: calc(-25% + var(--offset));
+	--move-final: calc(-50% + var(--offset));
+	transform: translate3d(var(--move-initial), 0, 0);
+	animation: dancepad_marquee linear infinite;
+	animation-play-state: paused;
+	opacity: 0;
+
+    --transition-duration: 0.4s; /*s*/
+}
+.breakdance .dan-marquee-button.dan-marquee-button--rtl .dan-marquee-button__units-wrapper{
+    --move-initial: calc(25% - var(--offset)); /* Ajuste del desplazamiento inicial */
+    --move-final: calc(50% - var(--offset)); /* Ajuste del desplazamiento final */
+}
+.breakdance .dan-marquee-button:hover .dan-marquee-button__units-wrapper {
+	animation-play-state: running;
+	opacity: 1;
+}
+.breakdance .dan-marquee-button .dan-marquee-button__unit {
+	text-align: center;
+	white-space: nowrap;
+}
+@keyframes dancepad_marquee {
+	0% {
+		transform: translate3d(var(--move-initial), 0, 0);
+	}
+	100% {
+		transform: translate3d(var(--move-final), 0, 0);
+	}
+} 

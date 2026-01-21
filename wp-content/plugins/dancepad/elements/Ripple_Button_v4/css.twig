@@ -1,0 +1,18 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    {{ macros.spacing_padding_all(design.padding) }}
+
+    --layer-1-color: {{ content.ripple_animation.first_color }};
+    --layer-2-color: {{ content.ripple_animation.second_color }};
+    --layers-transform-duration: {{ content.ripple_animation.duration.style }};
+    --delay-between-layers: {{ content.ripple_animation.stagger.style }};
+    --layers-transform-easing: {{ content.ripple_animation.css_easing }};
+    --line-transform-duration: {{ content.swap_animation.duration.style }};
+    --line-transform-easing: {{ content.swap_animation.css_easing }};
+}
+%%SELECTOR%% .dan-ripple-button-v4__bg{
+    --bg-color: {{ design.colors.background }};
+    {{ macros.borders(design.border) }}
+}

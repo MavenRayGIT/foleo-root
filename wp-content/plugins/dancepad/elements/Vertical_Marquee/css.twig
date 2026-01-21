@@ -1,0 +1,11 @@
+%%SELECTOR%%{
+    --gap: {{ design.dimensions.gap.style }}; /**/
+
+    width: {{ design.dimensions.width.style }};
+    max-width: {{ design.dimensions.max_width.style }};
+    height: {{ design.dimensions.height.style }};
+
+    --height: {{ design.edges.blur_height.style }};
+
+    {{ macros.spacing_margin_all(design.margin) }}
+}

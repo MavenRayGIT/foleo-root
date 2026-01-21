@@ -1,0 +1,31 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-dot-button-v2__anchor') }}
+    <span style='--parent-index: 2;' class='dan-dot-button-v2__dot-wrap'>
+        <span style='--index: 2;' class='dan-dot-button-v2__dot dan-dot-button-v2__dot--is-third'></span>
+    </span>
+    <span style='--parent-index: 1;' class='dan-dot-button-v2__dot-wrap'>
+        <span style='--index: 1;' class='dan-dot-button-v2__dot dan-dot-button-v2__dot--is-second'></span>
+    </span>
+    <span style='--parent-index: 0;' class='dan-dot-button-v2__dot-wrap'>
+        <span style='--index: 0;' class='dan-dot-button-v2__dot dan-dot-button-v2__dot--is-first'></span>
+    </span>
+    <span class='dan-dot-button-v2__bg'></span>
+    <span class='dan-dot-button-v2__inner'>
+        <span class='dan-dot-button-v2__text'>{{ content.content.text }}</span>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span style='--parent-index: 2;' class='dan-dot-button-v2__dot-wrap'>
+        <span style='--index: 2;' class='dan-dot-button-v2__dot dan-dot-button-v2__dot--is-third'></span>
+    </span>
+    <span style='--parent-index: 1;' class='dan-dot-button-v2__dot-wrap'>
+        <span style='--index: 1;' class='dan-dot-button-v2__dot dan-dot-button-v2__dot--is-second'></span>
+    </span>
+    <span style='--parent-index: 0;' class='dan-dot-button-v2__dot-wrap'>
+        <span style='--index: 0;' class='dan-dot-button-v2__dot dan-dot-button-v2__dot--is-first'></span>
+    </span>
+    <span class='dan-dot-button-v2__bg'></span>
+    <span class='dan-dot-button-v2__inner'>
+        <span class='dan-dot-button-v2__text'>{{ content.content.text }}</span>
+    </span>
+{% endif %}

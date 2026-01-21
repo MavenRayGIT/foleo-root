@@ -1,0 +1,17 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-anyside-button__anchor') }}
+    {% if content.animation.event == 'click' %}
+      <span class='dan-anyside-button__title'>{{ content.content.text }}</span>
+    {% else %}
+      <span class='dan-anyside-button__title'>{{ content.content.text }}</span>
+      <div class='dan-anyside-button__anyside-div'></div>
+    {% endif %}
+  {{ macros.linkEnd() }}
+{% else %}
+  {% if content.animation.event == 'click' %}
+    <span class='dan-anyside-button__title'>{{ content.content.text }}</span>
+  {% else %}
+    <span class='dan-anyside-button__title'>{{ content.content.text }}</span>
+    <div class='dan-anyside-button__anyside-div'></div>
+  {% endif %}
+{% endif %}

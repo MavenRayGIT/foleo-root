@@ -1,0 +1,29 @@
+%%SELECTOR%%{
+    --items-width: {{ design.items_styles.width.style }}; /*slider items width*/
+    --progress-height: {{ design.progress_styles.height.style }}; /*progress height*/
+
+    background-color: {{ design.colors.background }};
+
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_y(design.spacing_padding_y) }}
+}
+/*Slider*/
+%%SELECTOR%% .dan-parallax-slider__slider {
+    height: {{ design.items_styles.height.style }}; /*item height*/
+}
+%%SELECTOR%% .dan-parallax-slider__container {
+    gap: {{ design.items_spacing.gap.style }}; /*slider gap*/
+
+    {{ macros.spacing_padding_x(design.spacing_padding_x) }}
+}
+/*Progress*/
+%%SELECTOR%% .dan-parallax-slider__progress{
+    {{ macros.spacing_margin_all(design.progress_styles.margin) }} /*progress margin*/
+}
+%%SELECTOR%% .dan-parallax-slider__progress-line-wrap {
+    width: {{ design.progress_styles.width.style }}; /**/
+    background-color: {{ design.progress_styles.path_color }}; /*progress path color*/
+}
+%%SELECTOR%% .dan-parallax-slider__progress-line {
+    background-color: {{ design.progress_styles.line_color }}; /*progress line color*/
+}

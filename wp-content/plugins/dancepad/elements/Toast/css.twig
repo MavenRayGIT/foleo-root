@@ -1,0 +1,32 @@
+%%SELECTOR%%{
+    width: {{ design.toasts_container.width.style }};
+    height: {{ design.toasts_container.height.style }};
+    top: {{ design.toasts_container.top.style }};
+    right: {{ design.toasts_container.right.style }};
+    bottom: {{ design.toasts_container.bottom.style }};
+    left: {{ design.toasts_container.left.style }};
+    z-index: {{ design.toasts_container.zindex }};
+}
+%%SELECTOR%% .dan-toast__toast{
+    {{ macros.spacing_padding_all(design.toasts.padding) }}
+    {{ macros.background(design.toasts.background) }}
+    {{ macros.borders(design.toasts.borders) }}
+}
+%%SELECTOR%% .dan-toast__toast-body{
+    gap: {{ design.toasts.gap.style }};
+}
+%%SELECTOR%% .dan-toast__toast-title{
+    {{ macros.typography(design.title_and_message.title_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-toast__toast-message{
+    {{ macros.typography(design.title_and_message.message_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-toast__toast-close{
+    --dimensions: {{ design.close_button.dimensions.style }};
+    stroke: {{ design.close_button.stroke_color }};
+    stroke-width: {{ design.close_button.stroke_width.style }};
+
+    {{ macros.spacing_padding_all(design.close_button.padding) }}
+    {{ macros.borders(design.close_button.borders) }}
+    {{ macros.background(design.close_button.background) }}
+}

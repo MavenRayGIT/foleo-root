@@ -1,0 +1,199 @@
+.breakdance .dan-pixels-button {
+    z-index: 1;
+
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: var(--padding-left);
+    padding-right: var(--padding-right);
+
+    -webkit-user-select: none;
+    user-select: none;
+    place-content: center;
+
+    display: flex;
+    width: fit-content;
+    position: relative;
+    cursor: pointer;
+}
+.breakdance .dan-pixels-button__container {
+    z-index: 1;
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+    position: relative;
+    overflow: clip;
+}
+.breakdance .dan-pixels-button__background {
+    grid-template-columns: repeat(var(--pixels-cells), 1fr);
+    display: grid;
+    overflow: clip;
+    z-index: -1;
+    place-self: center;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 0;
+    padding-right: 0;
+    position: absolute;
+}
+.breakdance .dan-pixels-button .dan-pixels-button__pixel {
+    opacity: 0;
+}
+.breakdance .dan-pixels-button__pixel {
+    width: 100%;
+    padding-bottom: 0;
+    padding-right: 0;
+}
+.breakdance .dan-pixels-button::after {
+    content: "";
+    display: block;
+    position: absolute;
+}
+.breakdance .dan-pixels-button .dan-pixels-button__pixel {
+	opacity: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(1),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(1) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(14),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(14) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.083) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(6),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(6) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.167) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(7),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(7) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.25) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(16),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(16) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.333) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(8),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(8) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.417) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(11),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(11) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.5) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(17),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(17) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.583) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(13),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(13) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.667) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(4),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(4) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(15),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(15) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.083) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(24),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(24) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.167) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(5),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(5) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.25) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(20),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(20) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.333) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(10),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(10) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.417) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(26),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(26) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.5) var(--pixels-ease) normal forwards;
+  }
+
+.breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(19),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(19) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.583) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(22),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(22) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.667) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(21),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(21) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(12),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(12) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.083) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(3),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(3) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.167) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(23),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(23) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.25) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(2),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(2) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.333) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(25),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(25) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.417) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(18),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(18) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.5) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(9),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(9) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.583) var(--pixels-ease) normal forwards;
+  }
+
+  .breakdance .dan-pixels-button:hover .dan-pixels-button__pixel:nth-child(27),
+  .breakdance .dan-pixels-button:focus-visible .dan-pixels-button__pixel:nth-child(27) {
+    animation: pixel-bonanza-background var(--pixels-duration) calc(var(--pixels-duration) * 0.667) var(--pixels-ease) normal forwards;
+  }
+}
+@keyframes pixel-bonanza-background {
+	0% {
+        opacity: 0;
+	}
+	40% {
+        opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}

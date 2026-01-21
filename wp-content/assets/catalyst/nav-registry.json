@@ -1,0 +1,19 @@
+{
+  "binders": {
+    "core": [
+      {"label": "CX", "href": "/cx/"},
+      {"label": "TOFU", "href": "/tofu/"},
+      {"label": "PITCH", "href": "/pitch/"}
+    ],
+    "cx_pitch": [
+      {"label": "CX", "href": "/cx/"},
+      {"label": "PITCH", "href": "/pitch/"}
+    ]
+  },
+  "profiles": {
+    "default": { "mode": "binder", "binder": "core" },
+    "alison":  { "mode": "binder", "binder": "core" },
+    "tim":     { "mode": "binder", "binder": "cx_pitch" },
+    "pitch_only": { "mode": "standalone" }
+  }
+}

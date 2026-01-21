@@ -1,0 +1,21 @@
+.breakdance .dan-decode-reveal{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-decode-reveal .dan-decode-reveal__anchor{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-decode-reveal .dan-decode-reveal__inner{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-decode-reveal[data-flickering="1"]{
+    opacity: 0;
+} 

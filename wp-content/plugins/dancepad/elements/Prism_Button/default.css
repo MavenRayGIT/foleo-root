@@ -1,0 +1,84 @@
+.breakdance .dan-prism-button:not(:has(> a)),
+.breakdance .dan-prism-button > a{
+    z-index: 1;
+    display: block;
+
+    --padding-prism-top-bottom: calc(var(--padding-prism-top) + var(--padding-prism-bottom));
+    --padding-prism-top-bottom-aux: calc(var(--padding-prism-top-bottom) / -2);
+
+    line-height: 1;
+    font-size: var(--font-size);
+
+    width: fit-content;
+    height: calc(var(--padding-prism-top) + var(--padding-prism-bottom) + var(--font-size));
+
+    perspective: var(--perspective);
+    -webkit-perspective: var(--perspective);
+
+    cursor: pointer;
+}
+.breakdance .dan-prism-button .dan-prism-button__anchor{
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-prism-button .dan-prism-button__wrapper {
+    pointer-events: none;
+
+    display: grid;
+
+    position: relative;
+    width: fit-content;
+    height: 100%;
+
+    transform-origin: 50% 50% calc(var(--padding-prism-top-bottom-aux) + var(--font-size) / -2);
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform var(--transition-duration) var(--ease);
+}
+.breakdance .dan-prism-button[data-from="top"]:hover .dan-prism-button__wrapper {
+    transform: rotateX(-90deg);
+}
+.breakdance .dan-prism-button[data-from="bottom"]:hover .dan-prism-button__wrapper {
+    transform: rotateX(90deg);
+}
+
+.breakdance .dan-prism-button .dan-prism-button__front-text {
+    width: 100%;
+
+    padding-top: var(--padding-prism-top);
+    padding-bottom: var(--padding-prism-bottom);
+    padding-left: var(--padding-prism-left);
+    padding-right: var(--padding-prism-right);
+
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    position: relative;
+    z-index: 2;
+}
+.breakdance .dan-prism-button .dan-prism-button__back-text {
+    width: 100%;
+
+    padding-top: var(--padding-prism-top);
+    padding-bottom: var(--padding-prism-bottom);
+    padding-left: var(--padding-prism-left);
+    padding-right: var(--padding-prism-right);
+
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    position: relative;
+    left: 0;
+}
+.breakdance .dan-prism-button[data-from="top"] .dan-prism-button__back-text {
+    bottom: 200%;
+
+    transform-origin: center bottom;
+    transform: rotateX(90deg);
+}
+.breakdance .dan-prism-button[data-from="bottom"] .dan-prism-button__back-text {
+    top: 0%;
+
+    transform-origin: center top;
+    transform: rotateX(-90deg);
+} 

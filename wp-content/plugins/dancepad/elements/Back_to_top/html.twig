@@ -1,0 +1,25 @@
+{% set arrow = '' %}
+{% if design.arrow.type == 'type1' %}
+{% set arrow %}
+    <svg class='dan-back-to-top__arrow-svg' xmlns='http://www.w3.org/2000/svg' data-name='Layer 1' viewBox='0 0 24 24' id='arrow-up'>
+        <path class='dan-back-to-top__arrow-path' d='M17.71,11.29l-5-5a1,1,0,0,0-.33-.21,1,1,0,0,0-.76,0,1,1,0,0,0-.33.21l-5,5a1,1,0,0,0,1.42,1.42L11,9.41V17a1,1,0,0,0,2,0V9.41l3.29,3.3a1,1,0,0,0,1.42,0A1,1,0,0,0,17.71,11.29Z'/>
+    </svg>
+{% endset %}
+{% elseif design.arrow.type == 'type2' %}
+{% set arrow %}
+    <svg class='dan-back-to-top__arrow-svg' xmlns='http://www.w3.org/2000/svg' data-name='Layer 1' viewBox='0 0 512 512' id='arrow-up'>
+        <path class='dan-back-to-top__arrow-path' d='M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z'/>
+    </svg>
+{% endset %}
+{% elseif design.arrow.type == 'type3' %}
+{% set arrow %}
+    <svg class='dan-back-to-top__arrow-svg' xmlns='http://www.w3.org/2000/svg' data-name='Layer 1' viewBox='0 0 24 24' id='arrow-up'>
+        <path d='m12 6.414 7.293 7.293 1.414-1.414L12 3.586l-8.707 8.707 1.414 1.414L12 6.414z'/><path d='m3.293 18.293 1.414 1.414L12 12.414l7.293 7.293 1.414-1.414L12 9.586l-8.707 8.707z'/>
+    </svg>
+{% endset %}
+{% endif %}
+
+<svg class='dan-back-to-top__progress-circle dan-back-to-top__svg-content' width='100%' height='100%' viewBox='-1 -1 102 102'>
+    <path class='dan-back-to-top__circle-path' d='M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98'/>
+</svg>
+{{ arrow|raw }}

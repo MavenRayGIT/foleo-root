@@ -1,0 +1,141 @@
+.breakdance .dan-before-after-image-v2[data-flickering="1"] {
+    opacity: 0;
+}
+.breakdance .dan-before-after-image-v2 {
+    position: relative;
+    overflow: hidden;
+}
+.breakdance .dan-before-after-image-v2__slider {
+    position: absolute;
+    height: 100%;
+    z-index: 30;
+    pointer-events: none;
+
+    background: linear-gradient(to bottom, transparent 5%, var(--slider-color) 50%, transparent 95%);
+}
+.breakdance .dan-before-after-image-v2__handlebar {
+    position: absolute;
+
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    right: calc(50% - var(--handlebar-width) / 2);
+    top: calc(50% - var(--handlebar-height) / 2);
+    width: var(--handlebar-width);
+    height: var(--handlebar-height);
+}
+.breakdance .dan-before-after-image-v2__handlebar-dots{
+    width: var(--dimensions);
+    height: var(--dimensions);
+}
+.breakdance .dan-before-after-image-v2__sparkles-container {
+    position: absolute;
+    height: 75%;
+    top: calc(50% - 75% / 2);
+
+    width: var(--sparkles-width);
+    right: calc(var(--sparkles-width) * -1);
+    mask-image: radial-gradient(100px at left, var(--sparkles-color), transparent);
+    -webkit-mask-image: radial-gradient(100px at left, var(--sparkles-color), transparent);
+}
+.breakdance .dan-before-after-image-v2__glow-effect {
+    position: absolute;
+    height: 100%;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 20;
+
+    mask-image: radial-gradient(100px at left, white, transparent);
+    -webkit-mask-image: radial-gradient(100px at left, white, transparent);
+    background: linear-gradient(to right, var(--outer-glow-color), transparent);
+}
+.breakdance .dan-before-after-image-v2__glow-effect-2 {
+    position: absolute;
+    height: 50%;
+    top: calc(50% - 50% / 2);
+    left: 0;
+    z-index: 10;
+
+    mask-image: radial-gradient(50px at left, white, transparent);
+    -webkit-mask-image: radial-gradient(50px at left, white, transparent);
+    background: linear-gradient(to right, var(--inner-glow-color), transparent);
+}
+.breakdance .dan-before-after-image-v2__images {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 20;
+    overflow: hidden;
+}
+.breakdance .bde-div.dan-before-after-image-v2__first-image-container {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.breakdance .bde-div.dan-before-after-image-v2__second-image-container {
+    position: absolute;
+    inset: 0;
+    z-index: 19;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.breakdance .dan-before-after-image-v2__first-image,
+.breakdance .dan-before-after-image-v2__second-image {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+}
+.breakdance .dan-before-after-image-v2__second-image {
+    z-index: 19;
+}
+.breakdance .bde-div.dan-before-after-image-v2__first-image-content,
+.breakdance .bde-div.dan-before-after-image-v2__second-image-content {
+    position: absolute;
+    z-index: 99;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.breakdance .dan-before-after-image-v2__particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+
+    animation: float var(--duration) var(--easing) infinite;
+}
+.breakdance .dan-before-after-image-v2[data-disable-builder="1"] .dan-before-after-image-v2__particle {
+    animation: unset !important;
+}
+@keyframes float {
+    0% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}

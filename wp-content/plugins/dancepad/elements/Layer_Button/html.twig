@@ -1,0 +1,31 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-layer-button__anchor') }}
+    <div class='dan-layer-button__original-layer'>{{ content.content.text }}</div>
+    {% if content.content.enable_first_layer %}
+      <div class='dan-layer-button__first-layer'></div>
+    {% endif %}
+    {% if content.content.enable_second_layer %}
+      <div class='dan-layer-button__second-layer'></div>
+    {% endif %}
+    {% if content.content.enable_third_layer %}
+      <div class='dan-layer-button__third-layer'></div>
+    {% endif %}
+    {% if content.content.enable_fourth_layer %}
+      <div class='dan-layer-button__fourth-layer'></div>
+    {% endif %}
+  {{ macros.linkEnd() }}
+{% else %}
+  <div class='dan-layer-button__original-layer'>{{ content.content.text }}</div>
+  {% if content.content.enable_first_layer %}
+    <div class='dan-layer-button__first-layer'></div>
+  {% endif %}
+  {% if content.content.enable_second_layer %}
+    <div class='dan-layer-button__second-layer'></div>
+  {% endif %}
+  {% if content.content.enable_third_layer %}
+    <div class='dan-layer-button__third-layer'></div>
+  {% endif %}
+  {% if content.content.enable_fourth_layer %}
+    <div class='dan-layer-button__fourth-layer'></div>
+  {% endif %}
+{% endif %}

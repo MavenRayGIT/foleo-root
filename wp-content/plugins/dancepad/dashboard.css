@@ -1,0 +1,504 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+/*
+* Dancepad styles
+*/
+#wpcontent{
+    padding-right: 20px;
+}
+.dancepad-dashboard,
+.dancepad-dashboard *,
+.dancepad-dashboard::before,
+.dancepad-dashboard::after {
+    font-family: 'Inter Tight';
+    box-sizing: border-box;
+    margin: 0;
+}
+.dancepad-dashboard__shadow{
+    box-shadow:
+    0 .7640393972353194px .6876354575117875px -.7142857142857142px #00000008,
+    0 1.8716563941104685px 1.6844907546994214px -1.4285714285714284px #00000007,
+    0 3.546518390198762px 3.1918665511788853px -2.142857142857143px #00000007,
+    0 6.191293694486666px 5.572164325037998px -2.8571428571428568px #00000006,
+    0 10.775573805789753px 9.698016425210776px -3.5714285714285716px #00000006,
+    0 19.73674165202683px 17.763067486824145px -4.285714285714286px #00000004,
+    0 39px 35.099999999999994px -5px #0000;
+}
+.dancepad-dashboard{
+    margin-top: 20px;
+    width: 100%;
+    max-width: 992px;
+
+    display: grid;
+    grid-template-columns: 0.45fr 1fr;
+    gap: 10px;
+    padding: 8px;
+
+    border-radius: 24px;
+    background: #E8E8E8;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1) inset;
+}
+.dancepad-dashboard__sidebar{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.dancepad-dashboard__wrapper-plugintitle-changelog{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dancepad-dashboard__plugintitle{
+    font-size:  16px;
+    font-weight: 600;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.dancepad-dashboard__plugintitle::before{
+    content: '';
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-logo-1.png);
+    background-size: cover;
+}
+.dancepad-dashboard__changelog-link{
+    text-decoration: none;
+    color: #000 !important;
+    font-weight: 500;
+}
+.dancepad-dashboard__changelog-link:focus-within{
+    outline: unset !important;
+    border: unset !important;
+    box-shadow: unset !important;
+}
+.dancepad-dashboard__changelog-link:hover{
+    text-decoration: underline;
+}
+.dancepad-dashboard__license-heading-status{
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+}
+.dancepad-dashboard__license-heading{
+    font-size:  14px;
+    font-weight: 500;
+}
+.dancepad-dashboard__license-status{
+    position: absolute;
+    top: -8px;
+    left: 100%;
+
+    font-size:  11px;
+    font-weight: 500;
+}
+.dancepad-dashboard__license-status--inactive{
+    color: #FF0000;
+}
+.dancepad-dashboard__license-status--active{
+    color: #08B81C;
+}
+.dancepad-dashboard__license-input-submit{
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.dancepad-dashboard__license input.widefat{
+    all: unset;
+    box-sizing: border-box;
+    height: 32px;
+    width: 100%;
+    background: #fff;
+
+    font-size:  14px;
+    font-weight: 500;
+
+    padding: 0 12px;
+    border-radius: 7px;
+    box-shadow:
+    0 .7640393972353194px .6876354575117875px -.7142857142857142px #00000008,
+    0 1.8716563941104685px 1.6844907546994214px -1.4285714285714284px #00000007,
+    0 3.546518390198762px 3.1918665511788853px -2.142857142857143px #00000007,
+    0 6.191293694486666px 5.572164325037998px -2.8571428571428568px #00000006,
+    0 10.775573805789753px 9.698016425210776px -3.5714285714285716px #00000006,
+    0 19.73674165202683px 17.763067486824145px -4.285714285714286px #00000004,
+    0 39px 35.099999999999994px -5px #0000;
+}
+.dancepad-dashboard__license input.button{
+    all: unset;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 32px;
+    width: fit-content;
+    background: #000 !important;
+
+    color: #fff;
+    font-size:  14px;
+    text-align: center;
+    font-weight: 400;
+
+    padding: 0 12px;
+    border-radius: 7px;
+    box-shadow:
+    0 .7640393972353194px .6876354575117875px -.7142857142857142px #00000008,
+    0 1.8716563941104685px 1.6844907546994214px -1.4285714285714284px #00000007,
+    0 3.546518390198762px 3.1918665511788853px -2.142857142857143px #00000007,
+    0 6.191293694486666px 5.572164325037998px -2.8571428571428568px #00000006,
+    0 10.775573805789753px 9.698016425210776px -3.5714285714285716px #00000006,
+    0 19.73674165202683px 17.763067486824145px -4.285714285714286px #00000004,
+    0 39px 35.099999999999994px -5px #0000;
+
+    transition: background .2s ease-in-out;
+}
+.dancepad-dashboard__license input.button:hover{
+    background: #5751F0 !important;
+}
+.dancepad-dashboard__license input.button:focus-within{
+    outline: unset !important;
+    border: unset !important;
+    box-shadow: unset !important;
+}
+.dancepad-dashboard__license .submit:has(> input.button[value="Deactivate"]){
+    width: 100%;
+}
+.dancepad-dashboard__license input.button[value="Deactivate"]{
+    width: 100%;
+}
+.dancepad-dashboard__license input.button[value="Deactivate"]:hover{
+    background: #FF3A3A !important;
+}
+.dancepad-dashboard .notice{
+    margin-top: -10px;
+}
+
+/*
+* Sidebar Items
+*/
+.dancepad-dashboard__sidebar-item{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size:  14px;
+    font-weight: 500;
+
+    padding: 15px;
+    border-radius: 17px;
+    border: 1px solid transparent;
+    background: rgba(252, 252, 252, .50);
+
+    transition: background .2s linear;
+}
+.dancepad-dashboard__sidebar-item:hover{
+    background: #fff;
+    border: 1px solid transparent;
+}
+.dancepad-dashboard__sidebar-item--active{
+    background: #fff !important;
+    border: 1px solid transparent !important;
+    box-shadow:
+    0 .7640393972353194px .6876354575117875px -.7142857142857142px #00000008,
+    0 1.8716563941104685px 1.6844907546994214px -1.4285714285714284px #00000007,
+    0 3.546518390198762px 3.1918665511788853px -2.142857142857143px #00000007,
+    0 6.191293694486666px 5.572164325037998px -2.8571428571428568px #00000006,
+    0 10.775573805789753px 9.698016425210776px -3.5714285714285716px #00000006,
+    0 19.73674165202683px 17.763067486824145px -4.285714285714286px #00000004,
+    0 39px 35.099999999999994px -5px #0000;
+}
+.dancepad-dashboard__libraries-item{
+    background: transparent;
+    border: 1px dashed rgba(0, 0, 0, .21);
+}
+.dancepad-dashboard__sidebar-item-icon{
+    display: block;
+    width: 30px;
+    height: 30px;
+    background-size: cover;
+    border-radius: 9px;
+}
+.dancepad-dashboard__libraries-item-icon{
+    width: 40px;
+}
+.dancepad-dashboard__libraries-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-libraries.png);
+}
+.dancepad-dashboard__texts-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-texts-1.png);
+}
+.dancepad-dashboard__buttons-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-buttons-1.png);
+}
+.dancepad-dashboard__menus-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-menus-1.png);
+}
+.dancepad-dashboard__medias-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-medias-1.png);
+}
+.dancepad-dashboard__cursors-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-cursors.png);
+}
+.dancepad-dashboard__sliders-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-sliders-1.png);
+}
+.dancepad-dashboard__backgrounds-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-backgrounds-1.png);
+}
+.dancepad-dashboard__cores-item-icon{
+    background-image: url(https://dancepad.io/wp-content/uploads/2024/11/dancepad-cores-1.png);
+}
+
+/*
+* Content
+*/
+.dancepad-dashboard__content{
+    background: #fff;
+    border-radius: 17px;
+
+    height: 100%;
+    overflow: visible;
+    padding: 20px;
+}
+.dancepad-dashboard__content-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dancepad-dashboard__content-title{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size:  14px;
+    font-weight: 500;
+}
+.dancepad-dashboard__content-submit{
+    all: unset;
+    overflow: hidden;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 32px;
+    width: fit-content;
+    background: rgb(87, 81, 240) !important;
+
+    color: #fff;
+    font-size:  14px;
+    text-align: center;
+    font-weight: 400;
+
+    padding: 0 12px;
+    border-radius: 7px;
+
+    transition: background .2s ease-in-out;
+}
+.dancepad-dashboard__content-submit::after{
+    --border-bottom-width: 1px;
+    --border-color: rgba(51, 46, 209, 1);
+    --border-left-width: 1px;
+    --border-right-width: 1px;
+    --border-style: solid;
+    --border-top-width: 1px;
+    border-width: var(--border-top-width, 0) var(--border-right-width, 0) var(--border-bottom-width, 0) var(--border-left-width, 0);
+    border-color: var(--border-color, none);
+    border-style: var(--border-style, none);
+}
+.dancepad-dashboard__content-item{
+    display: none;
+}
+.dancepad-dashboard__content-item--active{
+    display: block;
+}
+
+/*
+* Content Items (Search, Switches, items...)
+*/
+.dancepad-dashboard__setting-item{
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+
+    border-radius: 7px;
+    padding: 0 10px;
+
+    background: #000;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    height: 32px;
+}
+.dancepad-dashboard__setting-item--hidden{
+    display: none;
+}
+.dancepad-dashboard__search-toggle-all{
+    display: flex;
+    gap: 8px;
+    margin-top: 35px;
+}
+.dancepad-dashboard__content-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+
+    margin-top: 27px;
+}
+[data-tab="libraries"] .dancepad-dashboard__content-grid{
+    margin-top: 35px;
+}
+.dancepad-dashboard__content-paragraph{
+    margin-top: 27px;
+    font-size: 14px;
+}
+a.dancepad-dashboard__setting-heading{
+    text-decoration: none;
+    color: white !important;
+}
+a.dancepad-dashboard__setting-heading:hover{
+    text-decoration: underline;
+}
+/*Search*/
+#searchInput{
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    align-items: center;
+
+    border-radius: 7px;
+    padding: 0 10px;
+
+    background: #000;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    width: 150px;
+    height: 32px;
+}
+#searchInput::placeholder{
+    color: white;
+}
+/*Switch styles*/
+.dancepad-dashboard__toggle-all{
+    width: 150px;
+}
+.dancepad-dashboard__setting-item input[type=checkbox]{
+    position: absolute !important;
+    height: 0 !important;
+    width: 0 !important;
+    visibility: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    border: 0 !important;
+}
+.dancepad-dashboard__setting-item label {
+    cursor: pointer;
+    text-indent: -9999px;
+    min-width: 34px;
+    height: 18px;
+    background: #8E9D96;
+    display: block;
+    border-radius: 100px;
+    position: relative;
+    margin: 0 !important;
+    transition: 0.2s ease-in-out;
+}
+.dancepad-dashboard__setting-item label:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 90px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+    transition: 0.2s ease-in-out;
+}
+.dancepad-dashboard__setting-item input:checked + label {
+    background: #31F499;
+}
+.dancepad-dashboard__setting-item input:checked + label:after {
+    left: calc(100% - 2px);
+    transform: translateX(-100%);
+}
+
+/*
+* License
+*/
+.dancepad-dashboard__license-wrapper{
+    width: 100%;
+}
+.spinner {
+    float: none;
+}
+.dancepad-dashboard__license-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    padding: 15px;
+    border: 1px dashed rgba(0,0,0,.21);
+    border-radius: 17px;
+}
+label {
+    display: block;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+label[hidden] {
+    display: none;
+}
+p.submit {
+    margin: 0;
+    padding: 0;
+}
+
+/*Hide license on playground*/
+#wpcontent:has(a.ab-item[href*="instawp.xyz"]) .dancepad-dashboard__license{
+    display: none !important;
+}
+
+/*
+* Responsive
+*/
+@media (max-width: 1024px){
+    .dancepad-dashboard__content-grid{
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (max-width: 837px){
+    .dancepad-dashboard{
+        grid-template-columns: 1fr;
+    }
+    .dancepad-dashboard__content-grid{
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+@media (max-width: 667px){
+    .dancepad-dashboard__content-grid{
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (max-width: 497px){
+    .dancepad-dashboard__content-grid{
+        grid-template-columns: 1fr;
+    }
+    .dancepad-dashboard__search-toggle-all{
+        flex-direction: column;
+    }
+    #searchInput,
+    .dancepad-dashboard__toggle-all{
+        width: 100%;
+    }
+}

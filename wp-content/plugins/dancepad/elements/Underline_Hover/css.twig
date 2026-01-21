@@ -1,0 +1,18 @@
+%%SELECTOR%%{
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-underline-hover__inner{
+    --width: {{ content.underline.initial_width.style }};
+    --height: {{ content.underline.thickness.style }};
+    --bottom-distance: {{ content.underline.bottom_distance.style }};
+    --duration: {{ content.underline.duration.style }};
+    --ease: {{ content.underline.css_easing }};
+    --background: {{ content.underline.color }};
+
+    {{ macros.typography(design.typography, globalSettings) }}
+}

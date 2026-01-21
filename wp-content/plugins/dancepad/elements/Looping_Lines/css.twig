@@ -1,0 +1,15 @@
+%%SELECTOR%% {
+  --line-height: {{ content.lines.line_height.style }}; /**/
+  --lines-to-show: {{ content.lines.lines_to_show }}; /**/
+  --align-lines: {{ content.lines.align }}; /**/
+  --fade-color: {{ content.lines.fade_color }}; /**/
+
+  gap: {{ content.content.gap.style }};
+
+  {{ macros.typography(design.typography, globalSettings) }}
+  {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}

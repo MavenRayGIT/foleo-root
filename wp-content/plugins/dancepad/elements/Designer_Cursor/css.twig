@@ -1,0 +1,34 @@
+%%SELECTOR%%.dan-designer-cursor--animation-enabled{
+    --floating-duration: {{ content.floating_animation.duration.style }};
+    --floating-easing: {{ content.floating_animation.css_easing }};
+}
+/*attached to cursor*/
+%%SELECTOR%%.dan-designer-cursor--attached {
+    z-index: {{ design.spacing.zindex }}; /**/
+
+    --scale: {{ content.display_animation.scale }}; /**/
+    --duration: {{ content.display_animation.duration.style }}; /**/
+    --easing: {{ content.display_animation.css_easing }}; /**/
+}
+%%SELECTOR%%.dan-designer-cursor--relative{
+    top: {{ design.spacing.top.style }};
+    left: {{ design.spacing.left.style }};
+    z-index: {{ design.spacing.zindex }}; /**/
+}
+/*shared pointer styles*/
+%%SELECTOR%% .dan-designer-cursor__pointer {
+    --dimensions: {{ design.pointer_icon.dimensions.style }}; /**/
+    --rotate: {{ design.pointer_icon.rotate.style }}; /**/
+    stroke: {{ design.pointer_icon.stroke_color }}; /**/
+    stroke-width: {{ design.pointer_icon.stroke_width.style }}; /**/
+    fill: {{ design.pointer_icon.fill }}; /**/
+}
+%%SELECTOR%% .dan-designer-cursor__pointer-name {
+    top: {{ design.pointer_name.top.style }}; /**/
+    left: {{ design.pointer_name.left.style }}; /**/
+    background-color: {{ design.pointer_name.background }}; /**/
+
+    {{ macros.typography(design.pointer_name.typography, globalSettings) }}
+    {{ macros.borders(design.pointer_name.borders) }}
+    {{ macros.spacing_padding_all(design.pointer_name.padding) }}
+}

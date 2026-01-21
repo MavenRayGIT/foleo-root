@@ -1,0 +1,20 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+    {{ macros.background(design.background) }}
+
+    {{ macros.layout(design.layout) }}
+    {{ macros.borders(design.borders) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-border-beam__mask{
+    --size: {{ content.beam.size }}; /*style*/
+    --anchor: {{ content.beam.anchor }}; /*style*/
+    --border-width: {{ content.beam.height }}; /*style*/
+    --color-from: {{ content.beam.color_from }}; /*style*/
+    --color-to: {{ content.beam.color_to }}; /*style*/
+    --duration: {{ content.beam.duration.style }}; /*anim*/
+    --easing: {{ content.beam.css_easing }}; /*anim*/
+
+    {{ macros.borders(design.borders) }}
+}

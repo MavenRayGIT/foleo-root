@@ -1,0 +1,40 @@
+.breakdance .dan-border-beam{
+    position: relative;
+
+    overflow: hidden;
+}
+.breakdance .dan-border-beam .dan-border-beam__mask{
+    -webkit-mask: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+    mask: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+
+    border: calc(var(--border-width)* 1px) solid transparent;
+
+    -webkit-mask-composite: source-in, xor !important;
+    mask-composite: intersect !important;
+
+    -webkit-mask-clip: padding-box, border-box !important;
+    mask-clip: padding-box, border-box !important;
+
+    inset: 0;
+    position: absolute;
+    pointer-events: none;
+}
+.breakdance .dan-border-beam .dan-border-beam__mask::after{
+    content: "";
+    offset-path: rect(0 auto auto 0 round calc(var(--size)* 1px));
+    offset-anchor: calc(var(--anchor)* 1%) 50%;
+    background: linear-gradient(to left, var(--color-from), var(--color-to), transparent);
+
+    animation: border-beam calc(var(--duration)) infinite var(--easing);
+
+    width: calc(var(--size)* 1px);
+    aspect-ratio: 1 / 1;
+    position: absolute;
+
+    max-height: 100%;
+}
+@keyframes border-beam{
+    100% {
+        offset-distance: 100%;
+    }
+} 

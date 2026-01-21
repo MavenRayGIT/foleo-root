@@ -1,0 +1,27 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --btn-color-blob-dot-size: {{ design.dots.size.style }};
+    --wrap-dot-dimensions: {{ design.dots.wrap_size.style }};
+    --dot-left: {{ design.dots.left.style }};
+
+    --dot-duration: {{ content.dots_animation.duration.style }};
+    --dots-stagger: {{ content.dots_animation.stagger.style }};
+}
+%%SELECTOR%% .dan-dot-button-v3__text{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-dot-button-v3__bg{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-dot-button-v3__dot--is-first{
+    background-color: {{ design.dots.first_dot_color }};
+}
+%%SELECTOR%% .dan-dot-button-v3__dot--is-second{
+    background-color: {{ design.dots.second_dot_color }}
+}
+%%SELECTOR%% .dan-dot-button-v3__dot--is-third{
+    background-color: {{ design.dots.third_dot_color }}
+}

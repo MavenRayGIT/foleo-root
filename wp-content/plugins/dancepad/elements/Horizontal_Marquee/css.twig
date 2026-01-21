@@ -1,0 +1,14 @@
+%%SELECTOR%%{
+    --rotate: {{ design.rotation.rotate.style }};
+
+    --color: {{ design.edges.blur_color }};
+    --width: {{ design.edges.blur_width.style }};
+
+    width: {{ design.dimensions.width.style }};
+    height: {{ design.dimensions.height.style }};
+
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-horizontal-marquee__nestable{ 
+    width: {{ design.dimensions.gap.style }}; /*gap necesario*/
+}

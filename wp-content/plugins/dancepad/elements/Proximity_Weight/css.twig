@@ -1,0 +1,11 @@
+%%SELECTOR%%{
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+
+    --duration: {{ content.animation.duration.style }};
+    --easing: {{ content.animation.css_easing }};
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}

@@ -1,0 +1,7 @@
+{% if content.content.link %}
+    {{ macros.linkStart(content.content.link, 'dan-hotspot__anchor') }}
+        %%CHILDREN%%
+    {{ macros.linkEnd() }}
+{% else %}
+    %%CHILDREN%%
+{% endif %}

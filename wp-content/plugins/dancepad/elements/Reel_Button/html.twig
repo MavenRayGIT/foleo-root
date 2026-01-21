@@ -1,0 +1,21 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-reel-button__anchor') }}
+    <span class='dan-reel-button__bg'></span>
+    <span class='dan-reel-button__container'>
+        <span class='dan-reel-button__inner'>
+            <span class='dan-reel-button__text'>{{ content.content.text }}</span>
+        </span>
+        <div data-text='{{ content.content.text }}' class='dan-reel-button__inner-hover'></div>
+        <div data-text='{{ content.content.text }}' class='dan-reel-button__inner-hover dan-reel-button__inner-hover--is-second'></div>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-reel-button__bg'></span>
+    <span class='dan-reel-button__container'>
+        <span class='dan-reel-button__inner'>
+            <span class='dan-reel-button__text'>{{ content.content.text }}</span>
+        </span>
+        <div data-text='{{ content.content.text }}' class='dan-reel-button__inner-hover'></div>
+        <div data-text='{{ content.content.text }}' class='dan-reel-button__inner-hover dan-reel-button__inner-hover--is-second'></div>
+    </span>
+{% endif %}

@@ -1,0 +1,17 @@
+%%SELECTOR%%{
+    perspective: {{ content.animation.perspective.style }}; /*intensidad de la perspectiva*/
+
+    {{ macros.size(design.size) }}
+
+    {{ macros.borders(design.borders) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-accordion-question { 
+    --icon-transition-duration: {{ content.icon_animation.duration.style }};
+}
+%%SELECTOR%% .dan-accordion-question.dan-accordion-active > .dan-accordion-question-icon {
+    --rotate-degree: {{ content.icon_animation.icon_rotation.style }};
+}
+%%SELECTOR%% .dan-accordion-answercont {
+    transition: {{ content.expand_animation.duration.style }}; /**/
+}

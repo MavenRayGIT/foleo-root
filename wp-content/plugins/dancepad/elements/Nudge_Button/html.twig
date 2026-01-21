@@ -1,0 +1,17 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-nudge-button__anchor') }}
+    <div class='dan-nudge-button__nudge'>
+        <div class='dan-nudge-button__nudge-children'>
+            %%CHILDREN%%
+        </div>
+    </div>
+    <div class='dan-nudge-button__button'>{{ content.content.text }}</div>
+  {{ macros.linkEnd() }}
+{% else %}
+    <div class='dan-nudge-button__nudge'>
+        <div class='dan-nudge-button__nudge-children'>
+            %%CHILDREN%%
+        </div>
+    </div>
+    <div class='dan-nudge-button__button'>{{ content.content.text }}</div>
+{% endif %}

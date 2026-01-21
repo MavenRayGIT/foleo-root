@@ -1,0 +1,13 @@
+%%SELECTOR%%{
+    width: {{ design.dimensions.width.style }}; /*width*/
+    max-width: {{ design.dimensions.max_width.style }};
+
+    --divider-height: {{ design.dimensions.height.style }}; /*height*/
+    --drag-height: {{ content.animation.drag_distance.style }}; /*drag height anim*/
+    --drop-height: {{ content.animation.drop_distance.style }}; /*drop height anim*/
+
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-interactive-divider__path {
+    stroke: {{ design.colors.color }}; /*color*/
+}

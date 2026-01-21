@@ -1,0 +1,10 @@
+{% for item in content.toasts.toasts %}
+<div class="dan-toast__toast-data" data-title="{{ item.title }}"
+    data-message="{{ item.message }}"
+    data-event="{{ item.event }}"
+    data-show-time="{{ item.show_time_pageload_.style }}"
+    {% if item.trigger_click_ %}
+        data-trigger="{{ item.trigger_click_ }}"
+    {% endif %}
+></div>
+{% endfor %}

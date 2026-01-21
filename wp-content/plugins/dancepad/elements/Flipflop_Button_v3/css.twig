@@ -1,0 +1,20 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.flip_typography, globalSettings) }}
+
+    --perspective: {{ content.flipflop_animation.perspective.style }};
+    --rotation: {{ content.flipflop_animation.rotation.style }};
+    --flipflop-duration: {{ content.flipflop_animation.duration.style }};
+}
+%%SELECTOR%%::after{
+    {{ macros.typography(design.flop_typography, globalSettings) }}
+    {{ macros.background(design.flop_background) }}
+    {{ macros.borders(design.flop_border) }}
+}
+%%SELECTOR%% .dan-flipflop-button-v3__text{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-flipflop-button-v3__background{
+    {{ macros.background(design.flip_background) }}
+    {{ macros.borders(design.flip_border) }}
+}

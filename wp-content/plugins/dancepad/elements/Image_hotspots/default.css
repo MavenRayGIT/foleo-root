@@ -1,0 +1,10 @@
+.breakdance .dan-image-hotspots{
+    position: relative;
+}
+.breakdance .dan-image-hotspots .breakdance-image-object{
+    width: 100%;
+    height: 100%;
+}
+.breakdance .dan-image-hotspots[data-flickering="1"]{
+    opacity: 0;
+}

@@ -1,0 +1,69 @@
+.breakdance .dan-designer-cursor{
+    display: flex;
+}
+.breakdance .dan-designer-cursor.dan-designer-cursor--animation-enabled[data-direction="horizontal"].dan-designer-cursor--relative{
+    animation: floatingX var(--floating-duration) var(--floating-easing) infinite;
+}
+.breakdance .dan-designer-cursor.dan-designer-cursor--animation-enabled[data-direction="vertical"].dan-designer-cursor--relative{
+    animation: floatingY var(--floating-duration) var(--floating-easing) infinite;
+}
+@keyframes floatingX {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-10px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+@keyframes floatingY {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+/*attached to cursor*/
+.breakdance .dan-designer-cursor.dan-designer-cursor--attached {
+    position: fixed;
+    pointer-events: none;
+    opacity: 0;
+
+    transform: scale(var(--scale));
+    transition: opacity var(--duration) var(--easing), transform var(--duration) var(--easing);
+}
+.breakdance .dan-designer-cursor.dan-designer-cursor--attached.active {
+    opacity: 1;
+    transform: scale(1);
+}
+.breakdance .dan-designer-cursor.dan-designer-cursor--relative{
+    position: absolute;
+    pointer-events: none;
+}
+/*shared pointer styles*/
+.breakdance .dan-designer-cursor .dan-designer-cursor__pointer {
+    min-height: unset !important;
+    min-width: unset !important;
+
+    width: var(--dimensions);
+    height: var(--dimensions);
+    transform: translate(-50%, -50%) rotate(var(--rotate));
+}
+.breakdance .dan-designer-cursor .dan-designer-cursor__pointer-name {
+    position: absolute;
+    white-space: nowrap;
+}
+
+/*non attached to cursor*/
+.breakdance .dan-designer-cursor-relative-parent{
+    position: relative;
+}
+.breakdance .dan-designer-cursor[data-flickering="1"]{
+    opacity: 0;
+} 

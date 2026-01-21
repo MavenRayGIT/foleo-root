@@ -1,0 +1,19 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --ripple-translate: {{ content.ripple_animation.translate.style }};
+    --ripple-duration: {{ content.ripple_animation.duration.style }};
+    --ripple-delay: {{ content.ripple_animation.delay.style }};
+}
+%%SELECTOR%%::after{
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.typography(design.swap_typography, globalSettings) }}
+    {{ macros.borders(design.border) }}
+    background: {{ content.ripple_animation.color }};
+}
+%%SELECTOR%% .dan-ripple-button-v6__inner{
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}

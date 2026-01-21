@@ -1,0 +1,38 @@
+.breakdance .dan-back-to-top {
+	position: fixed;
+
+	cursor: pointer;
+
+    box-shadow: inset 0 0 0 2px;
+	z-index: 10000;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(15px) !important;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.breakdance .dan-back-to-top.dan-back-to-top__active-progress {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0) !important;
+}
+.breakdance .dan-back-to-top .dan-back-to-top__arrow-svg {
+	position: absolute;
+
+    height: 100%;
+
+	cursor: pointer;
+	display: block;
+	z-index: 1;
+}
+.breakdance .dan-back-to-top .dan-back-to-top__circle-path {
+	fill: none;
+
+	stroke-width: 4.5;
+	box-sizing:border-box;
+}
+.breakdance .dan-back-to-top[data-flickering="1"]{
+    opacity: 0;
+} 

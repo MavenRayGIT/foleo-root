@@ -1,0 +1,27 @@
+.dan-drawer .dan-drawer__drawer{
+    --drawer-duration: {{ content.drawer_animation.duration.style }};
+    --drawer-easing: {{ content.drawer_animation.css_easing }};
+
+    z-index: {{ design.dimensions.zindex }}; /*zIndex*/
+    width: {{ design.dimensions.width.style }};
+    height: {{ design.dimensions.height.style }};
+
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+}
+.dan-drawer .dan-drawer__overlay{
+    --overlay-duration: {{ content.backdrop_animation.duration.style }};
+    --overlay-easing: {{ content.backdrop_animation.css_easing }};
+    z-index: {{ design.backdrop.zindex }}; /*zIndex*/
+    background-color: {{ design.backdrop.background }}; /*background*/
+}
+.dan-drawer .dan-drawer__drag{ /*elemento en nestable*/
+    width: {{ design.mini_drag.width.style }};
+    height: {{ design.mini_drag.height.style }};
+
+    background-color: {{ design.mini_drag.background }};
+
+    {{ macros.spacing_margin_all(design.mini_drag.margin) }}
+}

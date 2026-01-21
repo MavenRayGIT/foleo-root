@@ -1,0 +1,13 @@
+.breakdance .dan-particles{
+    position: relative;
+}
+.breakdance .dan-particles > *{
+    position: relative;
+    z-index: 1;
+}
+.breakdance .dan-particles canvas{
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+} 

@@ -1,0 +1,85 @@
+.breakdance .dan-marquee-button-v2{
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+    height: fit-content;
+    
+    padding-left: 0; /*padding*/
+    padding-right: 0; /*padding*/
+
+    transition: background var(--background-duration) var( --background-easing) var(--background-delay); /*animation*/
+}
+.breakdance .dan-marquee-button-v2:not(:has(> a)),
+.breakdance .dan-marquee-button-v2 > a{
+    cursor: pointer;
+}
+.breakdance .dan-marquee-button-v2 .dan-marquee-button-v2__anchor{
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-marquee-button-v2 .dan-marquee-button-v2__wrapper{
+    overflow: hidden;
+    position: relative;
+}
+
+/*Marquee*/
+.breakdance .dan-marquee-button-v2 .dan-marquee-button-v2__marquee{
+    position: relative;
+    display: flex;
+
+    transition: translate var(--marquee-translate-duration) var(--marquee-translate-easing) var(--marquee-translate-delay); /*animation*/
+
+    animation: marquee-button-v2-animation var(--marquee-speed) var(--marquee-easing) 0s infinite; /*animation*/
+}
+.breakdance .dan-marquee-button-v2 .dan-marquee-button-v2__marquee > span:nth-child(2){
+    position: absolute;
+    left: calc(100% + var(--gap)); /*15px is the gap between titles*/
+}
+@keyframes marquee-button-v2-animation {
+    100% {
+        transform: translateX(calc(-100% - var(--gap))); /*15px is the gap between titles*/
+    }
+}
+
+/*Swap*/
+.breakdance .dan-marquee-button-v2 .dan-marquee-button-v2__swap{
+    position: absolute;
+    top: 0;
+    left: 50%;
+
+    height: 100%;
+    transform: translateX(-50%);
+}
+.breakdance .dan-marquee-button-v2[data-type=lines] .dan-marquee-button-v2__swap .dan-marquee-button-v2__swap-line,
+.breakdance .dan-marquee-button-v2[data-type=words] .dan-marquee-button-v2__swap .dan-marquee-button-v2__swap-word,
+.breakdance .dan-marquee-button-v2[data-type=chars] .dan-marquee-button-v2__swap .dan-marquee-button-v2__swap-letter{
+    position: relative;
+
+    top: 100%;
+    transition: top var(--swap-duration) var(--swap-easing) var(--swap-delay);
+}
+
+/*Hover*/
+.breakdance .dan-marquee-button-v2:hover{
+    background: var(--background-hover) !important;
+}
+.breakdance .dan-marquee-button-v2:hover .dan-marquee-button-v2__marquee{
+    translate: 0 -100%;
+    opacity: 0;
+}
+.breakdance .dan-marquee-button-v2[data-type=lines]:hover .dan-marquee-button-v2__swap .dan-marquee-button-v2__swap-line,
+.breakdance .dan-marquee-button-v2[data-type=words]:hover .dan-marquee-button-v2__swap .dan-marquee-button-v2__swap-word,
+.breakdance .dan-marquee-button-v2[data-type=chars]:hover .dan-marquee-button-v2__swap .dan-marquee-button-v2__swap-letter{
+    top: 0;
+}
+.breakdance .dan-marquee-button-v2[data-flickering="1"]{
+    opacity: 0;
+} 

@@ -1,0 +1,23 @@
+%%SELECTOR%%{
+    --arrow-duration: {{ content.animation.duration.style }};
+    --arrows-blur-stagger: {{ content.animation.stagger.style }};
+    --arrow-ease: {{ content.animation.css_easing }};
+
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --left: {{ design.arrow_styles.duplicated_arrow_left.style }};
+}
+%%SELECTOR%% .dan-arrow-button-v5__container{
+    {{ macros.spacing_all(design.padding) }}
+  {{ macros.simpleLayout(design.layout, breakpoint) }}
+}
+%%SELECTOR%% .dan-arrow-button-v5__background{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-arrow-button-v5__icon-item{
+    --dimensions: {{ design.arrow_styles.dimensions.style }};
+    fill: {{ design.arrow_styles.color }};
+    stroke: {{ design.arrow_styles.color }};
+}

@@ -1,0 +1,19 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-ripple-button-v3__anchor') }}
+    <div class='dan-ripple-button-v3__wrapper'>
+      <div class='dan-ripple-button-v3__title--top'>{{ content.content.top_ripple_text }}</div>
+      <div class='dan-ripple-button-v3__bottom'>
+          <div class='dan-ripple-button-v3__title--bottom'>{{ content.content.bottom_ripple_text }}</div>
+          <div class='dan-ripple-button-v3__mask'></div>
+      </div>
+    </div>
+  {{ macros.linkEnd() }}
+{% else %}
+  <div class='dan-ripple-button-v3__wrapper'>
+    <div class='dan-ripple-button-v3__title--top'>{{ content.content.top_ripple_text }}</div>
+    <div class='dan-ripple-button-v3__bottom'>
+        <div class='dan-ripple-button-v3__title--bottom'>{{ content.content.bottom_ripple_text }}</div>
+        <div class='dan-ripple-button-v3__mask'></div>
+    </div>
+  </div>
+{% endif %}

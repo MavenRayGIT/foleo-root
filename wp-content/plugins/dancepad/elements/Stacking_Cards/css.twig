@@ -1,0 +1,10 @@
+%%SELECTOR%%{
+  height: {{ content.settings.height.style }};
+
+  --offset: {{ content.animation.top.style }}; /**/
+
+  {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-stacking-cards__card{
+  {{ macros.size(design.cards_dimensions) }}
+}

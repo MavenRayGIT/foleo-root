@@ -1,0 +1,13 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-bubbles-button__anchor') }}
+<div class='dan-bubbles-button__wrapper'>
+    <span class='dan-bubbles-button__label'>{{ content.content.text }}</span>
+    %%CHILDREN%%
+</div>
+  {{ macros.linkEnd() }}
+{% else %}
+<div class='dan-bubbles-button__wrapper'>
+    <span class='dan-bubbles-button__label'>{{ content.content.text }}</span>
+    %%CHILDREN%%
+</div>
+{% endif %}

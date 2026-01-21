@@ -1,0 +1,24 @@
+%%SELECTOR%%{
+    white-space: {{ content.content.white_space }};
+
+    background: {{ design.button_background.background }}; /**/
+
+    {{ macros.typography(design.button_typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-marquee-button__units-wrapper {
+    gap: {{ content.animation.repeats_gap.style }};
+
+    animation-duration: {{ content.animation.marquee_speed.style }} !important; /*s*/
+}
+%%SELECTOR%%:hover .dan-marquee-button__units-wrapper {
+	transition-duration: {{ content.animation.fade_duration.style }};
+}
+%%SELECTOR%% .dan-marquee-button__unit {
+    {{ macros.typography(design.marquee_typography, globalSettings) }}
+}

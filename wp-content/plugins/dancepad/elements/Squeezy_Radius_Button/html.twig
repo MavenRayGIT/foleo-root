@@ -1,0 +1,13 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-squeezy-radius-button__anchor') }}
+    <span class='dan-squeezy-radius-button__container'>
+        <span class='dan-squeezy-radius-button__text'>{{ content.content.text }}</span>
+    </span>
+    <span class='dan-squeezy-radius-button__background dan-squeezy-radius-button__background--bubblegum-dash'></span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-squeezy-radius-button__container'>
+        <span class='dan-squeezy-radius-button__text'>{{ content.content.text }}</span>
+    </span>
+    <span class='dan-squeezy-radius-button__background dan-squeezy-radius-button__background--bubblegum-dash'></span>
+{% endif %}

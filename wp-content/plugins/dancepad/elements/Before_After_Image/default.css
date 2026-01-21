@@ -1,0 +1,91 @@
+.breakdance .dan-before-after-image[data-flickering="1"]{
+    opacity: 0;
+}
+.breakdance .dan-before-after-image{
+    overflow: hidden;
+    position: relative;
+    transform: rotate(0deg);
+}
+.breakdance .dan-before-after-image .dan-before-after-image *::selection{
+    background: transparent;
+}
+.breakdance .dan-before-after-image .breakdance-image-object{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: unset;
+    outline: unset;
+}
+.breakdance .dan-before-after-image .dan-before-after-image__before,
+.breakdance .dan-before-after-image .dan-before-after-image__after {
+    width:100%;
+    height:100%;
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top:0;
+    left:0;
+    pointer-events:none;
+    overflow: hidden;
+}
+.breakdance .dan-before-after-image .dan-before-after-image__before{
+    position: relative;
+}
+.breakdance .dan-before-after-image .dan-before-after-image__scroller{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 15px;
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    transition: opacity var(--transition-duration);
+    pointer-events:auto;
+    cursor: pointer;
+}
+.breakdance .dan-before-after-image .dan-before-after-image__scroller:hover{
+    opacity:1 !important;
+}
+.breakdance .dan-before-after-image .dan-before-after-image__scrolling{
+    pointer-events:none;
+    opacity:1 !important;
+}
+.breakdance .dan-before-after-image .dan-before-after-image__scroller--thumb{
+    width: 100%; /**/
+    height: 100%; /**/
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.breakdance .dan-before-after-image .dan-before-after-image__scroller--thumb svg{
+    min-width: unset;
+    min-height: unset;
+
+    width: var(--dimensions); /**/
+    height: var(--dimensions); /**/
+}
+.breakdance .dan-before-after-image .dan-before-after-image__scroller:before,
+.breakdance .dan-before-after-image .dan-before-after-image__scroller:after{
+    content:" ";
+    display: block;
+    width: 10px; /*grosor lineas*/
+    height: 9999px;
+    position: absolute;
+    left: 50%;
+    width: var(--width);
+    margin-left: calc(var(--width) / -2 - .5px);
+    z-index: 30;
+    transition: 0.1s;
+
+    background: var(--color-line); /*color linea*/
+}
+.breakdance .dan-before-after-image .dan-before-after-image__scroller:before{
+    top:100%;
+}
+.breakdance .dan-before-after-image .dan-before-after-image__scroller:after{
+    bottom:100%;
+} 

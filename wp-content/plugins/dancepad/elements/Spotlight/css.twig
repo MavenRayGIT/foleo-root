@@ -1,0 +1,18 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+
+    {{ macros.background(design.background) }}
+
+    --speed: {{ content.animation.speed.style }};
+    --easing: {{ content.animation.css_easing }};
+
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-spotlight__spotlight {
+    opacity: {{ content.animation.opacity }}; /**/
+
+    height: {{ content.animation.spotlight_height.style }}; /**/
+}

@@ -1,0 +1,37 @@
+%%SELECTOR%%{
+{{ macros.size(design.block_style.size) }}
+  {{ macros.borders(design.block_style.borders) }}
+  cursor: {{ design.block_style.cursor }};
+}
+%%SELECTOR%% .dan-before-after-image-v2__slider{
+width: {{ design.slider.width.style }};
+  --slider-color: {{ design.slider.color }};
+  --handlebar-width: {{ design.handlebar.width.style }};
+  --handlebar-height: {{ design.handlebar.height.style }};
+}
+%%SELECTOR%% .dan-before-after-image-v2__handlebar{
+{{ macros.borders(design.handlebar.border) }}
+  background-color: {{ design.handlebar.color }}
+}
+%%SELECTOR%% .dan-before-after-image-v2__handlebar-dots{
+ fill: {{ design.handlebar.dots_color }};
+  --dimensions: {{ design.handlebar.dots_size.style }};
+}
+%%SELECTOR%% .dan-before-after-image-v2__glow-effect{
+width: {{ design.glow.outer_width.style }};
+  opacity: {{ design.glow.outer_opacity }};
+  --outer-glow-color: {{ design.glow.outer_color }};
+}
+%%SELECTOR%% .dan-before-after-image-v2__glow-effect-2{
+width: {{ design.glow.inner_width.style }};
+  --inner-glow-color: {{ design.glow.inner_color }};
+}
+%%SELECTOR%% .dan-before-after-image-v2__sparkles-container{
+--sparkles-width: {{ design.particles_container.width.style }};
+--sparkles-color: {{ design.particles_container.mask_color }}
+}
+%%SELECTOR%% .dan-before-after-image-v2__particle{
+  background-color: {{ design.particles.color }};
+--duration: {{ design.particles.duration.style }};
+  --easing: {{ design.particles.css_easing }};
+}

@@ -1,0 +1,21 @@
+{% if content.content.prefix %}
+<span class="dan-looping-lines__prefix">{{ content.content.prefix }}</span>
+{% endif %}
+<div class="dan-looping-lines__line-container">
+  <ul class="dan-looping-lines__line-list">
+  {% for item in content.content.items %}
+    <li>    
+      {% if item.link %}
+        {{ macros.linkStart(item.link) }}
+      {% endif %}
+        {{ item.text }}
+      {% if item.link %}
+        {{ macros.linkEnd() }}
+      {% endif %}
+    </li>
+  {% endfor %}
+  </ul>
+  {% if content.lines.fade == true %}
+  <div class="dan-looping-lines__fade"></div>
+  {% endif %}
+</div>

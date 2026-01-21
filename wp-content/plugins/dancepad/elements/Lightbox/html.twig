@@ -1,0 +1,5 @@
+{% for item in content.lightbox_images.repeater %}
+<a class='dan-lightbox__item' data-src="{{ item.image.url }}" data-sub-html="{{ item.description }}">
+    {{ macros.getMedia(item.image, content.content.size, content.content.lazyLoad) }}
+</a>
+{% endfor %}

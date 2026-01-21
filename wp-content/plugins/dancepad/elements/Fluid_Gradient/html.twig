@@ -1,0 +1,23 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-fluid-gradient__anchor') }}
+    <span class="dan-fluid-gradient__inner-wrapper">
+      {% if content.content.prefix %}
+        <span class="dan-fluid-gradient__prefix">{{ content.content.prefix }}</span>
+      {% endif %}
+      <span class="dan-fluid-gradient__gradient" data-degree="{{ content.animation.degree }}" data-gradient-colors="{% for item in content.animation.colors %}{{ item.color }}next11{% endfor %}">{{ content.content.text }}</span>
+      {% if content.content.suffix %}
+        <span class="dan-fluid-gradient__suffix">{{ content.content.suffix }}</span>
+      {% endif %}
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class="dan-fluid-gradient__inner-wrapper">
+    {% if content.content.prefix %}
+      <span class="dan-fluid-gradient__prefix">{{ content.content.prefix }}</span>
+    {% endif %}
+    <span class="dan-fluid-gradient__gradient" data-degree="{{ content.animation.degree }}" data-gradient-colors="{% for item in content.animation.colors %}{{ item.color }}next11{% endfor %}">{{ content.content.text }}</span>
+    {% if content.content.suffix %}
+      <span class="dan-fluid-gradient__suffix">{{ content.content.suffix }}</span>
+    {% endif %}
+  </span>
+{% endif %}

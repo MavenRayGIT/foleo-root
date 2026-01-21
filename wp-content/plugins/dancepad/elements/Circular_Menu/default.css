@@ -1,0 +1,29 @@
+html[dan-burger--body-toggled]{
+    overflow: hidden !important;
+}
+html[dan-burger--body-toggled] > body > .os-scrollbar-horizontal,
+html[dan-burger--body-toggled] > body > .os-scrollbar-vertical{
+    display: none !important;
+}
+.breakdance .dan-circular-menu{
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-circular-menu .dan-circular-menu__content {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    width: 100svw; /**/
+    height: 100svh; /**/
+
+    inset: 0px;
+    overflow: hidden;
+    transform: none;
+    transform-origin: 50% 50% 0px;
+
+    pointer-events: none;
+    clip-path: circle(0px at var(--from-left) var(--from-top)); /*0% for top and left*/ /*100% for bottom and right*/
+    --clip-path: circle(150% at var(--from-left) var(--from-top));
+}

@@ -1,0 +1,8 @@
+%%SELECTOR%%{
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%%:not(:has(> a)) .dan-blur-reveal__line-wrapper,
+%%SELECTOR%% > a .dan-blur-reveal__line-wrapper{
+    {{ macros.spacing_padding_all(design.padding) }}
+}

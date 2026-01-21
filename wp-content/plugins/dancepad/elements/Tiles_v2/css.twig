@@ -1,0 +1,17 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+
+    {{ macros.borders(design.borders) }}
+
+    {{ macros.background(design.background) }}
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+
+    --duration: {{ content.animation.fade_duration.style }};
+    --easing: {{ content.animation.fade_css_easing }};
+}
+%%SELECTOR%% .dan-tiles-v2__dot{
+    background-color: {{ design.tiles.color }};
+    {{ macros.borders(design.tiles.borders) }}
+}

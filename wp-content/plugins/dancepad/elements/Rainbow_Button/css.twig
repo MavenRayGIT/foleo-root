@@ -1,0 +1,19 @@
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+
+    --rainbow-duration: {{ content.rainbow_animation.duration.style }};
+    --rainbow-easing: {{ content.rainbow_animation.css_easing }};
+
+    --base: {{ design.button_colors.rainbow_base_color }};
+
+    --border: {{ design.border.border_color }};
+    --border-width: {{ design.border.border_width.style }};
+    --border-radius: {{ design.border.border_radius.style }};
+    border-radius: {{ design.border.border_radius.style }};
+}
+%%SELECTOR%% .dan-rainbow-button__bg{
+    background-color: {{ design.button_colors.background }};
+}

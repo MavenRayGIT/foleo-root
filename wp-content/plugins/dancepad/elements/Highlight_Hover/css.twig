@@ -1,0 +1,17 @@
+%%SELECTOR%%{
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-highlight-hover__inner{
+    --after-background: {{ content.highlight.color }};
+
+    --height: {{ content.highlight.thickness.style }};
+    --duration: {{ content.highlight.duration.style }};
+    --ease: {{ content.highlight.css_easing }};
+
+    {{ macros.typography(design.typography, globalSettings) }}
+}

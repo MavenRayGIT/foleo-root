@@ -1,0 +1,18 @@
+.breakdance .dan-spotlight-v2-wrapper{
+    overflow: hidden;
+    position: relative;
+}
+.breakdance .dan-spotlight-v2-wrapper .dan-spotlight-v2{
+    overflow: unset !important; /*remove Bricks style*/
+
+    pointer-events: none;
+    position: absolute;
+
+    min-width: var(--width) !important; /**/
+    min-height: var(--height) !important; /**/
+    max-width: var(--width) !important; /**/
+    max-height: var(--height) !important; /**/
+
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(var(--from-scale));
+}

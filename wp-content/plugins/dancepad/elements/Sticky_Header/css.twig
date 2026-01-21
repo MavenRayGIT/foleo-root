@@ -1,0 +1,55 @@
+%%SELECTOR%%{
+    --transition-duration: {{ content.animation.duration.style }};
+    --transition-easing: {{ content.animation.css_easing }};
+
+    --transition-duration-responsive: {{ content.responsive.duration.style }};
+    --transition-delay-responsive: {{ content.responsive.delay.style }};
+    --transition-easing-responsive: {{ content.responsive.css_easing }};
+
+    z-index: {{ content.settings.zindex }};
+}
+%%SELECTOR%% .dan-sticky-header__items-wrapper{
+    --nav-transition-duration: {{ content.nav_scrolling_styles.duration.style }};
+    --nav-transition-easing: {{ content.nav_scrolling_styles.css_easing }};
+}
+%%SELECTOR%%.dan-sticky-header--scroll-start .dan-sticky-header__items-wrapper{
+    --filter: {{ content.nav_scrolling_styles.backdrop_filter.style }};
+
+    background-color: {{ content.nav_scrolling_styles.background }};
+}
+
+@media (max-width: {{ content.responsive.breakpoint.style }}){
+    %%SELECTOR%%{
+        pointer-events: none !important;
+        position: absolute !important;
+    }
+    %%SELECTOR%% .dan-burger{
+        display: block !important;
+        pointer-events: all !important;
+    }
+    %%SELECTOR%% .dan-sticky-header__items-wrapper{
+        pointer-events: none !important;
+
+        {% if content.responsive.animation == 'Opacity' %}
+            transition: opacity var(--transition-duration-responsive) var(--transition-delay-responsive) !important;
+            transition-timing-function: var(--transition-delay-ease) !important;
+            opacity: 0 !important;
+        {% elseif content.responsive.animation == 'From Left' %}
+            transition: left var(--transition-duration-responsive) var(--transition-delay-responsive) !important;
+            transition-timing-function: var(--transition-delay-ease) !important;
+            left: -100svw !important;
+        {% elseif content.responsive.animation == 'From Right' %}
+            transition: left var(--transition-duration-responsive) var(--transition-delay-responsive) !important;
+            transition-timing-function: var(--transition-delay-ease) !important;
+            left: 100svw !important;
+        {% endif %}
+    }
+
+    %%SELECTOR%% .dan-sticky-header__items-wrapper--show{ /*responsive en el front*/
+        opacity: 1 !important; /*Animacion opacity*/
+        top: 0 !important; /*Animacion translateY*/
+        left: 0 !important; /*Animacion translateX*/
+
+        pointer-events: all !important;
+    }
+}

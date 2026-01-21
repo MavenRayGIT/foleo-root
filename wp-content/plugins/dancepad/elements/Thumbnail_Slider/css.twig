@@ -1,0 +1,43 @@
+%%SELECTOR%%{
+{{ macros.spacing_margin_all(design.margin) }}
+  {{ macros.size(design.size) }}
+  
+  --thumbnails-width: {{ design.thumbnail.width.style }};
+  --thumbnails-height: {{ design.thumbnail.height.style }};
+}
+%%SELECTOR%% .dan-thumbnail-slider__preview{
+height: {{ design.slides_container.height.style }};
+  {{ macros.borders(design.slides_container.border) }}
+}
+%%SELECTOR%% .dan-thumbnail-slider__thumbnails{
+{{ macros.spacing_margin_all(design.thumbnails_container.margin) }}
+  {{ macros.spacing_padding_all(design.thumbnails_container.padding) }}
+  {{ macros.size(design.thumbnails_container.size) }}
+  {{ macros.layout(design.thumbnails_container.layout) }}
+  {{ macros.background(design.thumbnails_container.background) }}
+  {{ macros.borders(design.thumbnails_container.border) }}
+}
+%%SELECTOR%% .dan-thumbnail-slider__selector{
+z-index: {{ design.morphing_selector.zindex }};
+  {{ macros.borders(design.morphing_selector.border) }}
+}
+%%SELECTOR%% .dan-thumbnail-slider__thumb{
+{{ macros.borders(design.thumbnail.border) }}
+  --thumbnails-brightness: {{ design.thumbnail.brightness }}%;
+  --thumbnail-filter-duration: {{ design.thumbnail.filter_duration.style }};
+  --thumbnail-filter-ease: {{ design.thumbnail.filter_css_easing }};
+}
+%%SELECTOR%% .dan-thumbnail-slider__arrow{
+  display: {{ design.arrows.display }};
+  z-index: {{ design.arrows.zindex }};
+  --arrow-dimensions: {{ design.arrows.dimensions.style }};
+  fill: {{ design.arrows.fill }};
+  background: {{ design.arrows.background }};
+  {{ macros.borders(design.arrows.border) }}
+}
+%%SELECTOR%% .dan-thumbnail-slider__arrow--left{
+left: {{ design.arrows.arrow_left_position.style }};
+}
+%%SELECTOR%% .dan-thumbnail-slider__arrow--right{
+right: {{ design.arrows.arrow_right_position.style }};
+}

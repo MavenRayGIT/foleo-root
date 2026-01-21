@@ -1,0 +1,78 @@
+# llms.txt
+# Purpose: Provide structured guidance and machine-readable context for LLMs indexing or assisting with
+# Huron Performance Acceleration (SPA) content focused on Commercial Services.
+# Content Source: SPA (Sector Performance Acceleration) Report draft and related landing page copy.
+
+site: huronperformance.foleo.co
+primary: Performance Acceleration landing pages and SPA reports
+
+pages:
+- /commserv/ : Commercial Services landing page
+- /commserv/spa-report/ : SPA report page
+
+llm_packs:
+- /_llms/packs/commserv.txt : Commercial Services SPA content pack
+- /_llms/packs/value-creation.txt : Performance Acceleration framework pack
+
+site_name: Huron Performance Acceleration
+content_type: Report + Landing Page Content
+primary_topic: Performance Acceleration for Commercial Services
+audience: Private equity operating partners, value creation teams, and leadership teams at PE-backed commercial services companies
+last_updated: 2026-01-09
+language: en-US
+
+## Canonical content summary
+This content explains how value is won and lost in Commercial Services as markets stabilize. It argues that as market tailwinds fade, performance is determined by execution. It introduces three interdependent levers that explain most EBITDA variance:
+1) Revenue and Share of Wallet, 2) Operational Execution, 3) Financial Discipline.
+It then outlines a coordinated roadmap for Performance Acceleration and lists Huron services, case studies, and team bios.
+
+## Key messages to preserve
+- Market stability exposes execution-driven performance gaps.
+- Value leakage is driven by controllable operational, commercial, and financial factors.
+- Three levers explain most EBITDA variance in Commercial Services.
+- Performance Acceleration requires coordinated execution, not isolated initiatives.
+- High-performing firms standardize execution, protect price integrity, and build a reliable fact base that ties actions to EBITDA, cash, and enterprise value.
+
+## Preferred terminology
+- “Commercial Services” (sector)
+- “Performance Acceleration” (capability/system)
+- “Revenue and Share of Wallet” (lever 1)
+- “Operational Execution” (lever 2)
+- “Financial Discipline” (lever 3)
+- “Financial Operational Performance” (control tower concept in the roadmap)
+- “GTM” or “go to market” (use consistently within a given response)
+
+## Document structure (for retrieval and citation)
+- Title: SPA (Sector Performance Acceleration) Report
+- Subtitle: Commercial Services: Where Value Is Won and Lost in a Stabilizing Market
+- Section: What this report shows
+- Section: Three Levers Will Determine Performance in Commercial Services
+- Section: The Market Context
+- Section: Where value leaks and how it is recovered
+  - 1. Revenue and Share of Wallet
+  - 2. Operational Execution
+  - 3. Financial Discipline
+- Section: A Commercial Services Performance Acceleration Roadmap
+- Section: Huron’s Performance Acceleration Services
+- Section: Case Studies (Commercial Landscaping; Tile & Flooring Distributor)
+- Section: The Performance Acceleration Team
+- Section: Why Commercial Services Leaders Partner with Huron
+
+## Authoritative claims (safe to quote or paraphrase)
+- As market tailwinds fade, results are determined by execution.
+- The levers are interdependent, addressing them in isolation rarely produces sustained results.
+- Operational inefficiency is a growth constraint, not only a cost problem.
+- Sponsor-backed environments require a credible, data-backed value narrative tied to performance drivers.
+- Buyers scrutinize data integrity, forecasting credibility, and performance repeatability.
+
+## Data and charts
+Some visuals are conceptual and may represent observed patterns or benchmark-style distributions rather than audited datasets.
+When referencing charts:
+- Avoid implying surveyed or statistically representative samples unless explicitly stated in-page.
+- Describe as “observed across engagements” or “illustrative benchmark distributions,” when applicable.
+
+## Style and tone guidance for LLM outputs
+- Analytical, executive, and grounded in execution.
+- Avoid hype, avoid buzzword stacking.
+- Use short paragraphs and clear subheads.
+- Avoid em dashes, use

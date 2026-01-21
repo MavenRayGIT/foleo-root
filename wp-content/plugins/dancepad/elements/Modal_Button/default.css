@@ -1,0 +1,107 @@
+.breakdance .dan-modal-button {
+    position: relative;
+    z-index: 1;
+  
+    width: fit-content;
+  }
+.breakdance .dan-modal-button a{
+      color: currentColor !important;
+      text-decoration: none;
+  
+      display: block;
+      width: 100%;
+      height: 100%;
+  }
+  .breakdance .dan-modal-button .dan-modal-button__btn,
+  .breakdance .dan-modal-button .dan-modal-button__list-item{
+      box-sizing: border-box;
+  }
+  /*general split button*/
+  .breakdance .dan-modal-button .dan-modal-button__morph-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      pointer-events: none;
+      transform-origin: left top;
+      -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+
+      transition: 
+      box-shadow var(--transition-duration), 
+      transform var(--transition-duration) var(--transition-easing), 
+      background var(--transition-duration) var(--transition-easing), 
+      height var(--transition-duration) var(--transition-easing), 
+      width var(--transition-duration) var(--transition-easing);
+      will-change: transform, height, width;
+  }
+  .breakdance .dan-modal-button[dan-modal-button--expanded] .dan-modal-button__btn {
+      opacity: 0;
+      pointer-events: none;
+  }
+  .breakdance .dan-modal-button[dan-modal-button--expanded] .dan-modal-button__list-wrapper {
+      opacity: 1;
+      pointer-events: auto;
+  }
+  .breakdance .dan-modal-button[dan-modal-button--expanded] .dan-modal-button__list {
+      transform: scale(1);
+  }
+  .breakdance .dan-modal-button .dan-modal-button__btn {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+  
+      white-space: nowrap; /*white-space*/
+      text-decoration: none;
+      cursor: pointer;
+  
+      transition: var(--transition-duration);
+  
+      box-shadow: unset;
+  }
+  .breakdance .dan-modal-button .dan-modal-button__btn:focus-visible {
+      outline: none;
+  }
+  .breakdance .dan-modal-button .dan-modal-button__btn:focus-visible ~ .dan-modal-button__morph-bg {
+      box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05), 0 0.3px 0.4px hsla(230, 13%, 9%, 0.02), 0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
+      0 3.5px 6px hsla(230, 13%, 9%, 0.09), 0 0 0 2px hsl(0, 0%, 100%), 0 0 0 4px hsl(230, 7%, 23%);
+  }
+  .breakdance .dan-modal-button .dan-modal-button__btn:active {
+      transform: translateY(var(--translate-y)); /*translateY when active click*/
+  }
+  .breakdance .dan-modal-button .dan-modal-button__btn-icon {
+      height: var(--dimensions);
+      width: var(--dimensions);
+      min-width: unset !important;
+      min-height: unset !important;
+  }
+  .breakdance .dan-modal-button .dan-modal-button__list-wrapper {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-duration);
+  }
+  .breakdance .dan-modal-button .dan-modal-button__list {
+      transform: scale(0.5);
+      transition: var(--transition-duration) var(--transition-easing);
+  }
+  .breakdance .dan-modal-button .dan-modal-button__list-item {
+      display: flex;
+      width: auto;
+      white-space: nowrap; /*sub button white-space*/
+  
+      cursor: pointer;
+      transition: background var(--transition-duration);
+  }
+  .breakdance .dan-modal-button .dan-modal-button__list-item:hover,
+  .breakdance .dan-modal-button .dan-modal-button__list-item:focus-visible {
+      background-color: var(--hover-background); /*sub button background on hover*/
+  } 

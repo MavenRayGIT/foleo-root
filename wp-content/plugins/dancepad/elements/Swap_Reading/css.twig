@@ -1,0 +1,10 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+
+    width: {{ design.dimensions.width.style }};
+}
+%%SELECTOR%% .dan-swap-reading__paragraph {
+    max-width: {{ design.dimensions.paragraph_width.style }};
+    {{ macros.typography(design.typography, globalSettings) }}
+}

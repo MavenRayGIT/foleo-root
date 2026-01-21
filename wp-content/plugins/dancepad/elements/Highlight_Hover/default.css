@@ -1,0 +1,81 @@
+.breakdance .dan-highlight-hover{
+    text-decoration: unset !important;
+    color: unset !important;
+
+    display: block;
+    height: fit-content;
+    width: fit-content;
+}
+.breakdance .dan-highlight-hover .dan-highlight-hover__anchor{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-highlight-hover .dan-highlight-hover__inner{
+    display: flex;
+    width: fit-content;
+    position: relative;
+    z-index: 0;
+}
+.breakdance .dan-highlight-hover .dan-highlight-hover__bottom-to-full::after,
+.breakdance .dan-highlight-hover .dan-highlight-hover__full-to-bottom::after,
+.breakdance .dan-highlight-hover .dan-highlight-hover__left-to-full::after,
+.breakdance .dan-highlight-hover .dan-highlight-hover__full-to-left::after{
+    background-color: var(--after-background);
+}
+/*bottom to full*/
+.breakdance .dan-highlight-hover .dan-highlight-hover__bottom-to-full:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    height: var(--height);
+    transition: var(--duration) var(--ease);
+}
+.breakdance .dan-highlight-hover .dan-highlight-hover__bottom-to-full:hover:after {
+    height: 100%;
+}
+/*full to bottom*/
+.breakdance .dan-highlight-hover .dan-highlight-hover__full-to-bottom:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: var(--duration) var(--ease);
+}
+.breakdance .dan-highlight-hover .dan-highlight-hover__full-to-bottom:hover:after {
+    height: var(--height);
+}
+/*left to full*/
+.breakdance .dan-highlight-hover .dan-highlight-hover__left-to-full:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    bottom: 0px;
+    left: 0;
+    width: var(--height);
+    height: 100%;
+    transition: var(--duration) var(--ease);
+}
+.breakdance .dan-highlight-hover .dan-highlight-hover__left-to-full:hover:after {
+    width: 100%;
+}
+/*full to left*/
+.breakdance .dan-highlight-hover .dan-highlight-hover__full-to-left:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: var(--duration) var(--ease);
+}
+.breakdance .dan-highlight-hover .dan-highlight-hover__full-to-left:hover:after {
+    width: var(--height);
+} 

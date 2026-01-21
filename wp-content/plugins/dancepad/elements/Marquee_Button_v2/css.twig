@@ -1,0 +1,35 @@
+%%SELECTOR%%{
+    --gap: {{ content.animation.marquee_gap.style }};
+    {{ macros.spacing_padding_y(design.padding.spacing_padding_y) }}
+    
+    background: {{ design.button_colors.background }}; /*background*/
+
+    --background-duration: {{ content.animation.background_duration.style }}; /**/
+    --background-easing: {{ content.animation.background_easing }}; /**/
+    --background-delay: {{ content.animation.background_delay.style }}; /**/
+
+    --marquee-translate-duration: {{ content.animation.translate_duration.style }}; /**/
+    --marquee-translate-easing: {{ content.animation.translate_easing }}; /**/
+    --marquee-translate-delay: {{ content.animation.translate_delay.style }}; /**/
+    --marquee-speed: {{ content.animation.marquee_speed.style }}; /**/
+    --marquee-easing: {{ content.animation.marquee_easing }}; /**/
+
+    --swap-duration: {{ content.animation.swap_duration.style }}; /**/
+    --swap-easing: {{ content.animation.swap_easing }}; /**/
+    --swap-delay: {{ content.animation.swap_delay.style }}; /**/
+
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-marquee-button-v2__marquee > span{
+    color: {{ design.button_colors.text_color }}; /*typography*/
+}
+/*Swap*/
+%%SELECTOR%% .dan-marquee-button-v2__swap{
+    color: {{ design.mask_colors.text_color }}; /*typography*/
+}
+/*Hover*/
+%%SELECTOR%%:hover{
+    --background-hover: {{ design.mask_colors.background }};
+}

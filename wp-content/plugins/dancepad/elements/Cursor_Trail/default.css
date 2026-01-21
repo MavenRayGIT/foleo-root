@@ -1,0 +1,24 @@
+.breakdance .dan-cursor-trail {
+	position: relative;
+
+	width: 100%;
+
+	isolation: isolate;
+	overflow: hidden;
+}
+.breakdance .dan-cursor-trail__content {
+    position: relative;
+	z-index: 1;
+
+    display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.breakdance .bde-div.dan-cursor-trail__item {
+    width: fit-content;
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+	will-change: transform;
+}

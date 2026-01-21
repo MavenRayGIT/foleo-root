@@ -1,0 +1,61 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+  {{ macros.spacing_padding_all(design.padding) }}
+  {{ macros.size(design.size) }}
+  {{ macros.background(design.background) }}
+  {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-audio-player__top{
+  {{ macros.layout(design.top_wrapper.layout) }}
+}
+%%SELECTOR%% .dan-audio-player__thumbnail{
+{{ macros.size(design.thumbnail.size) }}
+  {{ macros.borders(design.thumbnail.border) }}
+}
+%%SELECTOR%% .dan-audio-player__top-texts{
+gap: {{ design.texts.gap.style }};
+}
+%%SELECTOR%% .dan-audio-player__name{
+{{ macros.typography(design.texts.name_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-audio-player__artist{
+{{ macros.typography(design.texts.artist_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-audio-player__play,
+%%SELECTOR%% .dan-audio-player__pause{
+{{ macros.size(design.play_pause_button.size) }}
+  {{ macros.spacing_margin_all(design.play_pause_button.margin) }}
+  {{ macros.spacing_padding_all(design.play_pause_button.padding) }}
+  {{ macros.borders(design.play_pause_button.border) }}
+}
+%%SELECTOR%% .dan-audio-player__play{
+background-color: {{ design.play_pause_button.play_background }}
+}
+%%SELECTOR%% .dan-audio-player__play svg{
+fill: {{ design.play_pause_button.play_fill }}
+}
+%%SELECTOR%% .dan-audio-player__pause{
+background-color: {{ design.play_pause_button.pause_background }}
+}
+%%SELECTOR%% .dan-audio-player__pause svg{
+fill: {{ design.play_pause_button.pause_fill }}
+}
+%%SELECTOR%% .dan-audio-player__bottom{
+{{ macros.spacing_padding_all(design.duration_progress_container.padding) }}
+}
+%%SELECTOR%% .dan-audio-player__progress-container{
+{{ macros.spacing_margin_all(design.progress.margin) }}
+  {{ macros.borders(design.progress.border) }}
+  background-color: {{ design.progress.path_color }}
+}
+%%SELECTOR%% .dan-audio-player__progress{
+  {{ macros.borders(design.progress.border) }}
+height: {{ design.progress.height.style }};
+  background-color: {{ design.progress.fill_color }}
+}
+%%SELECTOR%% .dan-audio-player__timer{
+{{ macros.typography(design.timer_duration.timer_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-audio-player__duration{
+{{ macros.typography(design.timer_duration.duration_typography, globalSettings) }}
+}

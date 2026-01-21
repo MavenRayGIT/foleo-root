@@ -1,0 +1,27 @@
+.breakdance .dan-vertical-marquee{
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--gap); /**/
+
+    color: white;
+}
+.breakdance .dan-vertical-marquee[data-blur-edges="1"]{
+    mask-image: linear-gradient(
+        to bottom, 
+        rgba(0, 0, 0, 0) 0px,
+        rgba(0, 0, 0) var(--height),
+        rgba(0, 0, 0) calc(100% - var(--height)),
+        rgba(0, 0, 0, 0) 100% 
+    );
+}
+.breakdance .dan-vertical-marquee[data-reverse="1"]{
+    flex-direction: column-reverse;
+}
+.breakdance .dan-vertical-marquee .dan-vertical-marquee__wrapper{
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--gap);
+} 

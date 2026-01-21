@@ -1,0 +1,17 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-ripple-button__anchor') }}
+    <span class='dan-ripple-button__hover-fill'></span>
+    <span class='dan-ripple-button__pseudo' data-content='{{ content.content.text }}'>
+      <span class='dan-ripple-button__text'>
+      {{ content.content.text }}
+      </span>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class='dan-ripple-button__hover-fill'></span>
+  <span class='dan-ripple-button__pseudo' data-content='{{ content.content.text }}'>
+    <span class='dan-ripple-button__text'>
+    {{ content.content.text }}
+    </span>
+  </span>
+{% endif %}

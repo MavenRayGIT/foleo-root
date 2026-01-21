@@ -1,0 +1,73 @@
+.breakdance .dan-ripple-button-v7{
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+
+    --duration: attr(data-duration);
+}
+.breakdance .dan-ripple-button-v7__text{
+    position: relative;
+    z-index: 2;
+}
+.breakdance .dan-ripple-button-v7::before{
+    content: attr(data-text);
+    opacity: 0;
+
+    position: absolute;
+    z-index: 1;
+}
+.breakdance .dan-ripple-button-v7:hover .dan-ripple-button-v7__text{
+    opacity: 0;
+
+    transition: all var(--text-translate-duration) var(--text-translate-ease);
+}
+.breakdance .dan-ripple-button-v7[data-text-to="bottom"]::before{
+    transform: translateY(calc(var(--text-translate) * -1));
+}
+.breakdance .dan-ripple-button-v7[data-text-to="bottom"]:hover .dan-ripple-button-v7__text{
+    transform: translateY(var(--text-translate));
+}
+.breakdance .dan-ripple-button-v7[data-text-to="top"]::before{
+    transform: translateY(var(--text-translate));
+}
+.breakdance .dan-ripple-button-v7[data-text-to="top"]:hover .dan-ripple-button-v7__text{
+    transform: translateY(calc(var(--text-translate) * -1));
+}
+.breakdance .dan-ripple-button-v7:hover::before{
+    opacity: 1;
+    transform: translateY(0);
+
+    transition: all calc(var(--text-translate-duration) * 1.5) var(--text-translate-ease);
+}
+.breakdance .dan-ripple-button-v7__mask{
+    position: absolute;    
+
+    border-radius: 100%;
+    width: 50%;
+    height: 100%;
+
+    transition: all var(--ripple-duration) var(--ripple-ease);
+}
+.breakdance .dan-ripple-button-v7:hover .dan-ripple-button-v7__mask{
+    border-radius: 0%;
+    width: 150%;
+
+    transition: unset;
+}
+.breakdance .dan-ripple-button-v7[data-mask-to="top"] .dan-ripple-button-v7__mask{
+    top: -100%;
+}
+.breakdance .dan-ripple-button-v7[data-mask-to="top"]:hover .dan-ripple-button-v7__mask{
+    top: 0;
+}
+.breakdance .dan-ripple-button-v7[data-mask-to="bottom"] .dan-ripple-button-v7__mask{
+    top: 100%;
+}
+.breakdance .dan-ripple-button-v7[data-mask-to="bottom"]:hover .dan-ripple-button-v7__mask{
+    top: 0;
+}

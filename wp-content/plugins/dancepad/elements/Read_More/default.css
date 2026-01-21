@@ -1,0 +1,40 @@
+.breakdance .dan-read-more__container {
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+.breakdance .dan-read-more__container::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    background: linear-gradient(0deg, var(--blur-color) 0%, transparent 100%);
+    display: none;
+}
+.breakdance .dan-read-more--true .dan-read-more__container::before {
+    display: block;
+}
+.breakdance .dan-read-more--opened .dan-read-more__container::before {
+    opacity: 0;
+    visibility: hidden;
+}
+.breakdance .dan-read-more__container > *:last-child {
+    margin-bottom: 0;
+}
+.breakdance .dan-read-more__btn {
+    display: flex;
+    width: fit-content !important;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    transition: color var(--show-more-color-duration) var(--show-more-color-ease);
+}
+.breakdance .dan-read-more__btn:hover,
+.breakdance .dan-read-more__btn:focus-visible {
+    color: var(--show-more-color-hover) !important;
+}

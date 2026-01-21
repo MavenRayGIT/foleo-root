@@ -1,0 +1,64 @@
+.breakdance .dan-reel-button {
+    display: inline-grid;
+    width: fit-content;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+
+    --elastic-ease-out: linear( 0, 0.5737 7.6%, 0.8382 11.87%, 0.9463 14.19%, 1.0292 16.54%, 1.0886 18.97%, 1.1258 21.53%, 1.137 22.97%, 1.1424 24.48%, 1.1423 26.1%, 1.1366 27.86%, 1.1165 31.01%, 1.0507 38.62%, 1.0219 42.57%, 0.9995 46.99%, 0.9872 51.63%, 0.9842 58.77%, 1.0011 81.26%, 1 );
+    --elastic-ease-out-soft: linear(0, 0.029 1.7%, 0.113 3.6%, 0.604 11.1%, 0.809 15%, 0.949 19.1%, 0.995 21.3%, 1.026 23.6%, 1.044 26.2%, 1.049 29.3%, 1.01 43.5%, 1 51.2%, 1);
+    --smooth-ease: cubic-bezier(.32, .72, 0, 1);
+}
+.breakdance .dan-reel-button__bg {
+    grid-area: 1 / 1;
+
+    transition: scale var(--reel-duration) var(--smooth-ease), box-shadow calc(var(--reel-duration) * 0.8) var(--smooth-ease);
+}
+.breakdance .dan-reel-button__container {
+    pointer-events: none;
+    grid-area: 1 / 1;
+    display: grid;
+    overflow: clip;
+}
+.breakdance .dan-reel-button__inner {
+    transform-origin: 0%;
+    grid-area: 1 / 1;
+    justify-content: flex-start;
+    align-items: center;
+    display: flex;
+
+    transition: rotate var(--reel-duration) var(--smooth-ease);
+}
+.breakdance .dan-reel-button__text {
+    z-index: 1;
+    grid-area: 1 / 1;
+}
+.breakdance .dan-reel-button__inner-hover {
+    transform-origin: 0%;
+    grid-area: 1 / 1;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
+    transition: rotate var(--reel-duration) var(--smooth-ease), translate var(--reel-duration) var(--smooth-ease);
+    rotate: 90deg;
+    translate: calc(var(--reel-translate) * -1) 0;
+}
+.breakdance .dan-reel-button__inner-hover.dan-reel-button__inner-hover--is-second {
+    rotate: 180deg;
+}
+.breakdance .dan-reel-button__inner-hover::after {
+    content: attr(data-text);
+}
+@media (hover: hover) and (pointer: fine) {
+    .breakdance .dan-reel-button:is(:hover, :focus-visible) .dan-reel-button__inner {
+        rotate: -180deg;
+    }
+    .breakdance .dan-reel-button:is(:hover, :focus-visible) .dan-reel-button__inner-hover {
+        rotate: -90deg;
+        translate: calc(var(--reel-translate) * -1) 0;
+    }
+    .breakdance .dan-reel-button:is(:hover, :focus-visible) .dan-reel-button__inner-hover.dan-reel-button__inner-hover--is-second {
+        rotate: 0deg;
+        translate: 0 0;
+    }
+}

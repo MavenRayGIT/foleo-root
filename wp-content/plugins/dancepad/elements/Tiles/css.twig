@@ -1,0 +1,19 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+
+    {{ macros.borders(design.borders) }}
+
+    --offset: {{ content.tiles.offset.style }};
+    --mouseenter-color: {{ content.tiles.enter_color }};
+    --mouseleave-color: {{ content.tiles.leave_color }};
+    --duration: {{ content.tiles.duration.style }};
+    --easing: {{ content.tiles.css_easing }};
+
+    {{ macros.background(design.background) }}
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-tiles__square{
+    {{ macros.borders(content.tiles.borders) }}
+}

@@ -1,0 +1,58 @@
+html[dan-burger--body-toggled]{
+    overflow: hidden !important;
+}
+html[dan-burger--body-toggled] > body > .os-scrollbar-horizontal,
+html[dan-burger--body-toggled] > body > .os-scrollbar-vertical{
+    display: none !important;
+}
+.breakdance .dan-offcanvas-menu{
+    width: fit-content;
+}
+.breakdance .dan-offcanvas-menu .dan-offcanvas-menu__items-wrapper{
+    position: fixed;
+
+    pointer-events: none;
+
+    overflow: auto;
+    max-height: 100svh;
+}
+.breakdance .dan-offcanvas-menu[data-classtype=dan-offcanvas-menu--fromtop] .dan-offcanvas-menu__items-wrapper{
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    top: 0;
+}
+.breakdance .dan-offcanvas-menu[data-classtype=dan-offcanvas-menu--fromleft] .dan-offcanvas-menu__items-wrapper{
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    top: 0;
+    left: 0;
+}
+.breakdance .dan-offcanvas-menu[data-classtype=dan-offcanvas-menu--fromright] .dan-offcanvas-menu__items-wrapper{
+    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    top: 0;
+    right: 0;
+}
+.breakdance .dan-offcanvas-menu .dan-offcanvas-menu__backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    
+    -webkit-transition: visibility 0s calc(var(--transition-duration-backdrop) * 2), opacity var(--transition-duration-backdrop) var(--transition-easing-backdrop);
+    transition: visibility 0s calc(var(--transition-duration-backdrop) * 2), opacity var(--transition-duration-backdrop) var(--transition-easing-backdrop);
+}
+.breakdance .dan-offcanvas-menu[data-open=dan-offcanvas-menu--opened] .dan-offcanvas-menu__backdrop {
+    pointer-events: auto;
+    visibility: visible;
+    opacity: 1;
+
+    -webkit-transition: opacity var(--transition-duration-backdrop) var(--transition-easing-backdrop);
+    transition: opacity var(--transition-duration-backdrop) var(--transition-easing-backdrop);
+}
+.breakdance .dan-offcanvas-menu[data-hide-content=true] .dan-offcanvas-menu__items-wrapper{
+    opacity: 0;
+    visibility: hidden;
+} 

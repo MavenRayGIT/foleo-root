@@ -1,0 +1,30 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.simpleLayout(design.layout, breakpoint) }}
+    --dimensions-to: {{ content.arrow_animation.dimensions_to.style }};
+}
+%%SELECTOR%% .dan-arrow-button-v8__text{
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --underline-duration: {{ content.underline_animation.duration.style }};
+    --underline-easing: {{ content.underline_animation.css_easing }};
+}
+%%SELECTOR%% .dan-arrow-button-v8__text::after{
+    height: {{ design.underline_styles.height.style }};
+    --underline-position: {{ design.underline_styles.position.style }};
+    background: {{ design.underline_styles.color }}
+}
+%%SELECTOR%% .dan-arrow-button-v8__arrow{
+    {{ macros.border_complex(design.arrow_styles.border) }}
+    {{ macros.border_radius(design.arrow_styles.border_radius) }}
+    --dimensions: {{ design.arrow_styles.dimensions.style }};
+    background: {{ design.arrow_styles.background }};
+
+    --arrow-duration: {{ content.arrow_animation.duration.style }};
+    --arrow-easing: {{ content.arrow_animation.css_easing }};
+}
+%%SELECTOR%% .dan-arrow-button-v8__arrow svg{
+    {{ macros.spacing_complex(design.arrow_styles.padding, 'padding') }}
+    stroke: {{ design.arrow_styles.color }};
+    fill: {{ design.arrow_styles.color }};
+}

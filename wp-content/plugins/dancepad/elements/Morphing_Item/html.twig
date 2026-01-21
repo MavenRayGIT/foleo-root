@@ -1,0 +1,9 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-morphing-nav__anchor') }}
+%%CHILDREN%%
+<span class='demo-morph-bg-target' data-morph-bg-target aria-hidden='true'></span>
+  {{ macros.linkEnd() }}
+{% else %}
+%%CHILDREN%%
+<span class='demo-morph-bg-target' data-morph-bg-target aria-hidden='true'></span>
+{% endif %}

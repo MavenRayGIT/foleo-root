@@ -1,0 +1,34 @@
+%%SELECTOR%% {
+  --hover-background: {{ design.modal_items.background_on_hover }};
+  
+  --transition-duration: {{ content.animation.duration.style }}; /*transition duration*/
+  --transition-easing: {{ content.animation.css_easing }}; /*transition easing*/
+
+  {{ macros.spacing_margin_all(design.margin) }}
+}
+/*general split button*/
+%%SELECTOR%% .dan-modal-button__morph-bg {
+    background: {{ design.button.background }}; /*general split button background*/
+
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-modal-button__btn {
+    gap: {{ design.button.gap.style }}; /*gap between button text and arrow*/
+    --translate-y: {{ content.animation.translate_items_on_click.style }};
+    
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-modal-button__btn-icon {
+    --dimensions: {{ design.button.arrow_dimensions.style }}; /*icon dimensions*/
+}
+%%SELECTOR%% .dan-modal-button__list-item {
+    {{ macros.typography(design.modal_typography, globalSettings) }}
+
+    {{ macros.spacing_complex(design.modal_items.margin, 'margin') }}
+    {{ macros.spacing_complex(design.modal_items.padding, 'padding') }}
+
+    {{ macros.border_radius(design.modal_items.border_radius) }}
+    {{ macros.border_complex(design.modal_items.border) }}
+}

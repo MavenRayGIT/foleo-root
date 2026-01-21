@@ -1,0 +1,45 @@
+%%SELECTOR%%{
+    position: {{ design.position.position }};
+    top: {{ design.position.top.style }};
+    z-index: {{ design.position.zindex }};
+
+    {{ macros.layout(design.layout) }}
+    {{ macros.background(design.background) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+
+@media (max-width: {{ content.responsive.breakpoint.style }}){
+    %%SELECTOR%% .dan-dropdown-mega-menu__mobile-wrapper{
+        display: flex !important;
+    }
+    %%SELECTOR%% .dan-dropdown-mega-menu__dropdowns-wrapper{
+        position: {{ content.responsive.position }} !important;
+        top: {{ content.responsive.top.style }} !important;
+        left: {{ content.responsive.left.style }} !important;
+        z-index: {{ content.responsive.z_index }} !important;
+
+        pointer-events: none !important;
+        opacity: 0 !important;
+
+        --scale: {{ content.responsive_transform_animation.scale }} !important;
+        --x: {{ content.responsive_transform_animation.transform_x.style }} !important;
+        --y: {{ content.responsive_transform_animation.transform_y.style }} !important;
+        transform: scale(var(--scale)) translateX(var(--x)) translateY(var(--y)) !important;
+
+        --opacity-easing: {{ content.responsive_fade_animation.css_easing }} !important;
+        --opacity-duration: {{ content.responsive_fade_animation.duration.style }} !important;
+        --opacity-delay: {{ content.responsive_fade_animation.delay.style }} !important;
+        --transform-easing: {{ content.responsive_transform_animation.css_easing }} !important;
+        --transform-duration: {{ content.responsive_transform_animation.duration.style }} !important;
+        --transform-delay: {{ content.responsive_transform_animation.delay.style }} !important;
+    
+        transition: 
+        opacity var(--opacity-duration) var(--opacity-easing) var(--opacity-delay),
+        transform var(--transform-duration) var(--transform-easing) var(--transform-delay);
+    }
+    %%SELECTOR%% .dan-dropdown-mega-menu__dropdowns-wrapper[data-toggle]{
+        opacity: 1 !important;
+        pointer-events: all !important;
+        transform: scale(1) translateX(0) translateY(0) !important;
+    }
+}

@@ -1,0 +1,20 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.background(design.nudge.background) }}
+
+    --nudge-height: {{ design.nudge.height.style }};
+    --padding-vertical: {{ design.nudge.vertical_padding.style }};
+    --padding-horizontal: {{ design.nudge.horizontal_padding.style }};
+    --control-border-radius: {{ design.nudge.border_radius.style }};
+}
+%%SELECTOR%% .dan-nudge-button__button{
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-nudge-button__nudge{
+    {{ macros.background(design.nudge.background) }}
+    --nudge-duration: {{ design.nudge.duration.style }};
+    --nudge-easing: {{ design.nudge.css_easing }};
+}

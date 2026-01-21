@@ -1,0 +1,8 @@
+{% for item in content.default.tippy_elements %}
+.tippy-box[data-theme~="dan-bd{{ loop.index }}"] {
+    background-color: {{ item.background }};
+    {{ macros.borders(item.borders) }}
+    {{ macros.typography(item.typography, globalSettings) }}
+    {{ macros.spacing_padding_all(item.padding) }}
+}
+{% endfor %}

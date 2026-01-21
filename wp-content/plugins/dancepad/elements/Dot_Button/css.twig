@@ -1,0 +1,30 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --btn-color-tunes-dot-size: {{ design.dots.size.style }};
+
+    --dot-duration: {{ content.animation.dot_duration.style }};
+    --text-duration: {{ content.animation.text_duration.style }};
+}
+%%SELECTOR%% .dan-dot-button__inner::after{
+    {{ macros.typography(design.swap_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-dot-button__inner{
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.simpleLayout(design.layout, breakpoint) }}
+}
+%%SELECTOR%% .dan-dot-button__bg{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-dot-button__dot{
+    background-color: {{ design.dots.first_dot_color }};
+    transform-origin: {{ content.animation.dot_origin.style }};
+}
+%%SELECTOR%% .dan-dot-button__dot--second{
+    background-color: {{ design.dots.second_dot_color }}
+}
+%%SELECTOR%% .dan-dot-button__dot--third{
+    background-color: {{ design.dots.third_dot_color }}
+}

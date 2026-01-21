@@ -1,0 +1,23 @@
+.breakdance .dan-blade-reveal{
+    display: block;
+    width: fit-content;
+}
+.breakdance .dan-blade-reveal .dan-blade-reveal__anchor{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-blade-reveal .dan-blade-reveal__inner{
+    display: block;
+
+    clip-path: polygon(0 0, 150% 0, 150% 150%, 0% 150%);
+}
+.breakdance .dan-blade-reveal .dan-blade-reveal__line-wrapper{
+    overflow: hidden;
+}
+.breakdance .dan-blade-reveal[data-flickering="1"]{
+    opacity: 0;
+} 

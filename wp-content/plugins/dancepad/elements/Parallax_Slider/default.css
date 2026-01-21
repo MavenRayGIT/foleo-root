@@ -1,0 +1,85 @@
+.breakdance .dan-parallax-slider[data-flickering="true"] {
+    opacity: 0;
+}
+.breakdance .dan-parallax-slider{
+    --parallax-scale: 1.75; /*parallax scale*/
+}
+/*Slider*/
+.breakdance .dan-parallax-slider .dan-parallax-slider__slider {
+    display: flex;
+    align-items: center;
+
+    overflow-x: hidden;
+    will-change: transform;
+
+    width: 100%; /*item width*/
+}
+.breakdance .dan-parallax-slider .dan-parallax-slider__container {
+    display: grid;
+    grid-template-columns: repeat(var(--slidesTotal), var(--items-width));
+
+    cursor: grab;
+
+    height: 100%;
+}
+.breakdance .dan-parallax-slider .dan-parallax-slider__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    will-change: transform;
+
+    height: 100%
+}
+.breakdance .dan-parallax-slider .dan-parallax-slider__item-img-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.breakdance .dan-parallax-slider .dan-parallax-slider__item-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    user-select: none;
+}
+.breakdance .dan-parallax-slider .breakdance-image-object {
+    max-width: unset;
+    pointer-events: none;
+    user-select: none;
+    transform-origin: left center;
+    transform: scale(var(--parallax-scale)); /*scale*/
+    will-change: transform;
+}
+.breakdance .dan-parallax-slider .is-dragging .dan-parallax-slider__container {
+    cursor: grabbing;
+}
+/*Progress*/
+.breakdance .dan-parallax-slider .dan-parallax-slider__progress{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+}
+.breakdance .dan-parallax-slider .dan-parallax-slider__progress-line-wrap {
+    display: block;
+
+    height: var(--progress-height);
+    overflow: hidden;
+    transform-origin: left center;
+    will-change: transform;
+}
+.breakdance .dan-parallax-slider .dan-parallax-slider__progress-line {
+    display: block;
+
+    width: 100%;
+    height: var(--progress-height);
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
+}

@@ -1,0 +1,63 @@
+.breakdance .dan-anyside-button{
+    display: block;
+    width: fit-content;
+
+    position: relative;
+    overflow: hidden;
+}
+.breakdance .dan-anyside-button:not(:has(> a)),
+.breakdance .dan-anyside-button > a{
+    cursor: pointer;
+}
+.breakdance .dan-anyside-button .dan-anyside-button__anchor{
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-anyside-button .dan-anyside-button__title {
+    position: relative;
+    z-index: 2;
+    transition: color var(--colortransition) var(--easing);
+}
+.breakdance .dan-anyside-button .dan-anyside-button__anyside-div {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path var(--pathtransition) var(--easing);
+    z-index: 1;
+}
+.breakdance .dan-anyside-button[data-type='hover']:hover .dan-anyside-button__title {
+    color: var(--hover-color); /**/
+    transition: color var(--colortransition-ida) var(--easing);
+}
+.breakdance .dan-anyside-button[data-type='hover']:hover .dan-anyside-button__anyside-div {
+    clip-path: circle(100% at 50% 50%);
+    transition: clip-path var(--pathtransition-ida) var(--easing);
+}
+.breakdance .dan-anyside-button[data-type='click'] .dan-anyside-button__anyside-span {
+    position: absolute;
+    transform: translate(-50%, -50%);
+
+    pointer-events: none;
+    border-radius: 50%;
+    animation: animate var(--pathtransition) linear infinite;
+}
+@keyframes animate {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.5;
+    }
+    100% {
+        width: var(--click-dimensions);
+        height: var(--click-dimensions);
+        opacity: 0;
+    }
+} 

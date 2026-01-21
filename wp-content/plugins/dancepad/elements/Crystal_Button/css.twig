@@ -1,0 +1,22 @@
+%%SELECTOR%%{
+    white-space: {{ content.content.white_space }};
+
+    --filter: {{ content.animation.filter }};
+    --brightness: {{ content.animation.brightness }};
+    --saturate: {{ content.animation.saturate }};
+    --blur: {{ content.animation.blur.style }};
+
+    {{ macros.spacing_padding_all(design.padding) }}
+
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%%:before{
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-crystal-button__backdrop {
+    {{ macros.borders(design.borders) }}
+    
+    background: {{ design.button_colors.background }};
+}

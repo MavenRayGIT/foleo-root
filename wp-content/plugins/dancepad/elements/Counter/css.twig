@@ -1,0 +1,22 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+
+    --dan-counter-transition: {{ content.animation.duration.style }};
+    --dan-counter-ease: var({{ content.animation.easing }});
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-counter__character {
+    {{ macros.typography(design.general_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-counter__character--symbol {
+    {{ macros.typography(design.separators_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-counter__character--float {
+    {{ macros.typography(design.thousands_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-counter__character--decimal {
+    {{ macros.typography(design.decimals_typography, globalSettings) }}
+}

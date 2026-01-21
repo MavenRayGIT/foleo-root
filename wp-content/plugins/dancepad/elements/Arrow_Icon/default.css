@@ -1,0 +1,59 @@
+.breakdance .dan-arrow-icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+
+    transition: scale var(--scale-duration) var(--scale-easing) var(--scale-delay);
+}
+.breakdance .dan-arrow-icon:not(:has(> a)),
+.breakdance .dan-arrow-icon > a{
+    cursor: pointer;
+}
+.breakdance .dan-arrow-icon .dan-arrow-icon__anchor{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-arrow-icon .dan-arrow-icon__arrow{
+    position: absolute;
+    min-width: unset !important;
+    min-height: unset !important;
+    
+    scale: var(--arrow-scale);
+    rotate: var(--arrow-rotate);
+
+    transition: 
+    rotate var(--rotate-duration) var(--rotate-easing) var(--rotate-delay),
+    transform var(--transform-duration) var(--transform-easing) var(--transform-delay);
+}
+.breakdance .dan-arrow-icon .dan-arrow-icon__arrow:nth-child(2){
+    transform: translateX(calc(-100% - var(--distance-between-arrows)));
+}
+
+.breakdance .dan-arrow-icon[data-active='1'][data-enable-scale='1'],
+.breakdance .dan-arrow-icon[data-active='true'][data-enable-scale='1'],
+.breakdance .dan-arrow-icon[data-active='true'][data-enable-scale='true']{
+    scale: var(--icon-hover-scale);
+}
+.breakdance .dan-arrow-icon[data-active='1'][data-enable-transform='1'] .dan-arrow-icon__arrow:nth-child(1),
+.breakdance .dan-arrow-icon[data-active='true'][data-enable-transform='1'] .dan-arrow-icon__arrow:nth-child(1),
+.breakdance .dan-arrow-icon[data-active='true'][data-enable-transform='true'] .dan-arrow-icon__arrow:nth-child(1){
+    transform: translateX(calc(100% + var(--distance-between-arrows)));
+}
+.breakdance .dan-arrow-icon[data-active='1'][data-enable-transform='1'] .dan-arrow-icon__arrow:nth-child(2),
+.breakdance .dan-arrow-icon[data-active='true'][data-enable-transform='1'] .dan-arrow-icon__arrow:nth-child(2),
+.breakdance .dan-arrow-icon[data-active='true'][data-enable-transform='true'] .dan-arrow-icon__arrow:nth-child(2){
+    transform: translateX(0%);
+}
+.breakdance .dan-arrow-icon[data-active='1'][data-enable-rotate='1'] .dan-arrow-icon__arrow,
+.breakdance .dan-arrow-icon[data-active='true'][data-enable-rotate='1'] .dan-arrow-icon__arrow,
+.breakdance .dan-arrow-icon[data-active='true'][data-enable-rotate='true'] .dan-arrow-icon__arrow{
+    rotate: var(--arrow-hover-rotate);
+} 

@@ -1,0 +1,27 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-ripple-button-v4__anchor') }}
+    <span class='dan-ripple-button-v4__bg'>
+        <span class='dan-ripple-button-v4__bg-layers'>
+        <span class='dan-ripple-button-v4__bg-layer dan-ripple-button-v4__bg-layer--1'></span>
+        <span class='dan-ripple-button-v4__bg-layer dan-ripple-button-v4__bg-layer--2'></span>
+        <span class='dan-ripple-button-v4__bg-layer dan-ripple-button-v4__bg-layer--3'></span>
+        </span>
+    </span>
+    <span class='dan-ripple-button-v4__inner'>
+        <span class='dan-ripple-button-v4__inner-static'>{{ content.content.text }}</span>
+        <span class='dan-ripple-button-v4__inner-hover'>{{ content.content.text }}</span>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-ripple-button-v4__bg'>
+        <span class='dan-ripple-button-v4__bg-layers'>
+        <span class='dan-ripple-button-v4__bg-layer dan-ripple-button-v4__bg-layer--1'></span>
+        <span class='dan-ripple-button-v4__bg-layer dan-ripple-button-v4__bg-layer--2'></span>
+        <span class='dan-ripple-button-v4__bg-layer dan-ripple-button-v4__bg-layer--3'></span>
+        </span>
+    </span>
+    <span class='dan-ripple-button-v4__inner'>
+        <span class='dan-ripple-button-v4__inner-static'>{{ content.content.text }}</span>
+        <span class='dan-ripple-button-v4__inner-hover'>{{ content.content.text }}</span>
+    </span>
+{% endif %}

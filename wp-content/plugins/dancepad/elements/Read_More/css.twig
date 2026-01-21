@@ -1,0 +1,17 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+    {{ macros.background(design.background) }}
+  {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-read-more__container{
+    height: {{ content.content.default_height_to_show.style }};
+    --blur-color: {{ content.content.fade_color }}
+}
+%%SELECTOR%% .dan-read-more__container::before{
+    height: {{ content.content.fade_height.style }};
+}
+%%SELECTOR%% .dan-read-more__btn{
+    --show-more-color-hover: {{ content.read_more_button.hover_color }};
+    --show-more-color-duration: {{ content.read_more_button.hover_color_duration.style }};
+    --show-more-color-ease: {{ content.read_more_button.hover_color_css_easing }};
+}

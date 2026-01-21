@@ -1,0 +1,38 @@
+%%SELECTOR%%{
+    {{ macros.layout(design.layout) }}
+    {{ macros.size(design.size) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+
+    --negative-horizontal-gap: {{ design.gap.horizontal_gap.style }};
+    --negative-vertical-gap: {{ design.gap.vertical_gap.style }};
+    --avatar-dimensions: {{ design.avatar.dimensions.style }};
+
+    --tooltip-arrow-color: {{ design.arrow.color }};
+    --tooltip-arrow-dimensions: {{ design.arrow.dimensions.style }};
+    --tooltip-arrow-bottom: {{ design.arrow.bottom_offset.style }};
+
+    --tooltip-fade-duration: {{ content.tooltip_animation.fade_duration.style }};
+    --tooltip-fade-easing: {{ content.tooltip_animation.fade_css_easing }};
+    --tooltip-scale-from: {{ content.tooltip_animation.scale_from }};
+    --tooltip-scale-duration: {{ content.tooltip_animation.scale_duration.style }};
+    --tooltip-scale-easing: {{ content.tooltip_animation.scale_css_easing }};
+}
+%%SELECTOR%% img{
+    {{ macros.borders(design.avatar.borders) }}
+}
+%%SELECTOR%% .dan-toolteam__tooltip{
+    top: {{ design.tooltip.top.style }};
+    gap: {{ design.tooltip.gap.style }};
+
+    {{ macros.spacing_complex(design.tooltip.padding, 'padding') }}
+    {{ macros.typography(design.tooltip.typography, globalSettings) }}
+    {{ macros.background(design.tooltip.background) }}
+    {{ macros.borders(design.tooltip.borders) }}
+}
+%%SELECTOR%% .dan-toolteam__name{
+    {{ macros.typography(design.name_role.name_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-toolteam__role{
+    {{ macros.typography(design.name_role.role_typography, globalSettings) }}
+}

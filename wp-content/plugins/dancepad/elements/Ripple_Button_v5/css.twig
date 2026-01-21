@@ -1,0 +1,20 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --first-ripple--color: {{ content.ripple_animation.first_color }};
+    --second-ripple--color: {{ content.ripple_animation.second_color }};
+    --ripple-duration: {{ content.ripple_animation.duration.style }};
+    --ripples-stagger: {{ content.ripple_animation.stagger.style }};
+    --text-duration: {{ content.swap_animation.duration.style }};
+}
+%%SELECTOR%% .dan-ripple-button-v5__inner{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-ripple-button-v5__inner::after{
+    {{ macros.typography(design.swap_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-ripple-button-v5__bg{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}

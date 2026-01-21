@@ -1,0 +1,20 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --padding-top: {{ design.padding.padding_top.style }};
+    --padding-bottom: {{ design.padding.padding_bottom.style }};
+    --padding-left: {{ design.padding.padding_left.style }};
+    --padding-right: {{ design.padding.padding_right.style }};
+
+    --background-color: {{ design.colors.background }};
+    --stripes-blend-first-color: {{ content.stripes_animation.blend_color }};
+    --stripes-degree: {{ content.stripes_animation.degree.style }};
+    --stripes-translate-speed: {{ content.stripes_animation.translate_speed.style }};
+    --stripes-translate-ease: {{ content.stripes_animation.translate_css_easing }};
+    --stripes-movement-duration: {{ content.stripes_animation.movement_duration.style }};
+    --stripes-movement-ease: {{ content.stripes_animation.movement_css_easing }};
+}
+%%SELECTOR%% .dan-stripes-button__background{
+    {{ macros.borders(design.border) }}
+}

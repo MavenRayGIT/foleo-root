@@ -1,0 +1,19 @@
+%%SELECTOR%%{
+{{ macros.spacing_padding_all(design.padding) }}
+  {{ macros.layout(design.layout) }}
+  {{ macros.typography(design.typography, globalSettings) }}
+  {{ macros.background(design.background) }}
+  {{ macros.borders(design.border) }}
+  
+  --nav-item-bg-duration: {{ design.active.duration.style }};
+--nav-item-bg-ease: {{ design.active.css_easing }};
+}
+%%SELECTOR%% .dan-looping-tabs__loop-progress{
+background-image: linear-gradient({{ design.progress_gradient.degree }}deg, {{ design.progress_gradient.gradient_first_color }}, {{ design.progress_gradient.gradient_second_color }});
+}
+%%SELECTOR%%.dan-looping-tabs__nav-item--active,
+%%SELECTOR%%:hover,
+%%SELECTOR%%:focus-visible{
+{{ macros.typography(design.active.typography, globalSettings) }}
+  {{ macros.background(design.active.background) }}
+}

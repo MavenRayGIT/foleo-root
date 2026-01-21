@@ -1,0 +1,14 @@
+%%SELECTOR%%{
+    {{ macros.typography(design.general_typography, globalSettings) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%%:not(:has(> a)),
+%%SELECTOR%% > a{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-dynamic-copyright__prefix{
+    {{ macros.typography(design.prefix_typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-dynamic-copyright__suffix{
+    {{ macros.typography(design.suffix_typography, globalSettings) }}
+}

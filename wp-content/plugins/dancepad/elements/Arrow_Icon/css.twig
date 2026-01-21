@@ -1,0 +1,31 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+
+    --arrow-scale: {{ design.arrow_styles.size_scale_ }};
+    --icon-hover-scale: {{ content.animation.scale }};
+    --scale-duration: {{ content.animation.scale_duration.style }};
+    --scale-easing: {{ content.animation.scale_css_easing }};
+    --scale-delay: {{ content.animation.scale_delay.style }}; 
+
+    --arrow-rotate: {{ design.arrow_styles.rotation.style }};
+
+    --distance-between-arrows: {{ content.animation.distance_between_arrows.style }};
+    --transform-duration: {{ content.animation.translate_duration.style }};
+    --transform-easing: {{ content.animation.translate_css_easing }};
+    --transform-delay: {{ content.animation.translate_delay.style }};
+
+    --arrow-hover-rotate: {{ content.animation.rotate.style }};
+    --rotate-duration: {{ content.animation.rotate_duration.style }};
+    --rotate-easing: {{ content.animation.rotate_css_easing }};
+    --rotate-delay: {{ content.animation.rotate_delay.style }};
+
+    background-color: {{ design.background.background }};
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-arrow-icon__arrow{
+    fill: {{ design.arrow_styles.color }};
+    stroke: {{ design.arrow_styles.color }};
+    stroke-width: {{ design.arrow_styles.weight }};
+}

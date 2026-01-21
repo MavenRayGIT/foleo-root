@@ -1,0 +1,29 @@
+%%SELECTOR%%{
+    --block-background: {{ design.colors.block_content_background }};
+    --corners-background: {{ design.colors.mask_background }};
+    --block-border-radius: {{ design.corners.radius.style }};
+
+    --inverted-corner-border-radius-1: {{ design.corners.inverted_radius.style }};
+    --content-corner-width-1: {{ design.corners.inverted_width.style }};
+    --content-corner-height-1: {{ design.corners.inverted_height.style }};
+    --content-corner-distance-1: {{ design.corners.inverted_distance.style }};
+
+    --inverted-corner-border-radius-2: {{ design.corner_2.inverted_radius.style }};
+    --content-corner-width-2: {{ design.corner_2.inverted_width.style }};
+    --content-corner-height-2: {{ design.corner_2.inverted_height.style }};
+    --content-corner-distance-2: {{ design.corner_2.inverted_distance.style }};
+
+    --inverted-corner-border-radius-3: {{ design.corner_3.inverted_radius.style }};
+    --content-corner-width-3: {{ design.corner_3.inverted_width.style }};
+    --content-corner-height-3: {{ design.corner_3.inverted_height.style }};
+    --content-corner-distance-3: {{ design.corner_3.inverted_distance.style }};
+
+    --inverted-corner-border-radius-4: {{ design.corner_4.inverted_radius.style }};
+    --content-corner-width-4: {{ design.corner_4.inverted_width.style }};
+    --content-corner-height-4: {{ design.corner_4.inverted_height.style }};
+    --content-corner-distance-4: {{ design.corner_4.inverted_distance.style }};
+
+    {{ macros.size(design.size) }}
+
+    {{ macros.spacing_margin_all(design.margin) }}
+}

@@ -1,0 +1,93 @@
+.breakdance .dan-looping-tabs{
+    display: flex;
+}
+.breakdance .dan-looping-tabs[data-flickering="1"]{
+    opacity: 0;
+}
+
+/*Nav*/
+.breakdance .bde-div.dan-looping-tabs__nav{
+    display: flex;
+    flex-direction: column;
+}
+.breakdance .dan-looping-tabs__nav-item{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    cursor: pointer;
+
+    transition: background-color var(--nav-item-bg-duration) var(--nav-item-bg-ease);
+}
+.breakdance .dan-looping-tabs__loop{
+    border-radius: var(--shared-progress-radius);
+    position: relative;
+}
+.breakdance .dan-looping-tabs__loop-progress{
+    border-radius: var(--shared-progress-radius);
+    height: 100%;
+    width: 100%;
+    max-height: calc(100% - var(--padding) * 2);
+    max-width: calc(100% - var(--padding) * 2);
+
+    position: absolute;
+    top: var(--padding);
+    left: var(--padding);
+}
+.breakdance .dan-looping-tabs__loop-mask{
+    border-radius: var(--shared-progress-radius);
+
+    height: 100%;
+    width: 100%;
+    max-height: calc(100% - var(--padding) * 2);
+    max-width: calc(100% - var(--padding) * 2);
+
+    transform: rotate(180deg);
+
+    position: absolute;
+    z-index: 1;
+    top: var(--padding);
+    left: calc(100% - var(--padding));
+
+    transform-origin: left;
+}
+.breakdance .dan-looping-tabs__nav-item--active .dan-looping-tabs__loop-mask{
+    border-radius: 0;
+    border-top-left-radius: var(--shared-progress-radius);
+    border-bottom-left-radius: var(--shared-progress-radius);
+}
+
+/*Vertical*/
+.breakdance .dan-looping-tabs[data-mode="vertical"] .dan-looping-tabs__loop-mask{
+    border-radius: var(--shared-progress-radius);
+
+    top: calc(100% - var(--padding));
+    left: var(--padding);
+
+    transform-origin: top;
+}
+.breakdance .dan-looping-tabs[data-mode="vertical"] .dan-looping-tabs__nav-item--active .dan-looping-tabs__loop-mask{
+    border-radius: 0;
+    border-top-right-radius: var(--shared-progress-radius);
+    border-top-left-radius: var(--shared-progress-radius);
+}
+
+/*Tabs*/
+.breakdance .bde-div.dan-looping-tabs__tab{
+    overflow: hidden;
+    display: none;
+}
+.breakdance .bde-div.dan-looping-tabs__tab--active{
+    display: flex;
+}
+
+/*only showcase*/
+.breakdance .bde-div.dan-looping-tabs__tab img{
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+.breakdance .dan-looping-tabs[data-mode="vertical"] .bde-div.dan-looping-tabs__tab img{
+    max-height: 100%;
+}

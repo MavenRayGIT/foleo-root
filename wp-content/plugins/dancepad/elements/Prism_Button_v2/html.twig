@@ -1,0 +1,11 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-blurry-button__anchor') }}
+    <span data-text='{{ content.content.text }}' class='dan-prism-button-v2__inner'>
+        <span class='dan-prism-button-v2__text'>{{ content.content.text }}</span>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span data-text='{{ content.content.text }}' class='dan-prism-button-v2__inner'>
+        <span class='dan-prism-button-v2__text'>{{ content.content.text }}</span>
+    </span>
+{% endif %}

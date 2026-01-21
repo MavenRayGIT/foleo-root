@@ -1,0 +1,23 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --padding-top: {{ design.padding.padding_top.style }};
+    --padding-left: {{ design.padding.padding_left.style }};
+    --padding-bottom: {{ design.padding.padding_bottom.style }};
+    --padding-right: {{ design.padding.padding_right.style }};
+
+    --text-color: {{ design.colors.text_color }};
+    --background: {{ design.colors.background }};
+
+    --squeezy-duration: {{ content.squeezy_animation.duration.style }};
+    --swap-duration: {{ content.swap_animation.duration.style }};
+    --swap-translate: {{ content.swap_animation.translate.style }};
+}
+%%SELECTOR%% .dan-squeezy-radius-button__background--bubblegum-dash{
+    {{ macros.borders(design.border) }}
+}
+%%SELECTOR%%:hover .dan-squeezy-radius-button__background,
+%%SELECTOR%%:focus-visible .dan-squeezy-radius-button__background{
+    {{ macros.border_radius(content.squeezy_animation.to_border_radius) }}
+}

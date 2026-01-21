@@ -1,0 +1,13 @@
+%%SELECTOR%%{
+    --animation-duration: {{ content.animation.duration.style }};
+    --animation-ease: {{ content.animation.css_easing }};
+
+    --opacity-from: {{ content.animation.from_opacity }};
+    --translate-x-from: {{ content.animation.from_x.style }};
+    --translate-y-from: {{ content.animation.from_y.style }};
+
+    {{ macros.size(design.size) }}
+  
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+}

@@ -1,0 +1,15 @@
+%%SELECTOR%%{
+{{ macros.spacing_margin_all(design.margin) }}
+  {{ macros.spacing_padding_all(design.padding) }}
+  {{ macros.size(design.size) }}
+  {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-overlay-shadows__background{
+{{ macros.background(design.background) }}
+}
+%%SELECTOR%% .dan-overlay-shadows__mask{
+background: {{ content.shadows.color }}
+}
+%%SELECTOR%% .dan-overlay-shadows__noise{
+opacity: {{ content.shadows.noise_opacity }}
+}

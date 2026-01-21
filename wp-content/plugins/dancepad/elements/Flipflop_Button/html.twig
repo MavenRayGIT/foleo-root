@@ -1,0 +1,19 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-flipflop-button__anchor') }}
+    <span class='dan-flipflop-button__inner'>
+    <span data-text='{{ content.content.flop_text }}' class='dan-flipflop-button__back'></span>
+        <span class='dan-flipflop-button__front'>
+            <span class='dan-flipflop-button__bg'></span>
+            <span class='dan-flipflop-button__text'>{{ content.content.flip_text }}</span>
+        </span>
+    </span>
+  {{ macros.linkEnd() }}
+{% else %}
+    <span class='dan-flipflop-button__inner'>
+    <span data-text='{{ content.content.flop_text }}' class='dan-flipflop-button__back'></span>
+        <span class='dan-flipflop-button__front'>
+            <span class='dan-flipflop-button__bg'></span>
+            <span class='dan-flipflop-button__text'>{{ content.content.flip_text }}</span>
+        </span>
+    </span>
+{% endif %}

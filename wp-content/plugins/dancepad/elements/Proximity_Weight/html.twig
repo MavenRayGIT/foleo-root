@@ -1,0 +1,7 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-proximity-weight__anchor') }}
+    <span class="dan-proximity-weight__inner" data-text="{{ content.content.text }}" data-type="{{ content.animation.type }}" data-radius="{{ content.animation.radius }}" data-min-weight="{{ content.animation.min_weight }}" data-max-weight="{{ content.animation.max_weight }}" data-min-scale="{{ content.animation.min_scale }}" data-max-scale="{{ content.animation.max_scale }}">{{ content.content.text }}</span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class="dan-proximity-weight__inner" data-text="{{ content.content.text }}" data-type="{{ content.animation.type }}" data-radius="{{ content.animation.radius }}" data-min-weight="{{ content.animation.min_weight }}" data-max-weight="{{ content.animation.max_weight }}" data-min-scale="{{ content.animation.min_scale }}" data-max-scale="{{ content.animation.max_scale }}">{{ content.content.text }}</span>
+{% endif %}

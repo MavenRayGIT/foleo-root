@@ -1,0 +1,52 @@
+.breakdance .dan-scrolling-gallery {
+    position: relative;
+    display: flex;
+}
+.breakdance .dan-scrolling-gallery[data-flickering="1"] {
+    opacity: 0;
+}
+.breakdance .dan-scrolling-gallery__map {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: fit-content;
+}
+.breakdance .dan-scrolling-gallery__preview{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.breakdance .dan-scrolling-gallery__images {
+    position: relative;
+    top: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.breakdance .dan-scrolling-gallery__image {
+    position: relative;
+    overflow: hidden;
+}
+.breakdance .dan-scrolling-gallery__thumbnail {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    transition: all var(--active-duration) var(--active-easing);
+}
+.breakdance .dan-scrolling-gallery__thumbnail--active {
+    transform: scale(var(--active-scale));
+
+    opacity: 1 !important;
+    z-index: 10000;
+}
+.breakdance .dan-scrolling-gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

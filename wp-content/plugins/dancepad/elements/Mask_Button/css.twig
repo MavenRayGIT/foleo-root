@@ -1,0 +1,25 @@
+%%SELECTOR%%{
+    white-space: {{ content.content.white_space }};
+
+    --bg: {{ design.button_colors.background }};
+    --fg: {{ design.button_colors.text_color }};
+    --transition-duration: {{ content.animation.transition_duration.style }}; /*duration*/
+
+    {{ macros.spacing_padding_all(design.padding) }}
+
+    {{ macros.typography(design.typography, globalSettings) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-mask-button__title{
+    mix-blend-mode: {{ content.animation.mix_blend_mode }};
+}
+%%SELECTOR%% .dan-mask-button__back{
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-mask-button__back > span{
+    width: {{ design.mask.dimensions.style }}; /*width de la mask*/
+    background: {{ design.mask.background }};
+    {{ macros.border_radius(design.mask.border_radius) }}
+}

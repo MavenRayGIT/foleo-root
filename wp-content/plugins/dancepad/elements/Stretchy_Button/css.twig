@@ -1,0 +1,15 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --stretch-amount: {{ content.stretch_animation.stretch_amount.style }};
+    --stretch-text: {{ content.stretch_animation.stretch_text }};
+    --stretch-duration: {{ content.stretch_animation.stretch_duration.style }};
+}
+%%SELECTOR%% .dan-stretchy-button__inner{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-stretchy-button__bg{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}

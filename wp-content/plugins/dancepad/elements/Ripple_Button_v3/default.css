@@ -1,0 +1,70 @@
+.breakdance .dan-ripple-button-v3{
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-ripple-button-v3:not(:has(> a)),
+.breakdance .dan-ripple-button-v3 > a{
+    cursor: pointer;
+}
+.breakdance .dan-ripple-button-v3 .dan-ripple-button-v3__anchor{
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-ripple-button-v3 .dan-ripple-button-v3__wrapper{
+    position: relative;
+
+    transition: transform var(--translate-animation-duration) var(--translate-animation-easing) var(--translate-animation-delay); /*animation*/
+}
+.breakdance .dan-ripple-button-v3 .dan-ripple-button-v3__bottom{
+    position: absolute;
+    top: 100%;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.breakdance .dan-ripple-button-v3 .dan-ripple-button-v3__title--bottom{
+    position: absolute;
+}
+.breakdance .dan-ripple-button-v3 .dan-ripple-button-v3__mask{
+    border-radius: 50%;
+
+    width: 50%; /**/
+    height: 100%;
+
+    transition: all var(--ripple-animation-duration) var(--ripple-animation-easing) var(--ripple-animation-delay); /*animation*/
+}
+
+/*Hover*/
+.breakdance .dan-ripple-button-v3:hover .dan-ripple-button-v3__wrapper{
+    transform: translateY(-100%);
+}
+.breakdance .dan-ripple-button-v3:hover .dan-ripple-button-v3__mask{
+    width: 100%;
+
+    border: unset;
+    box-shadow: unset;
+}
+
+.breakdance .dan-ripple-button-v3[data-from-top="fromTop"] .dan-ripple-button-v3__bottom{
+    top: -100%;
+}
+.breakdance .dan-ripple-button-v3[data-from-top="fromTop"]:hover .dan-ripple-button-v3__wrapper{
+    transform: translateY(100%);
+}
+.breakdance .dan-ripple-button-v3[data-flickering="1"]{
+    opacity: 0;
+}

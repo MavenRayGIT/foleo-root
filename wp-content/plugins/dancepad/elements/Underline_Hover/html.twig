@@ -1,0 +1,7 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-underline-hover__anchor') }}
+  <span class="dan-underline-hover__inner {% if content.underline.type == 'Side to Side' %}dan-underline-hover__side-to-side{% elseif content.underline.type == 'One Side' %}dan-underline-hover__one-sided{% elseif content.underline.type == 'Two Sides' %}dan-underline-hover__two-sided{% elseif content.underline.type == 'Full Side' %}dan-underline-hover__full-sided{% endif %}">{{ content.content.text }}</span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class="dan-underline-hover__inner {% if content.underline.type == 'Side to Side' %}dan-underline-hover__side-to-side{% elseif content.underline.type == 'One Side' %}dan-underline-hover__one-sided{% elseif content.underline.type == 'Two Sides' %}dan-underline-hover__two-sided{% elseif content.underline.type == 'Full Side' %}dan-underline-hover__full-sided{% endif %}">{{ content.content.text }}</span>
+{% endif %}

@@ -1,0 +1,14 @@
+.breakdance .dan-proximity-weight .dan-proximity-weight__char {
+    display: inline-block;
+    transform-origin: center;
+    transition: transform var(--duration) var(--easing),
+    font-variation-settings var(--duration) var(--easing);
+}
+.breakdance .dan-proximity-weight .dan-proximity-weight__anchor{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}

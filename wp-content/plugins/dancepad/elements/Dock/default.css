@@ -1,0 +1,32 @@
+.breakdance .dan-dock-menu {
+    height: auto;
+}
+.breakdance .dan-dock-menu .breakdance-empty-container{
+    min-height: unset !important;
+}
+.breakdance .dan-dock-menu .dan-dock-menu__item {
+    width: var(--dimensions);
+    height: var(--dimensions);
+    min-width: unset !important;
+    min-height: unset !important;
+    outline: unset !important;
+
+    cursor: pointer;
+    position: relative;
+}
+.breakdance .dan-dock-menu .dan-dock-menu__item::before {
+    white-space: nowrap;
+    content: attr(data-tooltip);
+    display: block;
+
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.1s ease-out opacity;
+}
+.breakdance .dan-dock-menu .dan-dock-menu__item:hover::before {
+    opacity: 1;
+} 

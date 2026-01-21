@@ -1,0 +1,30 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    --icon-dimensions: {{ design.arrow_styles.dimensions.style }};
+    --transition-duration: {{ content.animation.duration.style }};
+    --transition-easing: {{ content.animation.css_easing }};
+}
+%%SELECTOR%% .dan-arrow-button-v4__text{
+    {{ macros.spacing_all(design.padding) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%% .dan-arrow-button-v4__text span{
+    {{ macros.typography(design.typography, globalSettings) }}
+}
+%%SELECTOR%% .dan-arrow-button-v4__icon{
+    {{ macros.spacing_complex(design.arrow_styles.padding, 'padding') }}
+    {{ macros.border_complex(design.arrow_styles.border) }}
+    {{ macros.border_radius(design.arrow_styles.border_radius) }}
+    background: {{ design.arrow_styles.background }};
+    fill: {{ design.arrow_styles.color }};
+    stroke: {{ design.arrow_styles.color }};
+}
+%%SELECTOR%% .dan-arrow-button-v4__icon--duplicate{
+    {{ macros.spacing_complex(design.duplicated_arrow_styles.padding, 'padding') }}
+    {{ macros.border_complex(design.duplicated_arrow_styles.border) }}
+    {{ macros.border_radius(design.duplicated_arrow_styles.border_radius) }}
+    background: {{ design.duplicated_arrow_styles.background }};
+    fill: {{ design.duplicated_arrow_styles.color }};
+    stroke: {{ design.duplicated_arrow_styles.color }};
+}

@@ -1,0 +1,28 @@
+html[dan-burger--body-toggled]{
+    overflow: hidden !important;
+}
+html[dan-burger--body-toggled] > body > .os-scrollbar-horizontal,
+html[dan-burger--body-toggled] > body > .os-scrollbar-vertical{
+    display: none !important;
+}
+.breakdance .dan-expanding-menu .dan-expanding-menu__expanding {
+    display: block;
+    position: absolute;
+
+    transform: scale(0);
+}
+.breakdance .dan-expanding-menu[data-type="dan-expanding-menu--fromtopleft"] .dan-expanding-menu__expanding{
+    transform-origin: top left;
+}
+.breakdance .dan-expanding-menu[data-type="dan-expanding-menu--fromtopright"] .dan-expanding-menu__expanding{
+    transform-origin: top right;
+}
+.breakdance .dan-expanding-menu[data-type="dan-expanding-menu--frombottomleft"] .dan-expanding-menu__expanding{
+    transform-origin: bottom left;
+}
+.breakdance .dan-expanding-menu[data-type="dan-expanding-menu--frombottomright"] .dan-expanding-menu__expanding{
+    transform-origin: bottom right;
+}
+.breakdance .dan-expanding-menu[data-fade="1"] .dan-expanding-menu__expanding{
+    opacity: 0
+} 

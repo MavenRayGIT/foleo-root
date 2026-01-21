@@ -1,0 +1,17 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    --reel-translate: {{ design.reel.translate.style }};
+    --reel-duration: {{ design.reel.duration.style }};
+}
+%%SELECTOR%% .dan-reel-button__inner{
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-reel-button__bg{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-reel-button__inner-hover::after{
+    {{ macros.typography(design.reel.typography, globalSettings) }}
+}

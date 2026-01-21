@@ -1,0 +1,18 @@
+.breakdance .dan-typed{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+}
+.breakdance .dan-typed .dan-typed__anchor{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+  
+  	color: currentColor !important;
+    text-decoration: unset;
+}
+.breakdance .dan-typed .dan-typed__wrapper{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+}

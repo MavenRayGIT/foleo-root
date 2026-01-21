@@ -1,0 +1,22 @@
+%%SELECTOR%% {
+    --transition-duration: {{ content.animation.duration.style }};
+    --transition-delay: {{ content.animation.delay.style }};
+    --transition-ease: {{ content.animation.css_easing }};
+
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.borders(design.borders) }}
+    {{ macros.background(design.background) }}
+}
+%%SELECTOR%% .dan-morphing-nav__morphing-div {
+    background-color: {{ design.morphing_div_style.background }}; /*box color*/
+}
+%%SELECTOR%% .demo-morph-bg-target {
+    --height: {{ design.morphing_div_style.height.style }};
+    width: {{ design.morphing_div_style.width.style }}; /*box width*/
+    
+    {{ macros.borders(design.morphing_div_style.borders) }} /*box border*/
+
+    {{ macros.spacing_complex(design.morphing_div_style.margin, 'margin') }}
+} 

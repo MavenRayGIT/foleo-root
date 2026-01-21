@@ -1,0 +1,7 @@
+.breakdance .dan-motion-divider{
+    outline: none !important;
+}
+.breakdance .dan-motion-divider .dan-motion-divider__motion{
+    border-top: var(--height) solid;
+    width: 0;
+} 

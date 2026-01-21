@@ -1,0 +1,12 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+}
+%%SELECTOR%% .dan-scroll-reading__line-mask {
+    background-color: {{ content.mask.mask_color }}; /*mask color*/
+    --opacity: {{ content.mask.text_opacity }}; /*opacity text to read*/
+    z-index: {{ content.mask.mask_zindex }};
+}
+%%SELECTOR%% .dan-scroll-reading__element{
+    {{ macros.typography(design.typography, globalSettings) }}
+}

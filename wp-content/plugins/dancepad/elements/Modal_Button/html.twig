@@ -1,0 +1,24 @@
+<{{content.content.tag}} class='dan-modal-button__btn' aria-controls='dan-modal-button-list'>
+  <span> {{ content.content.text }} </span>
+  <svg class='dan-modal-button__btn-icon cd-icon' viewBox='0 0 12 12'> <!--arrow icon-->
+      <g fill='currentColor'>
+        <path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 4l-5 5-5-5'></path>
+      </g>
+  </svg>
+</{{content.content.tag}}>
+<div class='dan-modal-button__list-wrapper' id='dan-modal-button-list'>
+    <div class='dan-modal-button__list'>
+      {% for item in content.content.items %}
+        <span class="dan-modal-button__list-item js-dan-modal-button__item">    
+          {% if item.link %}
+            {{ macros.linkStart(item.link) }}
+          {% endif %}
+            {{ item.text }}
+          {% if item.link %}
+            {{ macros.linkEnd() }}
+          {% endif %}
+        </span>
+      {% endfor %}
+    </div>
+</div>
+<span class='dan-modal-button__morph-bg' aria-hidden='true'></span>

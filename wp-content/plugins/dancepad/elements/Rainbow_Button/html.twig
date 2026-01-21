@@ -1,0 +1,9 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-rainbow-button__anchor') }}
+    <span>{{ content.content.text }}</span>
+    <div class="dan-rainbow-button__bg"></div>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span>{{ content.content.text }}</span>
+  <div class="dan-rainbow-button__bg"></div>
+{% endif %}

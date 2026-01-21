@@ -1,0 +1,7 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-decode-reveal__anchor') }}
+  <span class="dan-decode-reveal__inner">{{ content.content.text }}</span>
+  {{ macros.linkEnd() }}
+{% else %}
+  <span class="dan-decode-reveal__inner">{{ content.content.text }}</span>
+{% endif %}

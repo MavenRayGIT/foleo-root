@@ -1,0 +1,25 @@
+%%SELECTOR%%{
+    {{ macros.size(design.size) }}
+  {{ macros.spacing_margin_all(design.margin) }}
+}
+%%SELECTOR%% .dan-link-preview__text{
+    --link-hover-color: {{ content.link_text.hover_color }};
+    --link-hover-duration: {{ content.link_text.hover_duration.style }};
+    --link-hover-easing: {{ content.link_text.hover_css_easing }};
+}
+%%SELECTOR%% .dan-link-preview__image{
+    --width: {{ content.link_image.width.style }};
+    --height: {{ content.link_image.height.style }};
+    top: {{ content.link_image.top.style }};
+    bottom: {{ content.link_image.bottom.style }};
+    {{ macros.borders(content.link_image.border) }}
+
+    --fade-duration: {{ content.link_image.fade_duration.style }};
+    --fade-easing: {{ content.link_image.fade_css_easing }};
+    --transform-duration: {{ content.link_image.transform_duration.style }};
+    --transform-easing: {{ content.link_image.transform_css_easing }};
+}
+%%SELECTOR%% .dan-link-preview__text:hover + .dan-link-preview__image{
+    top: {{ content.link_image.hover_top.style }};
+    bottom: {{ content.link_image.hover_bottom.style }};
+}

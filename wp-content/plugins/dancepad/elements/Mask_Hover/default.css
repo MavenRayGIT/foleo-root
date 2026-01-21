@@ -1,0 +1,40 @@
+.breakdance .dan-mask-hover{
+    position: relative;
+}
+.breakdance .dan-mask-hover .dan-mask-hover__content-wrapper{
+    position: absolute;
+    left: 0;
+
+    transition: clip-path var(--duration) var(--easing), -webkit-clip-path var(--duration) var(--easing);
+    width: 100%;
+    height: 100%;
+
+    z-index: 2;
+}
+.breakdance .dan-mask-hover[data-type="fromTop"] .dan-mask-hover__content-wrapper{
+    top: 0;
+
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+}
+.breakdance .dan-mask-hover[data-type="fromCenter"] .dan-mask-hover__content-wrapper{
+    top: 50%;
+
+    -webkit-clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
+    clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
+    transform: translateY(-50%);
+}
+.breakdance .dan-mask-hover[data-type="fromBottom"] .dan-mask-hover__content-wrapper{
+    top: 0;
+
+    -webkit-clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+}
+.breakdance .dan-mask-hover:hover .dan-mask-hover__content-wrapper{
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+#breakdance_canvas [data-openatbuilder="1"] .dan-mask-hover__content-wrapper{
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}

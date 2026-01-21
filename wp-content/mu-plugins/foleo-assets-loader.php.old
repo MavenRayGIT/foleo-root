@@ -1,0 +1,72 @@
+<?php
+/**
+ * Plugin Name: Foleo Assets Loader
+ * Description: Loads global assets and per-site assets from /wp-content/assets/ based on hostname.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+add_action( 'wp_enqueue_scripts', function () {
+
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $host = strtolower( preg_replace( '/:\d+$/', '', $host ) ); // strip port if present
+
+    // 1) Global assets (optional)
+    $global_dir = WP_CONTENT_DIR . '/assets/global/';
+    $global_url = content_url( '/assets/global/' );
+
+    // 2) Site assets (per hostname)
+    $site_dir = WP_CONTENT_DIR . '/assets/sites/' . $host . '/';
+    $site_url = content_url( '/assets/sites/' . $host . '/' );
+
+    $folders = [
+        [ 'dir' => $global_dir, 'url' => $global_url ],
+        [ 'dir' => $site_dir,   'url' => $site_url   ],
+    ];
+
+    foreach ( $folders as $folder ) {
+        $dir = $folder['dir'];
+        $url = $folder['url'];
+
+        if ( ! is_dir( $dir ) ) {
+            continue;
+        }
+
+        $files = glob( $dir . '*.{css,js}', GLOB_BRACE );
+        if ( empty( $files ) ) {
+            continue;
+        }
+
+        // Sort for predictability (CSS then JS, alphabetical)
+        usort( $files, function ( $a, $b ) {
+            $aExt = strtolower( pathinfo( $a, PATHINFO_EXTENSION ) );
+            $bExt = strtolower( pathinfo( $b, PATHINFO_EXTENSION ) );
+
+            if ( $aExt !== $bExt ) {
+                return $aExt === 'css' ? -1 : 1;
+            }
+            return strcmp( basename( $a ), basename( $b ) );
+        });
+
+        foreach ( $files as $path ) {
+            $file = basename( $path );
+
+            if ( ! file_exists( $path ) ) {
+                continue;
+            }
+
+            $ver    = filemtime( $path );
+            $name   = pathinfo( $file, PATHINFO_FILENAME );
+            $handle = 'foleo-' . sanitize_key( $host . '-' . $name );
+
+            if ( str_ends_with( $file, '.css' ) ) {
+                wp_enqueue_style( $handle, $url . $file, [], $ver );
+            } else {
+                wp_enqueue_script( $handle, $url . $file, [], $ver, true );
+            }
+        }
+    }
+
+}, 100 );

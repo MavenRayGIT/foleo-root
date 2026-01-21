@@ -1,0 +1,20 @@
+%%SELECTOR%%{
+    --subcanvas-duration: {{ content.animation.duration.style }};
+    --subcanvas-easing: {{ content.animation.css_easing }};
+
+    overflow: auto;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+
+  	{{ macros.layout(design.layout) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+
+    height: {{ design.dimensions.height.style }}; /*height*/
+    width: {{ design.dimensions.width.style }}; /*width*/
+
+    -webkit-transition: right var(--subcanvas-duration) var(--subcanvas-easing), left var(--subcanvas-duration) var(--subcanvas-easing); /*duration*/ /*easing*/
+    transition: right var(--subcanvas-duration) var(--subcanvas-easing), left var(--subcanvas-duration) var(--subcanvas-easing); /*duration*/ /*easing*/
+}

@@ -1,0 +1,23 @@
+.breakdance .dan-scroll-reading{
+    display: block;
+    width: 100%;
+    height: fit-content;
+}
+.breakdance .dan-scroll-reading .dan-scroll-reading__element .line {
+    position: relative;
+}
+.breakdance .dan-scroll-reading .dan-scroll-reading__line-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: calc(1 - var(--opacity));
+    height: 100%;
+    width: 100%;
+}
+.breakdance .dan-scroll-reading .dan-scroll-reading--rtl .dan-scroll-reading__line-mask{
+    left: 0;
+    right: unset;
+}
+.breakdance .dan-scroll-reading .dan-scroll-reading__element[data-flickering="1"]{
+    opacity: 0;
+} 

@@ -1,0 +1,13 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-prism-button__anchor') }}
+    <div class='dan-prism-button__wrapper'>
+      <span class='dan-prism-button__front-text'>{{ content.content.front_text }}</span>
+      <span class='dan-prism-button__back-text'>{{ content.content.back_text }}</span>
+    </div>
+  {{ macros.linkEnd() }}
+{% else %}
+  <div class='dan-prism-button__wrapper'>
+    <span class='dan-prism-button__front-text'>{{ content.content.front_text }}</span>
+    <span class='dan-prism-button__back-text'>{{ content.content.back_text }}</span>
+  </div>
+{% endif %}

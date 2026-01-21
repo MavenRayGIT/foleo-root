@@ -1,0 +1,16 @@
+<div class='dan-scrolling-gallery__map'>
+	<div class='dan-scrolling-gallery__preview'>
+      {% for item in content.gallery_images.repeater %}
+      <div class='dan-scrolling-gallery__thumbnail' tabindex='0' role='button' aria-label='Thumbnail'>
+        {{ macros.getMedia(item.image, content.content.size, content.content.lazyLoad) }}
+      </div>
+      {% endfor %}
+    </div>
+</div>
+<div class='dan-scrolling-gallery__images'>
+  {% for item in content.gallery_images.repeater %}
+  <div class='dan-scrolling-gallery__image'>
+    {{ macros.getMedia(item.image, content.content.size, content.content.lazyLoad) }}
+  </div>
+  {% endfor %}
+</div>

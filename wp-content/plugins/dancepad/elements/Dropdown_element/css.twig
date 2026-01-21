@@ -1,0 +1,64 @@
+%%SELECTOR%%{
+    position: {{ design.positioning.position }};
+    top:  {{ design.positioning.top.style }};
+    left: {{ design.positioning.left.style }};
+    right: {{ design.positioning.right.style }};
+    bottom: {{ design.positioning.bottom.style }};
+    
+    width: fit-content;
+    height: fit-content;
+
+    opacity: 0;
+    pointer-events: none;
+    --scale: {{ content.transform_animation.scale }};
+    --x: {{ content.transform_animation.transform_x.style }};
+    --y: {{ content.transform_animation.transform_y.style }};
+    transform: scale(var(--scale)) translateX(var(--x)) translateY(var(--y));
+
+    --opacity-easing: {{ content.fade_animation.css_easing }};
+    --opacity-duration: {{ content.fade_animation.duration.style }};
+    --opacity-delay: {{ content.fade_animation.delay.style }};
+    --transform-easing: {{ content.transform_animation.css_easing }};
+    --transform-duration: {{ content.transform_animation.duration.style }};
+    --transform-delay: {{ content.transform_animation.delay.style }};
+    transition: 
+    opacity var(--opacity-duration) var(--opacity-easing) var(--opacity-delay),
+    transform var(--transform-duration) var(--transform-easing) var(--transform-delay);
+
+    {{ macros.layout(design.layout) }}
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.borders) }}
+}
+%%SELECTOR%%[data-toggled]{
+    position: {{ design.positioning.toggled_position }};
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1) translateX(0) translateY(0);
+}
+#breakdance_canvas .dan-dropdown[data-toggled-builder="1"]{
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1) translateX(0) translateY(0);
+}
+%%SELECTOR%%::before{
+    content: "";
+    position: absolute;
+
+    --mask-top: {{ design.mask.padding_top.style }};
+    --mask-bottom: {{ design.mask.padding_bottom.style }};
+    --mask-left: {{ design.mask.padding_left.style }};
+    --mask-right: {{ design.mask.padding_right.style }};
+
+    top: calc(var(--mask-top) * -1);
+    bottom: var(--mask-bottom);
+    left: calc(var(--mask-left) * -1);
+    right: var(--mask-right);
+    
+    display: block;
+    width: calc(100% + var(--mask-left) + var(--mask-right));
+    height: calc(100% + var(--mask-top) + var(--mask-bottom));
+
+    z-index: -1;
+}

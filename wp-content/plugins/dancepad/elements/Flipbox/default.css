@@ -1,0 +1,62 @@
+.breakdance .dan-flipbox .dan-flipbox__wrapper{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+
+    /*box shadow*/
+
+    -webkit-transition: -webkit-transform var(--trans-duration) var(--trans-easing); /*duration*/ /*easing*/
+    transition: transform var(--trans-duration) var(--trans-easing); /*duration*/ /*easing*/
+}
+.breakdance .dan-flipbox .dan-flipbox__flip--front{
+    position: relative;
+    perspective: 1000px;
+}
+.breakdance .dan-flipbox .dan-flipbox__flip--back{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.breakdance .dan-flipbox .dan-flipbox__flip{
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+.breakdance .dan-flipbox .dan-flipbox__wrapper[data-x] .dan-flipbox__flip--back{
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+}
+.breakdance .dan-flipbox .dan-flipbox__wrapper[data-x][data-flipped]{
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+}
+.breakdance .dan-flipbox .dan-flipbox__wrapper[data-x-reverse] .dan-flipbox__flip--back{
+    -webkit-transform: rotateY(-180deg);
+    transform: rotateY(-180deg);
+}
+.breakdance .dan-flipbox .dan-flipbox__wrapper[data-x-reverse][data-flipped]{
+    -webkit-transform: rotateY(-180deg);
+    transform: rotateY(-180deg);
+}
+.breakdance .dan-flipbox .dan-flipbox__wrapper[data-y] .dan-flipbox__flip--back{
+    -webkit-transform: rotateX(180deg);
+    transform: rotateX(180deg);
+}
+.breakdance .dan-flipbox .dan-flipbox__wrapper[data-y][data-flipped]{
+    -webkit-transform: rotateX(180deg);
+    transform: rotateX(180deg);
+}
+.breakdance .dan-flipbox .dan-flipbox__wrapper[data-y-reverse] .dan-flipbox__flip--back{
+    -webkit-transform: rotateX(-180deg);
+    transform: rotateX(-180deg);
+}
+.breakdance .dan-flipbox .dan-flipbox__wrapper[data-y-reverse][data-flipped]{
+    -webkit-transform: rotateX(-180deg);
+    transform: rotateX(-180deg);
+}
+.breakdance .dan-flipbox[data-flickering="1"]{
+    opacity: 0;
+} 

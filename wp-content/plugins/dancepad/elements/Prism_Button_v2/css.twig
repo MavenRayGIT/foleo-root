@@ -1,0 +1,21 @@
+%%SELECTOR%%{
+    {{ macros.spacing_margin_all(design.margin) }}
+    {{ macros.typography(design.typography, globalSettings) }}
+
+    perspective: {{ content.prism_animation.perspective.style }};
+    --translate: {{ content.prism_animation.translate.style }};
+    --translate-duration: {{ content.prism_animation.duration.style }};
+}
+%%SELECTOR%% .dan-prism-button-v2__text{
+    {{ macros.spacing_padding_all(design.padding) }}
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-prism-button-v2__inner::before{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}
+%%SELECTOR%% .dan-prism-button-v2__inner::after{
+    {{ macros.background(design.background) }}
+    {{ macros.borders(design.border) }}
+}

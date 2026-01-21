@@ -1,0 +1,27 @@
+html[dan-burger--body-toggled]{
+    overflow: hidden !important;
+}
+html[dan-burger--body-toggled] > body > .os-scrollbar-horizontal,
+html[dan-burger--body-toggled] > body > .os-scrollbar-vertical{
+    display: none !important;
+}
+/*Responsive*/
+.breakdance .dan-dropdown-mega-menu .dan-dropdown-mega-menu__mobile-wrapper{
+    display: none;
+}
+/*Force Responsive at builder*/
+.breakdance .dan-dropdown-mega-menu[data-toggled-enable-mobile-menu] .dan-dropdown-mega-menu__mobile-wrapper{
+    display: flex;
+}
+.breakdance .dan-dropdown-mega-menu[data-toggled-enable-mobile-menu] .dan-dropdown-mega-menu__dropdowns-wrapper{
+    position: absolute;
+    z-index: 99;
+
+    pointer-events: none;
+    opacity: 0;
+}
+.breakdance .dan-dropdown-mega-menu[data-toggled-display-builder] .dan-dropdown-mega-menu__dropdowns-wrapper{
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1) translateX(0) translateY(0);
+}

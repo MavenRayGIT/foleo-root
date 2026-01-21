@@ -1,0 +1,33 @@
+.breakdance .dan-interactive-divider{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.breakdance .dan-interactive-divider .dan-interactive-divider__line {
+    height: var(--divider-height);
+    width: 100%;
+    position: relative;
+}
+.breakdance .dan-interactive-divider .dan-interactive-divider__svg {
+    width: 100%;
+    height: var(--drop-height);
+    position: absolute;
+    top: calc(-1 * var(--drop-height) / 2);
+
+    overflow: visible;
+}
+.breakdance .dan-interactive-divider .dan-interactive-divider__path {
+    stroke-width: var(--divider-height);
+    fill: none;
+}
+.breakdance .dan-interactive-divider .dan-interactive-divider__box {
+    height: var(--drag-height);
+    width: 100%;
+    position: relative;
+    top: calc(-1 * var(--drag-height) / 2);
+    z-index: 1;
+}
+.breakdance .dan-interactive-divider .dan-interactive-divider__box:hover {
+    height: var(--drop-height);
+    top: calc(-1 * var(--drop-height) / 2);
+} 

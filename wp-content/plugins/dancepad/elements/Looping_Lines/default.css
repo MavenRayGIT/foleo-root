@@ -1,0 +1,36 @@
+.breakdance .dan-looping-lines {
+  width: fit-content;
+
+  --height: calc(var(--line-height) * var(--lines-to-show));
+  height: var(--height);
+  overflow: hidden;
+  position: relative;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.breakdance .dan-looping-lines__prefix{
+  align-self: center;
+}
+.breakdance .dan-looping-lines .dan-looping-lines__line-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.breakdance .dan-looping-lines .dan-looping-lines__line-list li {
+  height: calc(var(--height) / var(--lines-to-show)); /* Adjust based on the total height of 3 lines visible */
+  line-height: calc(var(--height) / var(--lines-to-show));
+  text-align: var(--align-lines);
+}
+.breakdance .dan-looping-lines .dan-looping-lines__fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(180deg, var(--fade-color) 2%, transparent 38%, transparent 62%, var(--fade-color) 100%);
+} 

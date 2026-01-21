@@ -1,0 +1,13 @@
+{% if content.content.link %}
+  {{ macros.linkStart(content.content.link, 'dan-glowing-button__anchor') }}
+    <div class='dan-glowing-button__background'>
+      <span class='dan-glowing-button__title'>{{ content.content.text }}</span>
+    </div>
+    <div class='dan-glowing-button__border-gradient'></div>
+  {{ macros.linkEnd() }}
+{% else %}
+  <div class='dan-glowing-button__background'>
+    <span class='dan-glowing-button__title'>{{ content.content.text }}</span>
+  </div>
+  <div class='dan-glowing-button__border-gradient'></div>
+{% endif %}

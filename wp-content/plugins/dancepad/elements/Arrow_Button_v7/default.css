@@ -1,0 +1,81 @@
+.breakdance .dan-arrow-button-v7[data-flickering]{
+    opacity: 0;
+}
+.breakdance .dan-arrow-button-v7{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: fit-content;
+}
+.breakdance .dan-arrow-button-v7__arrow{
+    width: var(--dimensions);
+    height: var(--dimensions);
+
+    position: relative;
+    overflow: hidden;
+
+    transition: transform var(--arrow-duration) var(--arrow-easing);
+}
+.breakdance .dan-arrow-button-v7__arrow svg{
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    transform: translateX(-100%);
+
+    min-height: unset !important;
+    min-width: unset !important;
+
+    transition: transform var(--arrow-duration) var(--arrow-easing);
+}
+.breakdance .dan-arrow-button-v7:hover .dan-arrow-button-v7__arrow{
+    transform: scale(var(--arrow-scale));
+}
+.breakdance .dan-arrow-button-v7:hover .dan-arrow-button-v7__arrow svg{
+    transform: translateX(0);
+}
+.breakdance .dan-arrow-button-v7__text-container{
+    position: relative;
+
+    --swap-translate: 200%;
+    --swap-rotation: 45deg;
+    --swap-duration: 0.6s;  
+    --swap-easing: cubic-bezier(0.33, 1, 0.68, 1);
+}
+.breakdance .dan-arrow-button-v7__text{
+    position: static;
+
+    white-space: nowrap;
+    transform-origin: right;
+    top: 0;
+    left: 0;
+
+    transition: all var(--swap-duration) var(--swap-easing);
+}
+.breakdance .dan-arrow-button-v7__text-swap{
+    position: static;
+    top: calc(var(--swap-translate) * -1);
+    left: 50%;
+    width: 100%;
+    transform: translateX(-50%) rotate(var(--swap-rotation));
+
+    width: fit-content;
+    white-space: nowrap;
+    transform-origin: right;
+
+    transition: all var(--swap-duration) var(--swap-easing);
+}
+.breakdance .dan-arrow-button-v7:hover .dan-arrow-button-v7__text{
+    transform: translateX(-50%) rotate(calc(var(--swap-rotation) * -1));
+    left: 50%;
+    top: var(--swap-translate);
+}
+.breakdance .dan-arrow-button-v7:hover .dan-arrow-button-v7__text-swap{
+    transform: none;
+    top: 0;
+    left: 0;
+}

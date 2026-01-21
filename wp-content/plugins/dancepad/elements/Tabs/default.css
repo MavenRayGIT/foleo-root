@@ -1,0 +1,18 @@
+.breakdance .dan-tabs .dan-tabs__tab-content[data-hide] {
+  display: none;
+}
+.breakdance .dan-tabs .dan-tabs__tab-content[data-show] {
+    opacity: var(--opacity-from);
+    transform: translate(var(--translate-x-from), var(--translate-y-from));
+
+    animation: nextTabsAnimationIn var(--animation-duration) var(--animation-ease) forwards;
+}
+@keyframes nextTabsAnimationIn {
+    100% {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+}
+.breakdance .dan-tabs[data-flickering="1"]{
+    opacity: 0;
+} 

@@ -1,0 +1,42 @@
+.breakdance .dan-audio-player {
+    position: relative;
+}
+.breakdance .dan-audio-player__top{
+    display: flex;
+    align-items: center;
+}
+.breakdance .dan-audio-player__top-right{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+}
+.breakdance .dan-audio-player__top-texts{
+    display: flex;
+    flex-direction: column;
+}
+.breakdance .dan-audio-player__play,
+.breakdance .dan-audio-player__pause {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.breakdance .dan-audio-player__pause{
+    display: none;
+}
+.breakdance .dan-audio-player__bottom {
+    display: flex;
+    align-items: center;
+}
+.breakdance .dan-audio-player__progress-container {
+    width: 100%;
+    cursor: pointer;
+}
+.breakdance .dan-audio-player__progress {
+    width: 0;
+}
+.breakdance .dan-audio-player__thumbnail{
+    object-fit: cover;
+}

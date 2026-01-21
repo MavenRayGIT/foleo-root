@@ -1,0 +1,38 @@
+.breakdance .dan-highlight__mark {
+    position: relative;
+
+    background: none;
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+}
+.breakdance .dan-highlight__mark[data-flickering="1"]{
+    opacity: 0;
+}
+.breakdance .dan-highlight__selectors {
+    position: absolute;
+
+    width: var(--select-width);
+}
+.breakdance .dan-highlight__selector--left,
+.breakdance .dan-highlight__selector--right {
+    position: absolute;
+    top: -0.125em;
+    left: -0.075em;
+    width: 0.155em;
+    height: calc(100% + 0.1275em);
+    
+    overflow: visible;
+}
+.breakdance .dan-highlight__selector--right {
+    transform: scaleY(-1);
+    left: auto;
+    right: -0.075em;
+    top: auto;
+    bottom: -0.125em;
+}
+.breakdance .dan-highlight__selector--left circle,
+.breakdance .dan-highlight__selector--right circle{
+    transform-origin: top;
+    transform: scale(var(--scale));
+}

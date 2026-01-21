@@ -1,0 +1,11 @@
+.breakdance .dan-dynamic-copyright[data-flickering="1"]{
+  opacity: 0;
+}
+.breakdance .dan-dynamic-copyright .dan-dynamic-copyright__anchor{
+  display: block;
+  width: fit-content;
+  height: fit-content;
+
+  color: currentColor !important;
+  text-decoration: unset;
+}

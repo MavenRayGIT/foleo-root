@@ -1,0 +1,29 @@
+%%SELECTOR%%{
+    {{ macros.typography(design.typography, globalSettings) }}
+  
+  --select-width: {{ design.selectors.initial_width.style }};
+  --select-width-final: {{ design.selectors.final_width.style }};
+}
+%%SELECTOR%% .dan-highlight__selectors{
+  height: {{ design.selectors.height.style }};
+  left: {{ design.selectors.left.style }};
+  top: {{ design.selectors.top.style }};
+  background: {{ design.selectors.background }};
+  mix-blend-mode: {{ design.selectors.mix_blend_mode }};
+}
+%%SELECTOR%% .dan-highlight__selector--left line{
+	stroke: {{ design.selectors_line.color }};
+  stroke-width: {{ design.selectors_line.width.style }};
+}
+%%SELECTOR%% .dan-highlight__selector--right line{
+	stroke: {{ design.selectors_line.color }};
+  stroke-width: {{ design.selectors_line.width.style }};
+}
+%%SELECTOR%% .dan-highlight__selector--left circle{
+	fill: {{ design.selectors_circle.color }};
+  --scale: {{ design.selectors_circle.scale }};
+}
+%%SELECTOR%% .dan-highlight__selector--right circle{
+	fill: {{ design.selectors_circle.color }};
+  --scale: {{ design.selectors_circle.scale }};
+}

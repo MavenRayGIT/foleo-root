@@ -1,0 +1,8 @@
+# OS junk
+.DS_Store
+
+# VS Code / FTP / SFTP configs
+.vscode/
+sftp.json
+.ftpconfig
+ftpconfig.json

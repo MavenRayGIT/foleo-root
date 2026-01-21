@@ -1,0 +1,77 @@
+.breakdance .dan-flipflop-button-v2 {
+    z-index: 1;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+    width: fit-content;
+
+    --elastic-ease: linear( 0, 0.2178 2.1%, 1.1144 8.49%, 1.2959 10.7%, 1.3463 11.81%, 1.3705 12.94%, 1.3726, 1.3643 14.48%, 1.3151 16.2%, 1.0317 21.81%, 0.941 24.01%, 0.8912 25.91%, 0.8694 27.84%, 0.8698 29.21%, 0.8824 30.71%, 1.0122 38.33%, 1.0357, 1.046 42.71%, 1.0416 45.7%, 0.9961 53.26%, 0.9839 57.54%, 0.9853 60.71%, 1.0012 68.14%, 1.0056 72.24%, 0.9981 86.66%, 1 100% );
+    --transform-ease: cubic-bezier(.32, .72, 0, 1);
+    --opacity-ease: ease-out;
+    --color-ease: ease-out;
+}
+.breakdance .dan-flipflop-button-v2::before {
+    content: "";
+    display: block;
+    position: absolute;
+}
+.breakdance .dan-flipflop-button-v2::after {
+    content: attr(data-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    transform-origin: bottom center;
+    transform: scale(1) translateZ(0);
+}
+.breakdance .dan-flipflop-button-v2__container {
+    display: block;
+    transform-origin: top center;
+    transform: scale(0) translateZ(0);
+}
+.breakdance .dan-flipflop-button-v2__text {
+    display: block;
+}
+.breakdance .dan-flipflop-button-v2__background {
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0%;
+}
+@media (hover: hover) and (pointer: fine) {
+    .breakdance .dan-flipflop-button-v2::after {
+        transform: scale(0) translateZ(0);
+        transition: transform var(--flipflop-duration) var(--transform-ease), color calc(var(--flipflop-duration) * 0.3) var(--color-ease);
+    }
+    
+    .breakdance .dan-flipflop-button-v2__container {
+        transition: transform var(--flipflop-duration) var(--transform-ease);
+        transform: scale(1) translateZ(0);
+    }
+    
+    .breakdance .dan-flipflop-button-v2__text {
+        transition: opacity calc(var(--flipflop-duration) * 0.5) var(--opacity-ease);
+    }
+    
+    .breakdance .dan-flipflop-button-v2:hover .dan-flipflop-button-v2__container,
+    .breakdance .dan-flipflop-button-v2:focus-visible .dan-flipflop-button-v2__container {
+        transform: scale(0) translateZ(0);
+    }
+    
+    .breakdance .dan-flipflop-button-v2:hover .dan-flipflop-button-v2__text,
+    .breakdance .dan-flipflop-button-v2:focus-visible .dan-flipflop-button-v2__text {
+        opacity: 0;
+    }
+    
+    .breakdance .dan-flipflop-button-v2:hover::after,
+    .breakdance .dan-flipflop-button-v2:focus-visible::after {
+        transform: scale(1) translateZ(0);
+    }
+}

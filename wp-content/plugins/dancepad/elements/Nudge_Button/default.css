@@ -1,0 +1,46 @@
+.breakdance .dan-nudge-button{
+    border-radius: var(--control-border-radius);
+
+    padding: var(--padding-vertical) var(--padding-horizontal);
+
+    --nudge-translate-height: calc(var(--nudge-height) - var(--padding-vertical));
+
+    display: flex;
+    width: fit-content;
+    align-items: flex-start;
+    justify-content: center; 
+    cursor: pointer;
+    position: relative;
+}
+.breakdance .dan-nudge-button__button{
+    position: relative;
+}
+.breakdance .dan-nudge-button__nudge{
+    padding: 0 var(--padding-horizontal);
+    --border-radius: var(--control-border-radius);
+    border-radius: var(--border-radius);
+
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    transition: transform var(--nudge-duration) var(--nudge-easing), border-radius 0s var(--nudge-easing) calc(var(--nudge-duration)/2);
+}
+.breakdance .dan-nudge-button__nudge-children{
+    width: 100%;
+    height: var(--nudge-height);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.breakdance .dan-nudge-button:hover .dan-nudge-button__nudge{
+    transform: translateY(calc(var(--nudge-translate-height) * -1));
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
