@@ -1,5 +1,27 @@
-
-
+/* MAP
+ * Features:
+ * - Mode resolution + html classes: getFoleoNavState(), toggles foleo-binder/foleo-standalone.
+ * - VNAV build + active tracking: buildFoleoVnav(), setInitialFoleoVnavActive(), initFoleoVnavActiveTracking().
+ * - Switcher (binder pill): buildFoleoSwitcher(), localStorage open state handlers.
+ * - Cinema mode (video play/pause nav fade): initFoleoCinemaModeAllVideos() + helpers.
+ * - Popup relocation/layering: relocateBreakdancePopup() (move popup root to body).
+ * - Misc: cookie banner target handling, CF card hover/playing states, Cloudflare Stream SDK, Vidstack replacement.
+ *
+ * Event listeners:
+ * - document.addEventListener: pointerdown (cinema intent), play/pause/ended (cinema), DOMContentLoaded (cookie links + nav init + popup relocate + CF SDK + Vidstack), pointerdown/pointerout (card hover), click/keydown (switcher), hashchange (vnav).
+ * - window.addEventListener: scroll (cinema scroll pause), load (initial vnav active), scroll (player out-of-view pause).
+ *
+ * Timers:
+ * - setTimeout: vnav build retries (300/900, 250/1000), switcher build retry (250), vnav active tracking (0/500), initial vnav active (250), vidstack applyNoCast/tryPlay retries.
+ * - setInterval: cinema safety poll (500ms).
+ *
+ * Observers:
+ * - MutationObserver: vnav build when sections appear, vidstack iframe replacement.
+ *
+ * Direct style / innerHTML:
+ * - style.display: vnav/switcher/hamburger visibility, iframe visibility, noCast slot display.
+ * - innerHTML: vnav dots, switcher panel links.
+ */
 // to make the GDPR link to HCG site in new tab //
 
 function getQueryParam(name) {
@@ -8,6 +30,11 @@ function getQueryParam(name) {
   } catch (e) {
     return null;
   }
+}
+
+function scheduleOnce(fn, delays) {
+  if (!Array.isArray(delays)) return;
+  delays.forEach((delay) => setTimeout(fn, delay));
 }
 
 function resolveFoleoNavState() {
@@ -39,6 +66,10 @@ window.FOLEO_NAV_STATE = window.getFoleoNavState();
 
 let foleoVnavObserverStarted = false;
 let foleoVnavLockUntil = 0;
+let foleoActiveVideo = null;
+let foleoCinemaInitDone = false;
+let foleoNavRevealTimer = null;
+let foleoUserInitiated = false;
 
 function lockFoleoVnav(ms) {
   foleoVnavLockUntil = Date.now() + ms;
@@ -48,18 +79,135 @@ function isFoleoVnavLocked() {
   return Date.now() < foleoVnavLockUntil;
 }
 
+function setFoleoCinemaActive(isActive) {
+  document.documentElement.classList.toggle('foleo-video-playing', !!isActive);
+}
+
+function clearFoleoVideoState() {
+  foleoActiveVideo = null;
+  foleoUserInitiated = false;
+  setFoleoCinemaActive(false);
+}
+
+function revealFoleoNavTemporarily(ms) {
+  document.documentElement.classList.add('foleo-nav-reveal');
+  if (foleoNavRevealTimer) clearTimeout(foleoNavRevealTimer);
+  foleoNavRevealTimer = setTimeout(() => {
+    document.documentElement.classList.remove('foleo-nav-reveal');
+  }, ms || 900);
+}
+
+function isVideoOutOfViewBy20Percent(v) {
+  if (!v) return false;
+  const r = v.getBoundingClientRect();
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  const h = r.height || 0;
+  if (!h) return false;
+
+  const thresh = h * 0.20;
+  const pastTop = r.bottom <= thresh;
+  const pastBottom = r.top >= (vh - thresh);
+  return pastTop || pastBottom;
+}
+
+function pauseActiveVideo() {
+  if (!foleoActiveVideo) return;
+  try { foleoActiveVideo.pause(); } catch (e) {}
+}
+
+function initFoleoCinemaModeAllVideos() {
+  if (foleoCinemaInitDone) return;
+  foleoCinemaInitDone = true;
+
+  clearFoleoVideoState();
+
+  function getPlayingVideos() {
+    return Array.from(document.querySelectorAll('video'))
+      .filter((v) => !v.paused && !v.ended);
+  }
+
+  const initialPlaying = getPlayingVideos();
+  if (initialPlaying.length) {
+    foleoActiveVideo = initialPlaying[0];
+    foleoUserInitiated = false;
+    setFoleoCinemaActive(false);
+  }
+
+  document.addEventListener('pointerdown', (e) => {
+    const mp = e.target.closest('media-player, [data-media-player], .vds-video-layout');
+    const v = e.target.closest('video');
+    if (mp || v) {
+      foleoUserInitiated = true;
+    }
+  }, true);
+
+  document.addEventListener('play', (e) => {
+    const v = e.target;
+    if (!(v instanceof HTMLVideoElement)) return;
+
+    foleoActiveVideo = v;
+    setFoleoCinemaActive(!!foleoUserInitiated);
+  }, true);
+
+  document.addEventListener('pause', (e) => {
+    const v = e.target;
+    if (!(v instanceof HTMLVideoElement)) return;
+
+    if (foleoActiveVideo === v) {
+      clearFoleoVideoState();
+    }
+  }, true);
+
+  document.addEventListener('ended', (e) => {
+    const v = e.target;
+    if (!(v instanceof HTMLVideoElement)) return;
+
+    if (foleoActiveVideo === v) {
+      clearFoleoVideoState();
+    }
+  }, true);
+
+  window.addEventListener('scroll', () => {
+    if (!foleoActiveVideo) return;
+    if (!foleoUserInitiated) return;
+
+    if (isVideoOutOfViewBy20Percent(foleoActiveVideo)) {
+      revealFoleoNavTemporarily(900);
+      pauseActiveVideo();
+      clearFoleoVideoState();
+    }
+  }, { passive: true });
+
+  setInterval(() => {
+    const anyPlaying = getPlayingVideos().length > 0;
+    if (!anyPlaying) {
+      clearFoleoVideoState();
+    }
+  }, 500);
+}
+
 function buildFoleoVnav() {
   const state = window.getFoleoNavState?.();
-  if (!state || state.mode !== 'binder') return;
+  if (!state) return;
+  if (state.mode !== 'binder' && state.mode !== 'standalone') return;
 
   const mount = document.querySelector('[data-foleo-vnav]');
   if (!mount) return;
 
   const sections = Array.from(document.querySelectorAll('section[id]'));
 
-  // If sections are not present yet, do not wipe the mount.
+  // If no meaningful sections, remove vnav entirely.
+  if (!sections || sections.length < 2) {
+    const vnav = document.querySelector('.foleo-vnav');
+    if (vnav) {
+      vnav.remove();
+    }
+    return;
+  }
+
   if (!sections.length) {
-    mount.style.display = 'none';
+    // Breakdance can render sections after DOMContentLoaded on the homepage.
+    scheduleOnce(buildFoleoVnav, [300, 900]);
     return;
   }
   mount.style.display = '';
@@ -82,6 +230,19 @@ function buildFoleoVnav() {
       return `<a class="foleo-vnav__item" href="#${it.id}" data-label="${labelEsc}"></a>`;
     })
     .join('');
+
+  // Re-apply active state after rerender (rebuilds wipe classes).
+  const hashId = (location.hash || '').replace('#', '').trim();
+  const lastId = window.__foleoActiveSectionId;
+
+  if (hashId && document.getElementById(hashId)) {
+    activateFoleoVnavDot(hashId);
+  } else if (lastId && document.getElementById(lastId)) {
+    activateFoleoVnavDot(lastId);
+  } else {
+    const first = document.querySelector('section[id]');
+    if (first?.id) activateFoleoVnavDot(first.id);
+  }
 
   if (!mount.dataset.foleoVnavClickBound) {
     mount.dataset.foleoVnavClickBound = 'true';
@@ -159,12 +320,41 @@ function buildFoleoSwitcher() {
 }
 
 function activateFoleoVnavDot(activeId) {
+  window.__foleoActiveSectionId = activeId;
   const items = document.querySelectorAll('.foleo-vnav__item');
   items.forEach((a) => {
     const href = a.getAttribute('href') || '';
     const id = href.startsWith('#') ? href.slice(1) : '';
     a.classList.toggle('is-active', id === activeId);
   });
+}
+
+function setInitialFoleoVnavActive() {
+  const sections = Array.from(document.querySelectorAll('section[id]'));
+  if (!sections.length) return;
+
+  const hashId = (location.hash || '').replace('#', '').trim();
+  if (hashId && document.getElementById(hashId)) {
+    activateFoleoVnavDot(hashId);
+    return;
+  }
+
+  if (window.scrollY < 40) {
+    activateFoleoVnavDot(sections[0].id);
+    return;
+  }
+
+  const targetY = 120;
+  const tops = sections.map((sec) => ({ id: sec.id, top: sec.getBoundingClientRect().top }));
+
+  const above = tops.filter((s) => s.top <= targetY).sort((a, b) => b.top - a.top);
+  if (above.length) {
+    activateFoleoVnavDot(above[0].id);
+    return;
+  }
+
+  const below = tops.sort((a, b) => a.top - b.top);
+  activateFoleoVnavDot(below[0].id);
 }
 
 function initFoleoVnavActiveTracking() {
@@ -179,30 +369,33 @@ function initFoleoVnavActiveTracking() {
     return;
   }
 
-  const initial = (location.hash || '').replace('#', '').trim();
-  if (initial) activateFoleoVnavDot(initial);
-
-  if (!document.querySelector('.foleo-vnav__item.is-active')) {
-    const first = document.querySelector('.foleo-vnav__item');
-    if (first) {
-      const href = first.getAttribute('href') || '';
-      const id = href.startsWith('#') ? href.slice(1) : '';
-      if (id) activateFoleoVnavDot(id);
-    }
-  }
+  setInitialFoleoVnavActive();
 
   const obs = new IntersectionObserver((entries) => {
     if (isFoleoVnavLocked()) return;
-
-    const candidates = entries.filter((e) => e.isIntersecting && e.target && e.target.id);
-    if (!candidates.length) return;
+    if (window.scrollY < 40) {
+      const first = document.querySelector('section[id]');
+      if (first?.id) activateFoleoVnavDot(first.id);
+      return;
+    }
 
     const targetY = 120;
-    const winner = candidates
-      .map((e) => ({ id: e.target.id, top: e.target.getBoundingClientRect().top }))
-      .sort((a, b) => Math.abs(a.top - targetY) - Math.abs(b.top - targetY))[0];
+    const candidates = entries
+      .filter((e) => e.isIntersecting && e.target && e.target.id)
+      .map((e) => ({ id: e.target.id, top: e.target.getBoundingClientRect().top }));
 
-    if (winner?.id) activateFoleoVnavDot(winner.id);
+    if (!candidates.length) return;
+
+    const above = candidates
+      .filter((c) => c.top <= targetY)
+      .sort((a, b) => b.top - a.top);
+    if (above.length) {
+      activateFoleoVnavDot(above[0].id);
+      return;
+    }
+
+    const below = candidates.sort((a, b) => a.top - b.top);
+    activateFoleoVnavDot(below[0].id);
   }, {
     root: null,
     rootMargin: '-10% 0px -70% 0px',
@@ -212,13 +405,12 @@ function initFoleoVnavActiveTracking() {
   sections.forEach((sec) => obs.observe(sec));
 
   window.addEventListener('hashchange', () => {
-    const id = (location.hash || '').replace('#', '').trim();
-    if (id) activateFoleoVnavDot(id);
+    setInitialFoleoVnavActive();
   });
 }
 
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', () => {
   document
     .querySelectorAll(
       '.cmplz-cookiebanner a[href], .cmplz-cookiebanner a.cmplz-document'
@@ -227,161 +419,147 @@ document.addEventListener("DOMContentLoaded", function () {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
     });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
   const state = window.getFoleoNavState?.();
   const switcher = document.querySelector('[data-foleo-switcher]');
-  const vnav = document.querySelector('[data-foleo-vnav]');
-  if (!state || !switcher || state.mode === 'standalone') {
-    if (switcher) switcher.style.display = 'none';
-    const hamburger = document.querySelector('.hamburger');
-    if (hamburger) hamburger.style.display = 'none';
-    if (vnav) vnav.style.display = 'none';
-    document.documentElement.classList.add('foleo-standalone');
-    return;
-  }
+  if (state) {
+    document.documentElement.classList.toggle('foleo-binder', state.mode === 'binder');
+    document.documentElement.classList.toggle('foleo-standalone', state.mode === 'standalone');
+    document.documentElement.classList.remove('foleo-nav-reveal');
 
-  document.documentElement.classList.remove('foleo-standalone');
-  buildFoleoSwitcher();
-  buildFoleoVnav();
-  setTimeout(buildFoleoSwitcher, 250);
-  setTimeout(buildFoleoVnav, 250);
-  setTimeout(buildFoleoVnav, 1000);
-  setTimeout(initFoleoVnavActiveTracking, 0);
-  setTimeout(initFoleoVnavActiveTracking, 500);
+    if (state.mode === 'standalone') {
+      if (switcher) switcher.style.display = 'none';
+      const hamburger = document.querySelector('.hamburger');
+      if (hamburger) hamburger.style.display = 'none';
+    } else {
+      if (switcher) buildFoleoSwitcher();
+      setTimeout(buildFoleoSwitcher, 250);
+      scheduleOnce(initFoleoVnavActiveTracking, [0, 500]);
+    }
 
-  (() => {
-    const binderState = window.getFoleoNavState?.();
-    if (!binderState || binderState.mode !== 'binder') return;
+    buildFoleoVnav();
+    scheduleOnce(buildFoleoVnav, [250, 1000]);
+    setInitialFoleoVnavActive();
+    scheduleOnce(setInitialFoleoVnavActive, [250]);
+    window.addEventListener('load', setInitialFoleoVnavActive, { once: true });
+    initFoleoCinemaModeAllVideos();
 
-    const root = document.querySelector('.foleo-switch');
-    const btn = document.querySelector('.foleo-switch__btn');
-    if (!root || !btn) return;
+    (() => {
+      const binderState = window.getFoleoNavState?.();
+      if (!binderState || binderState.mode !== 'binder') return;
 
-    const STORAGE_KEY = 'foleoSwitchOpen';
-    const setPersistedOpen = (isOpen) => {
+      const root = document.querySelector('.foleo-switch');
+      const btn = document.querySelector('.foleo-switch__btn');
+      if (!root || !btn) return;
+
+      const STORAGE_KEY = 'foleoSwitchOpen';
+      const setPersistedOpen = (isOpen) => {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, isOpen ? '1' : '0');
+        } catch (e) {}
+      };
+
       try {
-        window.localStorage.setItem(STORAGE_KEY, isOpen ? '1' : '0');
+        if (window.localStorage.getItem(STORAGE_KEY) === '1') {
+          root.classList.add('is-open');
+        }
       } catch (e) {}
-    };
 
-    try {
-      if (window.localStorage.getItem(STORAGE_KEY) === '1') {
-        root.classList.add('is-open');
-      }
-    } catch (e) {}
-
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      root.classList.toggle('is-open');
-      setPersistedOpen(root.classList.contains('is-open'));
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!root.classList.contains('is-open')) return;
-      if (root.contains(e.target)) return;
-      root.classList.remove('is-open');
-      setPersistedOpen(false);
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape') return;
-      root.classList.remove('is-open');
-      setPersistedOpen(false);
-    });
-  })();
-
-  (() => {
-    const binderState = window.getFoleoNavState?.();
-    if (!binderState || binderState.mode !== 'binder') return;
-
-    // Observe body for section[id] appearing
-    const obs = new MutationObserver(() => {
-      if (document.querySelector('section[id]')) {
-        buildFoleoVnav();
-        obs.disconnect();
-      }
-    });
-
-    obs.observe(document.body, { childList: true, subtree: true });
-  })();
-});
-
-document.addEventListener("pointerdown", (e) => {
-  const card = e.target.closest(".cf-card");
-
-  if (card) {
-    // lock the hovered/clicked card
-    document.querySelectorAll(".cf-card.is-active").forEach((el) => {
-      if (el !== card) el.classList.remove("is-active");
-    });
-    card.classList.add("is-active");
-    return;
-  }
-
-  // click outside unlocks all
-  document.querySelectorAll(".cf-card.is-active").forEach((el) => {
-    el.classList.remove("is-active");
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const iframes = document.querySelectorAll('iframe[class*="vid"]');
-  if (!iframes.length) return;
-
-  const script = document.createElement("script");
-  script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
-  script.async = true;
-
-  script.addEventListener("load", () => {
-    if (typeof Stream !== "function") return;
-
-    const players = [];
-
-    iframes.forEach((iframe) => {
-      const card = iframe.closest(".cf-card");
-      if (!card) return;
-
-      const player = Stream(iframe);
-      if (!player || !player.addEventListener) return;
-
-      players.push({ player, card });
-
-      player.addEventListener("play", () => {
-        // Pause all other videos
-        players.forEach(({ player: p, card: c }) => {
-          if (p !== player) {
-            try { p.pause(); } catch (e) {}
-            c.classList.remove("is-playing");
-          }
-        });
-
-        card.classList.add("is-playing");
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        root.classList.toggle('is-open');
+        setPersistedOpen(root.classList.contains('is-open'));
       });
 
-      const clear = () => card.classList.remove("is-playing");
-      player.addEventListener("pause", clear);
-      player.addEventListener("ended", clear);
+      document.addEventListener('click', (e) => {
+        if (!root.classList.contains('is-open')) return;
+        if (root.contains(e.target)) return;
+        root.classList.remove('is-open');
+        setPersistedOpen(false);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        root.classList.remove('is-open');
+        setPersistedOpen(false);
+      });
+    })();
+
+    (() => {
+      const binderState = window.getFoleoNavState?.();
+      if (!binderState || binderState.mode !== 'binder') return;
+
+      // Observe body for section[id] appearing
+      const obs = new MutationObserver(() => {
+        if (document.querySelector('section[id]')) {
+          buildFoleoVnav();
+          obs.disconnect();
+        }
+      });
+
+      obs.observe(document.body, { childList: true, subtree: true });
+    })();
+  }
+
+  (function relocateBreakdancePopup() {
+    const popupRoot =
+      document.querySelector('.bde-popup') ||
+      document.querySelector('.breakdance-popup') ||
+      document.querySelector('[class*="popup"]');
+
+    if (!popupRoot) return;
+
+    // Move popup to body to escape stacking contexts.
+    if (popupRoot.parentElement !== document.body) {
+      document.body.appendChild(popupRoot);
+    }
+  })();
+
+  const iframes = document.querySelectorAll('iframe[class*="vid"]');
+  if (iframes.length) {
+    const script = document.createElement("script");
+    script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
+    script.async = true;
+
+    script.addEventListener("load", () => {
+      if (typeof Stream !== "function") return;
+
+      const players = [];
+
+      iframes.forEach((iframe) => {
+        const card = iframe.closest(".cf-card");
+        if (!card) return;
+
+        const player = Stream(iframe);
+        if (!player || !player.addEventListener) return;
+
+        players.push({ player, card });
+
+        player.addEventListener("play", () => {
+          // Pause all other videos
+          players.forEach(({ player: p, card: c }) => {
+            if (p !== player) {
+              try { p.pause(); } catch (e) {}
+              c.classList.remove("is-playing");
+            }
+          });
+
+          card.classList.add("is-playing");
+        });
+
+        const clear = () => card.classList.remove("is-playing");
+        player.addEventListener("pause", clear);
+        player.addEventListener("ended", clear);
+      });
     });
-  });
 
-  document.head.appendChild(script);
-});
+    document.head.appendChild(script);
+  }
 
-
-document.querySelectorAll('.feature-tabs.is-tabs-ready')
-  .forEach(el => el.classList.remove('is-tabs-ready'));
-
-// Vidstack Stream Replacement
-document.addEventListener("DOMContentLoaded", function () {
+  // Vidstack Stream Replacement
   const VIDSTACK_DEBUG = false;
   const playingPlayers = new Set();
-
-  function setNavHidden(hidden) {
-    document.documentElement.classList.toggle("foleo-video-playing", hidden);
-  }
 
   function parseCloudflareStreamSrc(src) {
     try {
@@ -407,12 +585,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
       playingPlayers.add(player);
-      setNavHidden(true);
     });
 
     const handleStop = () => {
       playingPlayers.delete(player);
-      if (!playingPlayers.size) setNavHidden(false);
     };
 
     player.addEventListener("pause", handleStop);
@@ -534,12 +710,8 @@ document.addEventListener("DOMContentLoaded", function () {
     scrollTicking = true;
     window.requestAnimationFrame(() => {
       scrollTicking = false;
-      if (!playingPlayers.size) {
-        setNavHidden(false);
-        return;
-      }
+      if (!playingPlayers.size) return;
 
-      setNavHidden(false);
       playingPlayers.forEach((player) => {
         const rect = player.getBoundingClientRect();
         const height = rect.height || 0;
@@ -552,3 +724,33 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }, { passive: true });
 });
+
+document.addEventListener("pointerdown", (e) => {
+  const card = e.target.closest(".cf-card");
+
+  if (card) {
+    // lock the hovered/clicked card
+    document.querySelectorAll(".cf-card.is-active").forEach((el) => {
+      if (el !== card) el.classList.remove("is-active");
+    });
+    card.classList.add("is-active");
+    return;
+  }
+
+  // click outside unlocks all
+  document.querySelectorAll(".cf-card.is-active").forEach((el) => {
+    el.classList.remove("is-active");
+  });
+});
+
+document.addEventListener("pointerout", (e) => {
+  const card = e.target.closest(".cf-card");
+  if (!card) return;
+  if (e.relatedTarget && card.contains(e.relatedTarget)) return;
+  if (!card.classList.contains("is-playing")) {
+    card.classList.remove("is-active");
+  }
+});
+
+document.querySelectorAll('.feature-tabs.is-tabs-ready')
+  .forEach(el => el.classList.remove('is-tabs-ready'));

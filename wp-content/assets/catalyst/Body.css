@@ -1,3 +1,17 @@
+/* CSS MAP
+ * VNAV / Switcher selectors:
+ * - .foleo-vnav (layout, hover, tooltips), .foleo-vnav__item states, media queries, .foleo-switch and .foleo-switch__*.
+ * - Cinema/nav state: html.foleo-video-playing*, html.foleo-nav-reveal*, html.foleo-standalone, html.foleo-binder.
+ * Popup layering:
+ * - .bde-popup, .breakdance-popup, .bde-popup.breakdance-popup-open (z-index/fixed).
+ * Vidstack:
+ * - .foleo-media-player, [data-media-player], media-video-layout parts, .vds-* elements, cast/settings/play controls.
+ * Duplicates to watch:
+ * - Nav z-index values appear in base nav styles and final overrides.
+ * - .foleo-media-player variables are set in both base and contrast tuning blocks.
+ * Final overrides:
+ * - Bottom "FINAL OVERRIDES: nav layering must beat hero media".
+ */
 body.page-id-455 , body.page-id-287 , .bgbody {
   position: relative;
   background: none;
@@ -166,9 +180,55 @@ html, body {
   display: none !important;
 }
 
+.cf-stream-embed [data-media-control="settings"],
+.cf-stream-embed media-menu-button,
+.cf-stream-embed button[aria-label*="Settings"],
+.foleo-media-player [data-media-control="settings"],
+.foleo-media-player media-menu-button,
+.foleo-media-player button[aria-label*="Settings"] {
+  display: none !important;
+}
+
+.foleo-media-player media-play-button,
+.foleo-media-player [data-media-control="play"],
+.foleo-media-player [data-media-button="play"] {
+  transition: opacity 140ms ease;
+}
+
+.foleo-media-player[data-playing] media-play-button,
+.foleo-media-player[data-playing] [data-media-control="play"],
+.foleo-media-player[data-playing] [data-media-button="play"],
+[data-media-player][data-playing] media-play-button,
+[data-media-player][data-playing] [data-media-control="play"],
+[data-media-player][data-playing] [data-media-button="play"] {
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 80ms;
+}
+
+[data-media-player][data-playing]:hover media-play-button,
+[data-media-player][data-playing]:hover [data-media-control="play"],
+[data-media-player][data-playing]:hover [data-media-button="play"],
+.foleo-media-player[data-playing]:hover media-play-button,
+.foleo-media-player[data-playing]:hover [data-media-control="play"],
+.foleo-media-player[data-playing]:hover [data-media-button="play"] {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0ms;
+}
+
 .cf-stream-embed [data-media-control="fullscreen"],
 .cf-stream-embed button[aria-label*="Fullscreen"] {
   background: rgba(0,0,0,0.35);
+}
+
+.foleo-media-player media-video-layout::part(scrim),
+.foleo-media-player media-video-layout::part(overlay),
+.foleo-media-player media-video-layout::part(controls),
+.foleo-media-player [data-media-scrim],
+.foleo-media-player [data-media-overlay],
+.foleo-media-player .vds-scrim {
+  border-radius: 0 !important;
 }
 
 .cf-stream-embed.landscape { padding-top: 56.25%; }
@@ -356,7 +416,6 @@ body.foleo-mode-standalone .hamburger {
     position: fixed;
     top: 18px;
     left: 18px;
-    z-index: 9000 !important;
 
     display: flex;
     align-items: center;
@@ -375,7 +434,7 @@ body.foleo-mode-standalone .hamburger {
     transition:
       width .18s ease,
       background-color .15s ease,
-      opacity .60s ease;
+      opacity .18s ease;
   }
 
   .foleo-switch__btn{
@@ -480,7 +539,6 @@ body.foleo-mode-standalone .hamburger {
     left: 18px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 8999 !important;
 
     display: flex;
     flex-direction: column;
@@ -492,7 +550,7 @@ body.foleo-mode-standalone .hamburger {
     background: rgba(0,0,0,0.35);
     backdrop-filter: blur(10px);
 
-    transition: background-color .15s ease, padding .15s ease, gap .15s ease, opacity .60s ease;
+    transition: background-color .15s ease, padding .15s ease, gap .15s ease, opacity .18s ease;
   }
 
   .foleo-vnav:hover{
@@ -593,19 +651,28 @@ body.foleo-mode-standalone .hamburger {
   .foleo-vnav{ display: none; }
 }
 
-html.foleo-standalone .foleo-switch,
-html.foleo-standalone .foleo-vnav {
-  display: none !important;
-}
-
-html.foleo-video-playing .foleo-switch,
-html.foleo-video-playing .foleo-vnav {
+/* Cinema mode: fade nav while hero video plays */
+html.foleo-video-playing .foleo-vnav{
   opacity: 0;
   pointer-events: none;
 }
 
-.foleo-switch{ z-index: 9000 !important; }
-.foleo-vnav{ z-index: 8999 !important; }
+html.foleo-video-playing.foleo-binder .foleo-switch{
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Standalone already hides switcher via your foleo-standalone rules */
+html.foleo-standalone .foleo-switch{
+  display: none !important;
+}
+
+/* Scroll reveal override */
+html.foleo-nav-reveal .foleo-vnav,
+html.foleo-nav-reveal.foleo-binder .foleo-switch{
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
 
 /* Hide Google Cast only inside FOLEO Vidstack instances */
 .cf-stream-embed media-google-cast-button,
@@ -636,4 +703,39 @@ html.foleo-video-playing .foleo-vnav {
   backdrop-filter: saturate(1.1);
   background: rgba(0, 0, 0, 0.78) !important;
   border: 1px solid rgba(255, 255, 255, 0.10) !important;
+}
+
+@media (min-width: 901px){
+  /* Prevent flash: hide until mode class is set */
+  .foleo-switch{
+    display: none;
+  }
+
+  /* Show only in binder mode */
+  html.foleo-binder .foleo-switch{
+    display: flex;
+  }
+}
+
+/* FINAL OVERRIDES: nav layering must beat hero media */
+.foleo-switch{ z-index: 9000 !important; }
+.foleo-vnav{
+  position: fixed;
+  z-index: 8999 !important;
+  isolation: isolate;
+}
+
+.bde-popup,
+.breakdance-popup,
+.bde-popup.breakdance-popup-open{
+  position: fixed !important;
+  z-index: 100000 !important;
+}
+
+.cf-stream-embed,
+.cf-bg-video,
+iframe[src*="cloudflarestream"],
+video{
+  position: relative;
+  z-index: 1;
 }
