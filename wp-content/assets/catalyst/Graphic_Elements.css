@@ -48,3 +48,326 @@
   /* reversed padding */
   padding: 0.9rem 1.6rem 0.9rem 2.8rem;
 }
+
+/* =========================
+   VIDEO BUG — BASELINE (single source of truth)
+   Debug borders ON
+   ========================= */
+
+/* DEBUG BORDERS */
+.video-bug { outline: 3px solid red !important; }
+.video-bug__sticky { outline: 3px dashed orange !important; }
+.video-bug__frame { outline: 3px solid blue !important; }
+.video-bug__player { outline: 3px solid purple !important; }
+.video-bug__ui { outline: 2px dashed cyan !important; }
+.video-bug__nameplate { outline: 2px solid magenta !important; }
+
+/* Root becomes fixed and is positioned by JS */
+.video-bug{
+  position: fixed!important;
+  right: 24px;
+  top: 0;
+  width: auto;
+  z-index: 9999;
+  overflow: hidden;
+  border-radius: 0 !important;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+  
+}
+
+.video-bug.is-inview{
+  opacity: 1;
+}
+
+/* Remove sticky concept */
+.video-bug__sticky{
+  position: relative;
+  width: auto;
+  pointer-events: none;
+}
+
+/* Frame is the clickable box */
+.video-bug__frame{
+  position: relative;
+  pointer-events: auto;
+  width: 120px;
+}
+
+/* Size variants */
+.video-bug[data-video-bug-size="lg"] .video-bug__frame{ width: 160px; }
+.video-bug[data-video-bug-size="sm"] .video-bug__frame{ width: 120px; }
+
+/* Force Vidstack player to fill the frame, override inline sizing vars */
+.video-bug__player{
+  width: 100% !important;
+  display: block !important;
+  --player-width: 100% !important;
+  --media-width: 100% !important;
+  --player-height: auto !important;
+  --media-height: auto !important;
+}
+.video-bug__player video{
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+
+/* Overlay UI */
+.video-bug__ui{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+/* Buttons and icons */
+.video-bug__btn{
+  background: transparent;
+  border: 0;
+  padding: 6px;
+  cursor: pointer;
+  line-height: 0;
+  display: inline-flex;
+}
+.video-bug__btn img{
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+/* Play pause swap */
+.video-bug[data-state="paused"] .video-bug__btn-play{ display: inline-flex; }
+.video-bug[data-state="paused"] .video-bug__btn-pause{ display: none; }
+.video-bug[data-state="playing"] .video-bug__btn-play{ display: none; }
+.video-bug[data-state="playing"] .video-bug__btn-pause{ display: inline-flex; }
+
+/* Nameplate clipped inside bug */
+.video-bug__nameplate{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+/* =========================
+   Video Bug: hard override Vidstack inline sizing
+   ========================= */
+
+/* Target the exact media-player element with inline vars */
+.video-bug .video-bug__player[style]{
+  width: 100% !important;
+  max-width: 100% !important;
+
+  /* override Vidstack inline vars with valid values */
+  --player-width: 100% !important;
+  --media-width: 100% !important;
+
+  /* do not let fixed px heights persist */
+  --player-height: unset !important;
+  --media-height: unset !important;
+}
+
+/* Force the provider and video to fill */
+.video-bug .video-bug__player media-provider,
+.video-bug .video-bug__player video{
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+/* Define a stable bug aspect ratio */
+.video-bug__frame{
+  aspect-ratio: 9 / 16;
+}
+
+/* Make the player respect the frame height */
+.video-bug__player{
+  height: 100% !important;
+}
+
+/* =========================
+   VIDEO BUG — Controls overlay (priority)
+   ========================= */
+
+.video-bug__frame{
+  position: relative !important;
+}
+
+.video-bug__scrim{
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,.25) !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+}
+
+.video-bug__ui,
+.video-bug__UI{
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 10 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  pointer-events: auto !important;
+}
+
+/* Buttons */
+.video-bug__btn{
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(0,0,0,.35) !important;
+  border: 0 !important;
+  padding: 6px !important;
+  cursor: pointer !important;
+  line-height: 0 !important;
+}
+
+.video-bug__btn img{
+  display: block !important;
+  width: 22px !important;
+  height: 22px !important;
+}
+
+/* Show only the right icon based on state */
+.video-bug[data-state="paused"] .video-bug__btn-play{ display: inline-flex !important; }
+.video-bug[data-state="paused"] .video-bug__btn-pause{ display: none !important; }
+
+.video-bug[data-state="playing"] .video-bug__btn-play{ display: none !important; }
+.video-bug[data-state="playing"] .video-bug__btn-pause{ display: inline-flex !important; }
+
+/* =========================
+   Video Bug: fixed placement + nameplate hide
+   ========================= */
+
+/* Fixed placement requested */
+.video-bug{
+  position: fixed !important;
+  top: 60px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translate3d(0,0,0) !important;
+  width: auto !important;
+  z-index: 9999;
+}
+
+/* Nameplate starts visible */
+.video-bug__nameplate{
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  transform: translate3d(0,0,0);
+  transition: transform 260ms ease, opacity 260ms ease;
+}
+
+/* When hidden, slide right out of view */
+.video-bug.is-nameplate-hidden .video-bug__nameplate{
+  transform: translate3d(110%, 0, 0);
+  opacity: 0;
+}
+
+/* Make sure UI stays above nameplate for clicks */
+.video-bug__ui,
+.video-bug__UI{
+  z-index: 20 !important;
+}
+/* =========================
+   VIDEO BUG — Vidstack hard override (diagnostic)
+   ========================= */
+
+.video-bug .vidstack-player[style],
+.video-bug .vds-video-layout[style],
+.video-bug media-player[style] {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Frame defines size */
+.video-bug__frame {
+  aspect-ratio: 9 / 16;
+}
+
+/* Force actual video fill */
+.video-bug media-player video,
+.video-bug .vidstack-player video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+/* =========================
+   VIDEO BUG — Prevent flex side-by-side layout
+   ========================= */
+
+/* Make sure the frame is not a flex container */
+.video-bug__frame{
+  display: block !important;
+  position: relative !important;
+}
+
+/* Ensure media takes full width */
+.video-bug__media{
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Force UI overlay. It should never take layout space */
+.video-bug__ui{
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 10 !important;
+}
+
+/* If your markup still has video-bug__UI (capital), cover it too */
+.video-bug__UI{
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 10 !important;
+}
+/* If SVG fails to load, still show buttons */
+.video-bug__btn img{
+  display: block !important;
+}
+
+.video-bug__btn img[src=""],
+.video-bug__btn img:not([src]){
+  display: none !important;
+}
+
+.video-bug__btn::after{
+  content: "";
+}
+
+/* =========================
+   VIDEO BUG — Fixed position override (final)
+   ========================= */
+
+.video-bug{
+  position: fixed !important;
+  top: 60px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translate3d(0, 0, 0) !important;
+}

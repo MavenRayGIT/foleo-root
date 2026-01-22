@@ -32,9 +32,207 @@ function getQueryParam(name) {
   }
 }
 
+const FOLEO_SVG_PATH = '/wp-content/uploads/foleo/svg/';
+
 function scheduleOnce(fn, delays) {
   if (!Array.isArray(delays)) return;
   delays.forEach((delay) => setTimeout(fn, delay));
+}
+
+function bindVideoBugViewportFloat(bug, section) {
+  if (!bug || !section) return;
+
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        bug.classList.add('is-inview');
+      } else {
+        bug.classList.remove('is-inview');
+        bug.classList.remove('is-nameplate-hidden');
+        clearTimeout(bug.__nameplateTimer);
+        try { bug.__player?.pause?.(); } catch (_) {}
+        bug.dataset.state = 'paused';
+      }
+    }
+  }, { threshold: 0.01 });
+
+  io.observe(section);
+}
+
+function initVideoBugChapters() {
+  const bug = document.querySelector('.video-bug');
+  if (!bug) return;
+
+  const sections = Array.from(document.querySelectorAll('[data-video-bug="1"]'));
+  if (!sections.length) return;
+
+  let active = null;
+
+  const setBugFromSection = (section) => {
+    const src = section.getAttribute('data-video-src') || '';
+    const name = section.getAttribute('data-video-name') || '';
+    const title = section.getAttribute('data-video-title') || '';
+    const size = section.getAttribute('data-video-size') || 'sm';
+    const top = section.getAttribute('data-video-top') || '80';
+
+    bug.setAttribute('data-video-bug-size', size);
+    bug.setAttribute('data-video-bug-top', top);
+
+    const plate = bug.querySelector('.video-bug__nameplate');
+    if (plate) {
+      plate.innerHTML = `<b>${name}</b><br><br>${title}`;
+    }
+
+    const player = bug.__player || bug.querySelector('media-player.video-bug__player');
+    if (player && src && player.getAttribute('src') !== src) {
+      player.setAttribute('src', src);
+      try { player.currentTime = 0; } catch (e) {}
+      bug.dataset.state = 'paused';
+    }
+
+    bug.classList.remove('is-nameplate-hidden');
+    clearTimeout(bug.__nameplateTimer);
+    const delay = parseInt(bug.getAttribute('data-video-nameplate-delay') || '1400', 10);
+    bug.__nameplateTimer = setTimeout(() => {
+      bug.classList.add('is-nameplate-hidden');
+    }, delay);
+  };
+
+  const io = new IntersectionObserver((entries) => {
+    const topBand = window.innerHeight * 0.25;
+    const candidates = entries.filter((entry) => entry.isIntersecting);
+
+    if (!candidates.length) {
+      bug.classList.remove('is-inview');
+      active = null;
+      bug.classList.remove('is-nameplate-hidden');
+      clearTimeout(bug.__nameplateTimer);
+      try { bug.__player?.pause?.(); } catch (e) {}
+      bug.dataset.state = 'paused';
+      return;
+    }
+
+    const bandHits = candidates
+      .map((entry) => ({ entry, rect: entry.target.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.top <= topBand && rect.bottom >= topBand)
+      .map(({ entry }) => entry);
+
+    const visible = (bandHits.length ? bandHits : candidates)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+    const next = visible[0].target;
+    if (active !== next) {
+      active = next;
+      setBugFromSection(next);
+    }
+
+    bug.classList.add('is-inview');
+  }, { threshold: [0.05, 0.15, 0.3, 0.5, 0.75] });
+
+  sections.forEach((section) => io.observe(section));
+}
+
+function initVideoBugs() {
+  const bugs = Array.from(document.querySelectorAll('.video-bug'));
+  if (!bugs.length) return;
+
+  for (const bug of bugs) {
+    if (bug.dataset.videoBugBound === '1') continue;
+    bug.dataset.videoBugBound = '1';
+
+    const player = bug.querySelector('media-player.video-bug__player');
+    if (!player) continue;
+
+    bug.__player = player;
+
+    const frame = bug.querySelector('.video-bug__frame') || bug;
+    const btnPlay = bug.querySelector('.video-bug__btn-play');
+    const btnPause = bug.querySelector('.video-bug__btn-pause');
+    const btnRestart = bug.querySelector('.video-bug__btn-restart');
+    const btnExpand = bug.querySelector('.video-bug__btn-expand');
+    const btnSize = bug.querySelector('.video-bug__btn-size');
+
+    bug.dataset.state = bug.dataset.state || 'paused';
+
+    const setState = (nextState) => {
+      bug.dataset.state = nextState;
+    };
+
+    const play = async () => {
+      try {
+        await player.play?.();
+        setState('playing');
+      } catch (e) {}
+    };
+
+    const pause = () => {
+      try { player.pause?.(); } catch (e) {}
+      setState('paused');
+    };
+
+    frame.addEventListener('click', (ev) => {
+      if (ev.target?.closest?.('.video-bug__btn')) return;
+      if (bug.dataset.state === 'playing') pause();
+      else play();
+    });
+
+    btnPlay?.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      play();
+    });
+
+    btnPause?.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      pause();
+    });
+
+    btnRestart?.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      try { player.currentTime = 0; } catch (e) {}
+      play();
+    });
+
+    btnSize?.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const next = bug.getAttribute('data-video-bug-size') === 'sm' ? 'lg' : 'sm';
+      bug.setAttribute('data-video-bug-size', next);
+      bug.dataset.videoBugSize = next;
+    });
+
+    btnExpand?.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const src = player.getAttribute('src') || '';
+      if (!src) return;
+      window.FoleoVideoPopup?.open?.({ src });
+    });
+
+    const section = bug.closest('section, .bde-section, .bde-section-wrap');
+    bindVideoBugViewportFloat(bug, section);
+  }
+}
+
+window.initVideoBugs = initVideoBugs;
+
+const runVideoBugs = () => {
+  try { initVideoBugs(); } catch (e) {}
+  try { initVideoBugChapters(); } catch (e) {}
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    runVideoBugs();
+    setTimeout(runVideoBugs, 250);
+    setTimeout(runVideoBugs, 1000);
+  });
+} else {
+  runVideoBugs();
+  setTimeout(runVideoBugs, 250);
+  setTimeout(runVideoBugs, 1000);
 }
 
 function resolveFoleoNavState() {
