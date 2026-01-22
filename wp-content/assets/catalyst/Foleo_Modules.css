@@ -813,6 +813,145 @@ video {
    VIDEO BUG MODULE
    ========================================================= */
 
+.video-bug,
+.video-bug__sticky,
+.video-bug__frame,
+.video-bug__player,
+.video-bug__ui,
+.video-bug__nameplate {
+  outline: none !important;
+  border: 0;
+}
+
+.video-bug {
+  overflow: visible !important;
+}
+
+.video-bug__frame {
+  position: relative;
+  overflow: visible !important;
+}
+
+.video-bug__media,
+.video-bug__player {
+  overflow: hidden;
+}
+
+.video-bug__nameplate {
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  padding: 10px 12px;
+  transform: none !important;
+  clip-path: none !important;
+  animation: none !important;
+  overflow: visible;
+  transition: opacity 180ms ease;
+}
+
+.video-bug__scrim--top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+  pointer-events: none;
+  z-index: 8;
+}
+
+.video-bug__play--top {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.video-bug__controls--bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 8px 10px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+  z-index: 9;
+  transition: opacity 180ms ease;
+}
+
+.video-bug__nameplate,
+.video-bug__scrim--top,
+.video-bug__play--top {
+  opacity: 1;
+}
+
+.video-bug__controls--bottom {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-bug:not(.has-started):hover .video-bug__nameplate {
+  opacity: 0;
+}
+
+.video-bug:not(.has-started):hover .video-bug__controls--bottom {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-bug.has-started .video-bug__nameplate,
+.video-bug.has-started .video-bug__scrim--top,
+.video-bug.has-started .video-bug__play--top {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-bug.has-started .video-bug__controls--bottom {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-bug.has-started:hover .video-bug__controls--bottom {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-bug__controls--bottom .video-bug__btn,
+.video-bug__controls--bottom button,
+.video-bug__controls--bottom a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  line-height: 0;
+}
+
+.video-bug__controls--bottom .video-bug__btn:hover,
+.video-bug__controls--bottom button:hover,
+.video-bug__controls--bottom a:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.video-bug__controls--bottom .video-bug__btn img,
+.video-bug__controls--bottom .video-bug__btn svg,
+.video-bug__controls--bottom button img,
+.video-bug__controls--bottom button svg,
+.video-bug__controls--bottom a img,
+.video-bug__controls--bottom a svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
 /* =========================================
    ENHANCEMENT: Scroll table fills parent height
    - Safe additive layer

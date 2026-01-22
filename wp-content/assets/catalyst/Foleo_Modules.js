@@ -228,8 +228,6 @@ function initVideoBugModule() {
           bug.classList.add('is-inview');
         } else {
           bug.classList.remove('is-inview');
-          bug.classList.remove('is-nameplate-hidden');
-          clearTimeout(bug.__nameplateTimer);
           try { bug.__player?.pause?.(); } catch (_) {}
           bug.dataset.state = 'paused';
         }
@@ -270,12 +268,6 @@ function initVideoBugModule() {
         bug.dataset.state = 'paused';
       }
 
-      bug.classList.remove('is-nameplate-hidden');
-      clearTimeout(bug.__nameplateTimer);
-      const delay = parseInt(bug.getAttribute('data-video-nameplate-delay') || '1400', 10);
-      bug.__nameplateTimer = setTimeout(() => {
-        bug.classList.add('is-nameplate-hidden');
-      }, delay);
     };
 
     const io = new IntersectionObserver((entries) => {
@@ -285,8 +277,6 @@ function initVideoBugModule() {
       if (!candidates.length) {
         bug.classList.remove('is-inview');
         active = null;
-        bug.classList.remove('is-nameplate-hidden');
-        clearTimeout(bug.__nameplateTimer);
         try { bug.__player?.pause?.(); } catch (e) {}
         bug.dataset.state = 'paused';
         return;
@@ -331,8 +321,15 @@ function initVideoBugModule() {
       const btnRestart = bug.querySelector('.video-bug__btn-restart');
       const btnExpand = bug.querySelector('.video-bug__btn-expand');
       const btnSize = bug.querySelector('.video-bug__btn-size');
+      const btnPlayTop = bug.querySelector('.video-bug__play--top');
 
       bug.dataset.state = bug.dataset.state || 'paused';
+
+      const markStarted = () => {
+        if (!bug.classList.contains('has-started')) {
+          bug.classList.add('has-started');
+        }
+      };
 
       const setState = (nextState) => {
         bug.dataset.state = nextState;
@@ -341,6 +338,7 @@ function initVideoBugModule() {
       const play = async () => {
         try {
           await player.play?.();
+          markStarted();
           setState('playing');
         } catch (e) {}
       };
@@ -433,3 +431,11 @@ Modules.init = function initFoleoModules() {
   }
 })();
 })();
+      btnPlayTop?.addEventListener('click', (ev) => {
+        if (btnPlayTop.dataset.started === '1') return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        markStarted();
+        btnPlayTop.dataset.started = '1';
+        play();
+      });
