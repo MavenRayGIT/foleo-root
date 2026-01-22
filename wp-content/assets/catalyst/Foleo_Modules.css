@@ -876,7 +876,7 @@ video {
 .video-bug__nameplate {
   background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
-  padding: 14px 16px;
+  padding: 8px 12px;
   transform: none !important;
   clip-path: none !important;
   animation: none !important;
@@ -884,6 +884,7 @@ video {
   transition: opacity 200ms ease;
   opacity: 1;
   pointer-events: none;
+  font-size: 13px;
 }
 
 .video-bug__scrim {
@@ -964,6 +965,22 @@ video {
 .video-bug.has-started:hover .video-bug__ui {
   opacity: 1;
   pointer-events: auto;
+}
+
+.video-bug.is-paused .video-bug__btn-play {
+  display: inline-flex;
+}
+
+.video-bug.is-paused .video-bug__btn-pause {
+  display: none;
+}
+
+.video-bug:not(.is-paused) .video-bug__btn-play {
+  display: none;
+}
+
+.video-bug:not(.is-paused) .video-bug__btn-pause {
+  display: inline-flex;
 }
 
 .video-bug.has-started:hover .video-bug__ui::before {

@@ -2,6 +2,15 @@
   window.FoleoModules = window.FoleoModules || {};
   const Modules = window.FoleoModules;
 
+  /*
+  VIDEO-BUG OWNERSHIP MAP
+  - Markup source: Breakdance page content (not file-backed in repo)
+  - Runtime initializer: Foleo_Modules.js initVideoBugModule() (lines 393-557)
+  - Size toggle wiring: Foleo_Modules.js initVideoBugModule() (lines 530-535)
+  - Icon injection: Foleo_Modules.js initVideoBugModule() (lines 442-445)
+  - CSS owner: Foleo_Modules.css "VIDEO BUG MODULE" (lines 815-1067)
+  */
+
 function normalizeFoleoBadgeVariant(value) {
   return String(value || '')
     .toLowerCase()
@@ -258,17 +267,18 @@ function initVideoBugModule() {
   function bindVideoBugViewportFloat(bug, config, onActiveChange) {
     if (!bug) return;
 
-    const triggerSelectors = Array.isArray(config && config.triggers)
+    const triggerItems = Array.isArray(config && config.triggers)
       ? config.triggers
-          .map((trigger) => trigger && trigger.selector)
-          .filter((selector) => typeof selector === 'string' && selector.trim())
+          .map((trigger) => ({
+            selector: trigger && trigger.selector,
+            nameplateHtml: trigger && trigger.nameplateHtml
+          }))
+          .filter((item) => typeof item.selector === 'string' && item.selector.trim())
+          .flatMap((item) => Array.from(document.querySelectorAll(item.selector))
+            .map((el) => ({ el, nameplateHtml: item.nameplateHtml })))
       : [];
 
-    if (!triggerSelectors.length) return;
-
-    const triggers = triggerSelectors
-      .flatMap((selector) => Array.from(document.querySelectorAll(selector)));
-    if (!triggers.length) return;
+    if (!triggerItems.length) return;
 
     let ticking = false;
     let activeTrigger = null;
@@ -278,8 +288,8 @@ function initVideoBugModule() {
       const topBand = window.innerHeight * 0.1;
       let nextActive = null;
 
-      for (const trigger of triggers) {
-        const rect = trigger.getBoundingClientRect();
+      for (const trigger of triggerItems) {
+        const rect = trigger.el.getBoundingClientRect();
         if (rect.top <= topBand && rect.bottom >= topBand) {
           nextActive = trigger;
           break;
@@ -408,7 +418,15 @@ function initVideoBugModule() {
       bug.style.setProperty('--video-bug-top', `${topPx}px`);
       bug.style.setProperty('--video-bug-right', `${rightPx}px`);
 
-      bindVideoBugViewportFloat(bug, config, (section) => setBugFromSection(bug, section));
+      bindVideoBugViewportFloat(bug, config, (trigger) => {
+        if (trigger && trigger.el) {
+          setBugFromSection(bug, trigger.el);
+          const nameplateEl = bug.querySelector('.video-bug__nameplate');
+          if (nameplateEl && trigger.nameplateHtml) {
+            nameplateEl.innerHTML = trigger.nameplateHtml;
+          }
+        }
+      });
 
       const player = bug.querySelector('.video-bug__player');
       if (!player) continue;
@@ -421,6 +439,10 @@ function initVideoBugModule() {
       const btnRestart = bug.querySelector('.video-bug__btn-restart');
       const btnExpand = bug.querySelector('.video-bug__btn-expand');
       const btnSize = bug.querySelector('.video-bug__btn-size');
+      if (btnSize && btnSize.dataset.videoBugSizeIcon !== '1') {
+        btnSize.innerHTML = '<img class="video-bug__icon" src="https://foleo.co/wp-content/uploads/SVG/videosize-1.svg" alt="">';
+        btnSize.dataset.videoBugSizeIcon = '1';
+      }
       bug.dataset.state = bug.dataset.state || 'paused';
 
       const markStarted = () => {
@@ -431,6 +453,10 @@ function initVideoBugModule() {
 
       const setState = (nextState) => {
         bug.dataset.state = nextState;
+      };
+
+      const setPausedState = (isPaused) => {
+        bug.classList.toggle('is-paused', Boolean(isPaused));
       };
 
       const play = async () => {
@@ -445,6 +471,36 @@ function initVideoBugModule() {
         try { player.pause?.(); } catch (e) {}
         setState('paused');
       };
+
+      setPausedState(true);
+
+      player.addEventListener('loadedmetadata', () => {
+        if (typeof player.paused === 'boolean') {
+          setPausedState(player.paused);
+        }
+      });
+
+      player.addEventListener('play', () => {
+        setState('playing');
+        markStarted();
+        setPausedState(false);
+      });
+
+      player.addEventListener('playing', () => {
+        setState('playing');
+        markStarted();
+        setPausedState(false);
+      });
+
+      player.addEventListener('pause', () => {
+        setState('paused');
+        setPausedState(true);
+      });
+
+      player.addEventListener('ended', () => {
+        setState('paused');
+        setPausedState(true);
+      });
 
       frame.addEventListener('click', (ev) => {
         if (ev.target?.closest?.('.video-bug__btn')) return;

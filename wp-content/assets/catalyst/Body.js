@@ -39,7 +39,7 @@ function scheduleOnce(fn, delays) {
   delays.forEach((delay) => setTimeout(fn, delay));
 }
 
-// VIDEO BUG MODULE LOGIC MOVED TO Foleo_Modules.js
+// Video-bug is owned by Foleo_Modules.js. Do not add new video-bug code here.
 
 function resolveFoleoNavState() {
   const binder = getQueryParam('binder');

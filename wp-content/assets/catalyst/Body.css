@@ -9,6 +9,7 @@
  * Final overrides:
  * - Bottom "FINAL OVERRIDES: nav layering must beat hero media".
  */
+/* Video-bug is owned by Foleo_Modules.js. Do not add new video-bug code here. */
 body.page-id-455 , body.page-id-287 , .bgbody {
   position: relative;
   background: none;
@@ -435,3 +436,58 @@ div.no_pointer {pointer-events: none;}
   Do not add Foleo module styles here.
   Module CSS lives in Foleo_Modules.css.
 */
+
+/* DEBUG: video-bug layout */
+.video-bug { outline: 2px solid rgba(255,0,0,.65) !important; }
+.video-bug * { outline: 1px solid rgba(0,0,255,.18) !important; }
+
+.video-bug {
+  position: relative;
+}
+
+.video-bug .video-bug__ui {
+  position: absolute !important;
+  left: 16px !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  z-index: 20 !important;
+}
+
+.video-bug .video-bug__ui > * {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.video-bug .video-bug__ui .video-bug__btn {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .video-bug .video-bug__ui {
+    flex-wrap: nowrap !important;
+  }
+}
+
+.video-bug .video-bug__btn-size img {
+  display: none !important;
+}
+
+.video-bug .video-bug__btn-size::before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  display: block;
+  background: url("https://foleo.co/wp-content/uploads/SVG/videosize-1.svg") no-repeat center / contain;
+}
