@@ -827,7 +827,21 @@ video {
 }
 
 .video-bug {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  left: auto;
+  transform: translate3d(0, 0, 0);
+  width: auto;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
   overflow: visible !important;
+}
+
+.video-bug.is-inview {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .video-bug__frame {
@@ -840,86 +854,201 @@ video {
   overflow: hidden;
 }
 
+.video-bug__player {
+  position: relative;
+  z-index: 1;
+}
+
+.video-bug__ui {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+}
+
 .video-bug__nameplate {
-  background: rgba(0, 0, 0, 0.6);
-  color: #ffffff;
-  padding: 10px 12px;
-  transform: none !important;
-  clip-path: none !important;
-  animation: none !important;
-  overflow: visible;
-  transition: opacity 180ms ease;
-}
-
-.video-bug__scrim--top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60%;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
-  pointer-events: none;
-  z-index: 8;
-}
-
-.video-bug__play--top {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-}
-
-.video-bug__controls--bottom {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 8px 8px 10px;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
-  z-index: 9;
-  transition: opacity 180ms ease;
+  z-index: 13;
 }
 
-.video-bug__nameplate,
-.video-bug__scrim--top,
-.video-bug__play--top {
+.video-bug__nameplate {
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  padding: 14px 16px;
+  transform: none !important;
+  clip-path: none !important;
+  animation: none !important;
+  overflow: visible;
+  transition: opacity 200ms ease;
   opacity: 1;
+  pointer-events: none;
 }
 
-.video-bug__controls--bottom {
+.video-bug__scrim {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+  opacity: 1;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+.video-bug__ui {
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.video-bug__ui::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 56px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.video-bug__ui > * {
+  position: relative;
+  z-index: 1;
+}
+
+.video-bug.is-inview:not(.has-started):hover .video-bug__nameplate {
+  opacity: 0;
+}
+
+.video-bug.is-inview:not(.has-started):hover .video-bug__ui {
+  pointer-events: auto;
+}
+
+.video-bug.is-inview:not(.has-started) .video-bug__btn:not(.video-bug__btn-play) {
   opacity: 0;
   pointer-events: none;
 }
 
-.video-bug:not(.has-started):hover .video-bug__nameplate {
+.video-bug.is-inview:not(.has-started):hover .video-bug__btn:not(.video-bug__btn-play) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-bug.is-inview:not(.has-started) .video-bug__ui::before {
   opacity: 0;
 }
 
-.video-bug:not(.has-started):hover .video-bug__controls--bottom {
+.video-bug.is-inview:not(.has-started):hover .video-bug__ui::before {
+  opacity: 1;
+}
+
+.video-bug.is-inview:not(.has-started) .video-bug__btn-play {
   opacity: 1;
   pointer-events: auto;
 }
 
 .video-bug.has-started .video-bug__nameplate,
-.video-bug.has-started .video-bug__scrim--top,
-.video-bug.has-started .video-bug__play--top {
+.video-bug.has-started .video-bug__scrim,
+.video-bug.has-started .video-bug__btn-play {
   opacity: 0;
   pointer-events: none;
 }
 
-.video-bug.has-started .video-bug__controls--bottom {
+.video-bug.has-started .video-bug__ui {
   opacity: 0;
   pointer-events: none;
 }
 
-.video-bug.has-started:hover .video-bug__controls--bottom {
+.video-bug.has-started:hover .video-bug__ui {
   opacity: 1;
   pointer-events: auto;
+}
+
+.video-bug.has-started:hover .video-bug__ui::before {
+  opacity: 1;
+}
+
+/* =========================================================
+   VIDEO BUG RESTORE OVERRIDES
+   Purpose: defeat Breakdance defaults + Vidstack inline sizing
+   ========================================================= */
+
+.video-bug .video-bug__frame {
+  position: relative !important;
+  display: block !important;
+  width: 120px !important;
+  aspect-ratio: 9 / 16 !important;
+}
+
+.video-bug[data-video-bug-size="lg"] .video-bug__frame { width: 160px !important; }
+.video-bug[data-video-bug-size="sm"] .video-bug__frame { width: 120px !important; }
+
+.video-bug {
+  position: fixed !important;
+  top: var(--video-bug-top, 60px) !important;
+  right: var(--video-bug-right, 20px) !important;
+  z-index: 99999 !important;
+  opacity: 0 !important;
+  transition: opacity 220ms ease !important;
+  pointer-events: none !important;
+}
+
+.video-bug.is-inview {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.video-bug .video-bug__player {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  --player-width: 100% !important;
+  --player-height: 100% !important;
+  --media-width: 100% !important;
+  --media-height: 100% !important;
+}
+
+.video-bug .video-bug__player media-provider,
+.video-bug .video-bug__player video {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+.video-bug .video-bug__scrim {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+}
+
+.video-bug .video-bug__ui {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+}
+
+.video-bug .video-bug__ui .video-bug__btn {
+  pointer-events: auto !important;
+}
+
+.video-bug .video-bug__nameplate {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 15 !important;
+}
+
+.video-bug,
+.video-bug .video-bug__sticky,
+.video-bug .video-bug__frame {
+  display: block !important;
 }
 
 

@@ -219,22 +219,102 @@ function initVideoBugModule() {
   const bugs = document.querySelectorAll('.video-bug');
   if (!bugs.length) return;
 
-  function bindVideoBugViewportFloat(bug, section) {
+  let config = null;
+  const configEl = document.querySelector('[data-video-bug-config]');
+  if (configEl) {
+    try {
+      const parsed = JSON.parse(configEl.textContent || '');
+      config = parsed && typeof parsed === 'object' ? parsed : null;
+    } catch (e) {
+      console.warn('[FoleoModules] Invalid video bug config JSON');
+    }
+  }
+
+  function setBugFromSection(bug, section) {
     if (!bug || !section) return;
 
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          bug.classList.add('is-inview');
-        } else {
-          bug.classList.remove('is-inview');
-          try { bug.__player?.pause?.(); } catch (_) {}
-          bug.dataset.state = 'paused';
+    const src = section.getAttribute('data-video-src') || '';
+    const name = section.getAttribute('data-video-name') || '';
+    const title = section.getAttribute('data-video-title') || '';
+    const size = section.getAttribute('data-video-size') || 'sm';
+    const top = section.getAttribute('data-video-top') || '80';
+
+    bug.setAttribute('data-video-bug-size', size);
+    bug.setAttribute('data-video-bug-top', top);
+
+    const plate = bug.querySelector('.video-bug__nameplate');
+    if (plate) {
+      plate.innerHTML = `<b>${name}</b><br><br>${title}`;
+    }
+
+    const player = bug.__player || bug.querySelector('media-player.video-bug__player');
+    if (player && src && player.getAttribute('src') !== src) {
+      player.setAttribute('src', src);
+      try { player.currentTime = 0; } catch (e) {}
+      bug.dataset.state = 'paused';
+    }
+  }
+
+  function bindVideoBugViewportFloat(bug, config, onActiveChange) {
+    if (!bug) return;
+
+    const triggerSelectors = Array.isArray(config && config.triggers)
+      ? config.triggers
+          .map((trigger) => trigger && trigger.selector)
+          .filter((selector) => typeof selector === 'string' && selector.trim())
+      : [];
+
+    if (!triggerSelectors.length) return;
+
+    const triggers = triggerSelectors
+      .flatMap((selector) => Array.from(document.querySelectorAll(selector)));
+    if (!triggers.length) return;
+
+    let ticking = false;
+    let activeTrigger = null;
+
+    const checkVisibility = () => {
+      ticking = false;
+      const topBand = window.innerHeight * 0.1;
+      let nextActive = null;
+
+      for (const trigger of triggers) {
+        const rect = trigger.getBoundingClientRect();
+        if (rect.top <= topBand && rect.bottom >= topBand) {
+          nextActive = trigger;
+          break;
         }
       }
-    }, { threshold: 0.01 });
 
-    io.observe(section);
+      const shouldShowAny = Boolean(nextActive);
+      const isInView = bug.classList.contains('is-inview');
+      if (shouldShowAny && !isInView) {
+        bug.classList.add('is-inview');
+      } else if (!shouldShowAny && isInView) {
+        bug.classList.remove('is-inview');
+        try { bug.__player?.pause?.(); } catch (_) {}
+        bug.dataset.state = 'paused';
+      }
+
+      if (shouldShowAny && nextActive && nextActive !== activeTrigger) {
+        activeTrigger = nextActive;
+        if (typeof onActiveChange === 'function') {
+          onActiveChange(nextActive);
+        }
+      } else if (!shouldShowAny) {
+        activeTrigger = null;
+      }
+    };
+
+    const requestCheck = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(checkVisibility);
+    };
+
+    window.addEventListener('scroll', requestCheck, { passive: true });
+    window.addEventListener('resize', requestCheck);
+    requestCheck();
   }
 
   function initVideoBugChapters() {
@@ -275,7 +355,6 @@ function initVideoBugModule() {
       const candidates = entries.filter((entry) => entry.isIntersecting);
 
       if (!candidates.length) {
-        bug.classList.remove('is-inview');
         active = null;
         try { bug.__player?.pause?.(); } catch (e) {}
         bug.dataset.state = 'paused';
@@ -296,7 +375,6 @@ function initVideoBugModule() {
         setBugFromSection(next);
       }
 
-      bug.classList.add('is-inview');
     }, { threshold: [0.05, 0.15, 0.3, 0.5, 0.75] });
 
     sections.forEach((section) => io.observe(section));
@@ -306,11 +384,33 @@ function initVideoBugModule() {
     const bugs = Array.from(document.querySelectorAll('.video-bug'));
     if (!bugs.length) return;
 
+    const findTransformedAncestor = (el) => {
+      let node = el && el.parentElement;
+      while (node && node !== document.body) {
+        const style = window.getComputedStyle(node);
+        if (style.transform && style.transform !== 'none') return node;
+        node = node.parentElement;
+      }
+      return null;
+    };
+
     for (const bug of bugs) {
       if (bug.dataset.videoBugBound === '1') continue;
       bug.dataset.videoBugBound = '1';
 
-      const player = bug.querySelector('media-player.video-bug__player');
+      if (bug.offsetParent && findTransformedAncestor(bug)) {
+        document.body.appendChild(bug);
+      }
+
+      const position = config && typeof config === 'object' ? config.position || {} : {};
+      const topPx = Number.isFinite(Number(position.topPx)) ? Number(position.topPx) : 60;
+      const rightPx = Number.isFinite(Number(position.rightPx)) ? Number(position.rightPx) : 20;
+      bug.style.setProperty('--video-bug-top', `${topPx}px`);
+      bug.style.setProperty('--video-bug-right', `${rightPx}px`);
+
+      bindVideoBugViewportFloat(bug, config, (section) => setBugFromSection(bug, section));
+
+      const player = bug.querySelector('.video-bug__player');
       if (!player) continue;
 
       bug.__player = player;
@@ -321,8 +421,6 @@ function initVideoBugModule() {
       const btnRestart = bug.querySelector('.video-bug__btn-restart');
       const btnExpand = bug.querySelector('.video-bug__btn-expand');
       const btnSize = bug.querySelector('.video-bug__btn-size');
-      const btnPlayTop = bug.querySelector('.video-bug__play--top');
-
       bug.dataset.state = bug.dataset.state || 'paused';
 
       const markStarted = () => {
@@ -389,8 +487,6 @@ function initVideoBugModule() {
         window.FoleoVideoPopup?.open?.({ src });
       });
 
-      const section = bug.closest('section, .bde-section, .bde-section-wrap');
-      bindVideoBugViewportFloat(bug, section);
     }
   }
 
@@ -398,7 +494,6 @@ function initVideoBugModule() {
 
   const runVideoBugs = () => {
     try { initVideoBugs(); } catch (e) {}
-    try { initVideoBugChapters(); } catch (e) {}
   };
 
   runVideoBugs();
@@ -431,11 +526,3 @@ Modules.init = function initFoleoModules() {
   }
 })();
 })();
-      btnPlayTop?.addEventListener('click', (ev) => {
-        if (btnPlayTop.dataset.started === '1') return;
-        ev.preventDefault();
-        ev.stopPropagation();
-        markStarted();
-        btnPlayTop.dataset.started = '1';
-        play();
-      });

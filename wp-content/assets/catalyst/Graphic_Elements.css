@@ -30,11 +30,16 @@
 .ge-icon-btn--round { border-radius: 9999px; }
 
 .ge-icon-btn__icon,
-.ge-icon-btn svg {
+.ge-icon-btn svg,
+.ge-icon-btn img {
   width: 18px;
   height: 18px;
   display: block;
   flex: 0 0 auto;
+}
+
+.ge-icon-btn__icon {
+  object-fit: contain;
 }
 
 .ge-icon-btn svg {
