@@ -206,7 +206,7 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 6px;
   width: 100%;
   height: 100%;
   border: 0;
@@ -384,7 +384,7 @@ video {
 
 .fdt-shell.is-scroll .fdt-controls .fdt-toolbar {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: flex-end;
   margin-top: 0;
   gap: 20px;
@@ -447,7 +447,7 @@ video {
   padding-right: 23px;
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: end;
   text-align: left;
   justify-self: start;
 }
@@ -457,7 +457,7 @@ video {
   position: absolute;
   left: 0;
   top: 0;
-  bottom: 0;
+  bottom: 6px;
   width: 0;
   border-left: 2px dotted rgba(0, 0, 0, 0.45);
   pointer-events: none;
@@ -492,7 +492,7 @@ video {
   justify-self: start;
   text-align: left;
   display: flex;
-  align-items: center;
+  align-items: end;
 }
 
 
@@ -605,7 +605,7 @@ video {
   height: 34px;
   border-radius: 6px;
   display: inline-flex;
-  align-items: center;
+  align-items: end;
   justify-content: center;
   cursor: pointer;
   transition: background-color 140ms ease;
@@ -865,6 +865,84 @@ video {
   z-index: 12;
 }
 
+.video-bug .video-bug__controls {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.video-bug .video-bug__controls-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  height: 56px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 18px;
+  align-items: end;
+  justify-content: left;
+  column-gap: 11px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.video-bug .video-bug__controls-spacer {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.video-bug:not(.has-started) .video-bug__btn-play {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 44px;
+  height: 44px;
+  z-index: 13;
+  pointer-events: auto;
+}
+
+.video-bug.has-started .video-bug__btn-play {
+  position: static;
+  width: 20px;
+  height: 20px;
+  z-index: auto;
+}
+
+.video-bug .video-bug__controls .video-bug__btn,
+.video-bug .video-bug__controls .video-bug__btn-size {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-bug .video-bug__controls img,
+.video-bug .video-bug__controls svg,
+.video-bug .video-bug__controls svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .video-bug .video-bug__controls-rail {
+    flex-wrap: nowrap;
+  }
+}
+
 .video-bug__nameplate {
   position: absolute;
   left: 0;
@@ -885,10 +963,13 @@ video {
   opacity: 1;
   pointer-events: none;
   font-size: 13px;
+  font-weight: 100;
+  letter-spacing: .02em;
+  line-height: 1em;
 }
 
 .video-bug__scrim {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 30%);
   opacity: 1;
   transition: opacity 200ms ease;
   pointer-events: none;
@@ -952,7 +1033,7 @@ video {
 
 .video-bug.has-started .video-bug__nameplate,
 .video-bug.has-started .video-bug__scrim,
-.video-bug.has-started .video-bug__btn-play {
+.video-bug.has-started:not(.is-paused) .video-bug__btn-play {
   opacity: 0;
   pointer-events: none;
 }

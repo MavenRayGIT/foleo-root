@@ -439,8 +439,46 @@ function initVideoBugModule() {
       const btnRestart = bug.querySelector('.video-bug__btn-restart');
       const btnExpand = bug.querySelector('.video-bug__btn-expand');
       const btnSize = bug.querySelector('.video-bug__btn-size');
+      const controls = bug.querySelector('.video-bug__ui');
+      if (controls && !controls.classList.contains('video-bug__controls')) {
+        controls.classList.add('video-bug__controls');
+      }
+      if (controls && controls.dataset.videoBugRail !== '1') {
+        const rail = document.createElement('div');
+        rail.className = 'video-bug__controls-rail';
+        const buttons = Array.from(controls.querySelectorAll('.video-bug__btn'))
+          .filter((btn) => !btn.classList.contains('video-bug__btn-play'));
+        buttons.forEach((btn) => rail.appendChild(btn));
+        controls.appendChild(rail);
+        controls.dataset.videoBugRail = '1';
+      }
+      const getRail = () => controls?.querySelector?.('.video-bug__controls-rail');
+      const placePlayInRail = () => {
+        if (!btnPlay) return;
+        const rail = getRail();
+        if (!rail || btnPlay.dataset.videoBugInRail === '1') return;
+        rail.insertBefore(btnPlay, rail.firstChild);
+        btnPlay.dataset.videoBugInRail = '1';
+      };
+      const ensureRailSpacer = () => {
+        const rail = getRail();
+        if (!rail) return;
+        if (bug.classList.contains('has-started')) {
+          rail.querySelector('.video-bug__controls-spacer')?.remove();
+          return;
+        }
+        if (!rail.querySelector('.video-bug__controls-spacer')) {
+          const spacer = document.createElement('span');
+          spacer.className = 'video-bug__controls-spacer';
+          rail.insertBefore(spacer, rail.firstChild);
+        }
+      };
+      if (bug.classList.contains('has-started')) {
+        placePlayInRail();
+      }
+      ensureRailSpacer();
       if (btnSize && btnSize.dataset.videoBugSizeIcon !== '1') {
-        btnSize.innerHTML = '<img class="video-bug__icon" src="https://foleo.co/wp-content/uploads/SVG/videosize-1.svg" alt="">';
+        btnSize.innerHTML = '<img class="video-bug__icon" src="https://foleo.co/wp-content/uploads/SVG/resize-icon2.svg" alt="">';
         btnSize.dataset.videoBugSizeIcon = '1';
       }
       bug.dataset.state = bug.dataset.state || 'paused';
@@ -448,6 +486,8 @@ function initVideoBugModule() {
       const markStarted = () => {
         if (!bug.classList.contains('has-started')) {
           bug.classList.add('has-started');
+          placePlayInRail();
+          ensureRailSpacer();
         }
       };
 
