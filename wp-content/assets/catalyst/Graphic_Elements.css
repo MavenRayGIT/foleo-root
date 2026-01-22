@@ -1,6 +1,69 @@
 /* NOTE: This file is for global visual primitives only.
    Do not place module root selectors here (examples: .video-bug, .tabs, .foleo-dynamic-table). */
 
+/* =========================================================
+   ICON BUTTONS (GLOBAL ATOMS)
+   ========================================================= */
+
+.ge-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  border: none;
+  line-height: 0;
+  padding: 0;
+  transition: background-color 160ms ease, opacity 160ms ease, transform 160ms ease;
+}
+
+.ge-icon-btn--sm { width: 32px; height: 32px; }
+.ge-icon-btn--md { width: 40px; height: 40px; }
+.ge-icon-btn--lg { width: 48px; height: 48px; }
+
+.ge-icon-btn--sm.ge-icon-btn--rounded { border-radius: 4px; }
+.ge-icon-btn--md.ge-icon-btn--rounded { border-radius: 5px; }
+.ge-icon-btn--lg.ge-icon-btn--rounded { border-radius: 6px; }
+
+.ge-icon-btn--round { border-radius: 9999px; }
+
+.ge-icon-btn__icon,
+.ge-icon-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.ge-icon-btn svg {
+  fill: currentColor;
+}
+
+.ge-icon-btn--solid {
+  background-color: #ff4a00;
+  color: #ffffff;
+}
+
+.ge-icon-btn--solid:hover {
+  opacity: 0.92;
+}
+
+.ge-icon-btn--icon {
+  background-color: transparent;
+  color: var(--bde-link-color, currentColor);
+}
+
+.ge-icon-btn--icon:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.ge-icon-btn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.35);
+  outline-offset: 2px;
+}
+
 .chevron-banner {
   display: inline-block;
   position: relative;

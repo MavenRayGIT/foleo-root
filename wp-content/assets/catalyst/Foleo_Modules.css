@@ -383,6 +383,9 @@ video {
 }
 
 .fdt-shell.is-scroll .fdt-controls .fdt-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   margin-top: 0;
   gap: 20px;
 }
@@ -919,38 +922,6 @@ video {
   pointer-events: auto;
 }
 
-.video-bug__controls--bottom .video-bug__btn,
-.video-bug__controls--bottom button,
-.video-bug__controls--bottom a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 0;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  line-height: 0;
-}
-
-.video-bug__controls--bottom .video-bug__btn:hover,
-.video-bug__controls--bottom button:hover,
-.video-bug__controls--bottom a:hover {
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.video-bug__controls--bottom .video-bug__btn img,
-.video-bug__controls--bottom .video-bug__btn svg,
-.video-bug__controls--bottom button img,
-.video-bug__controls--bottom button svg,
-.video-bug__controls--bottom a img,
-.video-bug__controls--bottom a svg {
-  display: block;
-  width: 20px;
-  height: 20px;
-}
 
 /* =========================================
    ENHANCEMENT: Scroll table fills parent height
