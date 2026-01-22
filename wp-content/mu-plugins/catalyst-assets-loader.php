@@ -71,6 +71,7 @@ add_action( 'wp_enqueue_scripts', function () {
      */
     $core_assets = [
         'Body.css',
+        'Foleo_Modules.css',
         'Graphic_Elements.css',
         'Body.js',
         'Foleo_Modules.js',
