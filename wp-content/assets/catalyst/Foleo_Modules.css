@@ -966,6 +966,7 @@ video {
   font-weight: 100;
   letter-spacing: .02em;
   line-height: 1em;
+  min-height: 60px;
 }
 
 .video-bug__scrim {
@@ -1171,3 +1172,123 @@ video {
 .fdt-shell.is-scroll .fdt-controls {
   flex: 0 0 auto;
 }
+
+/* =========================================================
+   FOLEO GRID V1
+   Tokens: 2px borders, 20px and 40px spacing
+   ========================================================= */
+
+.foleo-grid {
+  --fg-border: 2px;
+  --fg-space-20: 20px;
+  --fg-space-40: 40px;
+  --fg-bg-canvas: #F9F7F7;
+  --fg-bg-panel: #FFFFFF;
+  --fg-accent: #FFE8D4;
+  --fg-max-width: 1120px;
+  background: var(--fg-bg-canvas);
+}
+
+.foleo-grid__inner {
+  max-width: var(--fg-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.foleo-grid__row {
+  max-width: var(--fg-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.foleo-grid__row + .foleo-grid__row {
+  margin-top: var(--fg-space-40);
+}
+
+.foleo-grid__row.has-divider {
+  border-top: var(--fg-border) solid #000;
+  padding-top: var(--fg-space-20);
+}
+
+.foleo-grid__panel {
+  background: var(--fg-bg-panel);
+  padding: var(--fg-space-40);
+}
+
+.foleo-grid__panel > .foleo-grid__block + .foleo-grid__block {
+  margin-top: var(--fg-space-20);
+}
+
+.foleo-grid__block.is-accent-top {
+  border-top: var(--fg-border) solid var(--fg-accent);
+  padding-top: 10px;
+  margin-top: var(--fg-space-20);
+}
+
+.foleo-grid__row.row-2up {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--fg-space-40);
+}
+
+.foleo-grid__row.row-3up {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--fg-space-40);
+}
+
+.foleo-grid__row.row-media-2up {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--fg-space-40);
+}
+
+.foleo-grid__row.row-full,
+.foleo-grid__row.row-text,
+.foleo-grid__row.row-chart {
+  display: block;
+}
+
+/* Breakdance Columns compatibility: enforce 40px spacing */
+.foleo-grid .bde-columns.foleo-grid__row {
+  gap: var(--fg-space-40);
+  column-gap: var(--fg-space-40);
+}
+
+/* Force equal column widths for Breakdance Columns rows */
+.foleo-grid .bde-columns.foleo-grid__row.row-2up > .bde-column {
+  flex: 0 0 calc(50% - (var(--fg-space-40) / 2));
+  max-width: calc(50% - (var(--fg-space-40) / 2));
+}
+
+.foleo-grid .bde-columns.foleo-grid__row.row-3up > .bde-column {
+  flex: 0 0 calc(33.333% - (var(--fg-space-40) * 2 / 3));
+  max-width: calc(33.333% - (var(--fg-space-40) * 2 / 3));
+}
+
+@media (max-width: 768px) {
+  .foleo-grid__row.row-2up,
+  .foleo-grid__row.row-3up,
+  .foleo-grid__row.row-media-2up {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile stacking */
+@media (max-width: 768px) {
+  .foleo-grid .bde-columns.foleo-grid__row.row-2up > .bde-column,
+  .foleo-grid .bde-columns.foleo-grid__row.row-3up > .bde-column {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+.foleo-grid__block[data-block-type="image"] img,
+.foleo-grid__block.is-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* NOTE: Use .foleo-grid__inner in Breakdance to enforce max width centering. */

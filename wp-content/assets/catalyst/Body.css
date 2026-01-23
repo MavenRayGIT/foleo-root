@@ -9,6 +9,13 @@
  * Final overrides:
  * - Bottom "FINAL OVERRIDES: nav layering must beat hero media".
  */
+:root {
+  --foleo-gap-0: 0px;
+  --foleo-gap-20: 20px;
+  --foleo-gap-40: 40px;
+}
+
+[data-foleo-responsive="strict"] .bde-column { order: 0 !important; }
 /* Video-bug is owned by Foleo_Modules.js. Do not add new video-bug code here. */
 body.page-id-455 , body.page-id-287 , .bgbody {
   position: relative;

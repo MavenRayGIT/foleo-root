@@ -39,6 +39,24 @@ function scheduleOnce(fn, delays) {
   delays.forEach((delay) => setTimeout(fn, delay));
 }
 
+/* ===============================
+   FOLEO Responsive Breakpoints v1
+   =============================== */
+
+const FOLEO_BP = {
+  mobilePortraitMax: 479,
+  mobileLandscapeMax: 767,
+  tabletPortraitMax: 1023,
+  tabletLandscapeMax: 1119
+};
+
+function getFoleoTier() {
+  const w = window.innerWidth;
+  if (w <= FOLEO_BP.mobileLandscapeMax) return 'mobile';
+  if (w <= FOLEO_BP.tabletLandscapeMax) return 'tablet';
+  return 'desktop';
+}
+
 // Video-bug is owned by Foleo_Modules.js. Do not add new video-bug code here.
 
 function resolveFoleoNavState() {

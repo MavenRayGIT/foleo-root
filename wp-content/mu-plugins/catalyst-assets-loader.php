@@ -99,14 +99,14 @@ add_action( 'wp_enqueue_scripts', function () {
      * so controlling this allowlist controls Lenis too.
      */
     $lottie_allow_hosts = [
-        // 'catalyst.foleo.co',
+        'catalyst.foleo.co',
         // 'huronperformance.foleo.co',
     ];
 
     $lottie_assets = [
         'Lenis_Lottie.css',
-        'Lottie_Global.js',
         'Lottie_Inject.js',
+        'Lottie_Global.js',
     ];
 
     // Enqueue core everywhere
