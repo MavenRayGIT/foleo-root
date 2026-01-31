@@ -64,6 +64,13 @@ function foleo_enqueue_asset_files( array $files ) {
 add_action( 'wp_enqueue_scripts', function () {
 
     $host = foleo_current_host();
+    $post_id = is_singular( 'page' ) ? get_queried_object_id() : 0;
+    $flags   = $post_id ? get_post_meta( $post_id, 'foleo_page_flags', true ) : null;
+    if ( is_string( $flags ) ) {
+        $decoded = json_decode( $flags, true );
+        $flags   = is_array( $decoded ) ? $decoded : null;
+    }
+    $has_flags = is_array( $flags ) && ! empty( $flags );
 
     /**
      * 1) CORE: always on everywhere
@@ -74,8 +81,6 @@ add_action( 'wp_enqueue_scripts', function () {
         'Foleo_Modules.css',
         'Graphic_Elements.css',
         'Body.js',
-        'Foleo_Modules.js',
-        'SnapScroll.js',
     ];
 
     /**
@@ -112,14 +117,35 @@ add_action( 'wp_enqueue_scripts', function () {
     // Enqueue core everywhere
     foleo_enqueue_asset_files( $core_assets );
 
-    // Enqueue Tabs only where allowed
-    if ( in_array( $host, $tabs_allow_hosts, true ) ) {
-        foleo_enqueue_asset_files( $tabs_assets );
-    }
+    if ( $has_flags ) {
+        if ( ! empty( $flags['tabs_enabled'] ) ) {
+            foleo_enqueue_asset_files( [ 'Tabs.css', 'Tabs.js' ] );
+        }
+        if ( ! empty( $flags['tabs_mobile_enabled'] ) ) {
+            foleo_enqueue_asset_files( [ 'Tabs_Mobile.css', 'Tabs_Mobile.js' ] );
+        }
+        if ( ! empty( $flags['lottie_enabled'] ) ) {
+            foleo_enqueue_asset_files( $lottie_assets );
+        }
+        if ( ! empty( $flags['snapScroll_enabled'] ) ) {
+            foleo_enqueue_asset_files( [ 'SnapScroll.js' ] );
+        }
+        if ( ! empty( $flags['dynamicTable_enabled'] ) || ! empty( $flags['videoBug_enabled'] ) ) {
+            foleo_enqueue_asset_files( [ 'Foleo_Modules.js' ] );
+        }
+    } else {
+        // Enqueue Tabs only where allowed
+        if ( in_array( $host, $tabs_allow_hosts, true ) ) {
+            foleo_enqueue_asset_files( $tabs_assets );
+        }
 
-    // Enqueue Lottie only where allowed
-    if ( in_array( $host, $lottie_allow_hosts, true ) ) {
-        foleo_enqueue_asset_files( $lottie_assets );
+        // Enqueue Lottie only where allowed
+        if ( in_array( $host, $lottie_allow_hosts, true ) ) {
+            foleo_enqueue_asset_files( $lottie_assets );
+        }
+
+        // Legacy defaults
+        foleo_enqueue_asset_files( [ 'Foleo_Modules.js', 'SnapScroll.js' ] );
     }
 
 }, 100 );

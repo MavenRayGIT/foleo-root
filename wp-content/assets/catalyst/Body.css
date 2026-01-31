@@ -725,6 +725,7 @@ html.foleo-nav-reveal.foleo-binder .foleo-switch{
   .foleo-switch__panel .foleo-switch__link{
     color: #fff !important;
     text-decoration: none !important;
+    font-size: 21px;
   }
 
   .foleo-switch__link.is-active{

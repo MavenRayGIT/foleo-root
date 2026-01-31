@@ -35,18 +35,30 @@ function getQueryParam(name) {
 const FOLEO_PROFILE_STORAGE_KEY = 'foleoProfile';
 
 function loadNavRegistrySync() {
-  if (window.__FOLEO_NAV_REGISTRY__) return window.__FOLEO_NAV_REGISTRY__;
-  try {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '/wp-content/assets/catalyst/nav-registry.json', false);
-    xhr.send(null);
-    if (xhr.status >= 200 && xhr.status < 300) {
-      const data = JSON.parse(xhr.responseText);
+  return window.__FOLEO_NAV_REGISTRY__ || null;
+}
+
+function loadNavRegistryAsync() {
+  if (window.__FOLEO_NAV_REGISTRY__) {
+    return Promise.resolve(window.__FOLEO_NAV_REGISTRY__);
+  }
+  if (window.__FOLEO_NAV_REGISTRY_PROMISE__) {
+    return window.__FOLEO_NAV_REGISTRY_PROMISE__;
+  }
+
+  const url = '/wp-content/assets/catalyst/nav-registry.json';
+  window.__FOLEO_NAV_REGISTRY_PROMISE__ = fetch(url, { cache: 'force-cache' })
+    .then((res) => {
+      if (!res.ok) throw new Error('nav-registry fetch failed');
+      return res.json();
+    })
+    .then((data) => {
       window.__FOLEO_NAV_REGISTRY__ = data;
       return data;
-    }
-  } catch (e) {}
-  return null;
+    })
+    .catch(() => null);
+
+  return window.__FOLEO_NAV_REGISTRY_PROMISE__;
 }
 
 function readStoredProfile() {
@@ -511,6 +523,56 @@ function resolveFoleoNavState() {
     binder,
     page
   };
+}
+
+function computeFoleoNavStateFromRegistry(profileId, registry) {
+  const profileCfg = registry?.profiles?.[profileId];
+  if (!profileCfg) return null;
+  const mode = profileCfg.mode || 'standalone';
+  if (mode === 'binder') {
+    const binderId = profileCfg.binder || '';
+    const binderList = registry?.binders?.[binderId] || [];
+    const pages = binderList
+      .map((item) => {
+        const href = typeof item?.href === 'string' ? item.href : '';
+        const slug = href.replace(/\/+$/, '').replace(/^\//, '');
+        return slug;
+      })
+      .filter(Boolean);
+
+    return {
+      mode: 'binder',
+      binder: binderId,
+      binderId,
+      pages,
+      page: window.location.pathname,
+      profile: profileId
+    };
+  }
+
+  return {
+    mode: 'standalone',
+    binder: null,
+    page: window.location.pathname,
+    profile: profileId
+  };
+}
+
+function resolveFoleoNavStateAsync() {
+  const params = new URLSearchParams(window.location.search || '');
+  const profileParam = params.get('profile');
+  const profileId = profileParam && profileParam !== 'clear'
+    ? profileParam
+    : readStoredProfile();
+  if (!profileId) return Promise.resolve(null);
+  return loadNavRegistryAsync().then((registry) => {
+    if (!registry) return null;
+    const state = computeFoleoNavStateFromRegistry(profileId, registry);
+    if (state) {
+      window.__FOLEO_NAV_STATE_OVERRIDE__ = state;
+    }
+    return state;
+  });
 }
 
 // Export globally for debugging and other modules
@@ -1160,6 +1222,30 @@ document.addEventListener('DOMContentLoaded', () => {
       scheduleOnce(setInitialFoleoVnavActive, [250]);
       window.addEventListener('load', setInitialFoleoVnavActive, { once: true });
     }
+
+    resolveFoleoNavStateAsync().then((asyncState) => {
+      if (!asyncState) return;
+      const switcherEl = document.querySelector('[data-foleo-switcher]');
+      document.documentElement.classList.toggle('foleo-binder', asyncState.mode === 'binder');
+      document.documentElement.classList.toggle('foleo-standalone', asyncState.mode === 'standalone');
+      document.documentElement.classList.remove('foleo-nav-reveal');
+
+      if (asyncState.mode === 'standalone') {
+        if (switcherEl) switcherEl.style.display = 'none';
+        const hamburger = document.querySelector('.hamburger');
+        if (hamburger) hamburger.style.display = 'none';
+      } else {
+        if (switcherEl) buildFoleoSwitcher();
+        setTimeout(buildFoleoSwitcher, 250);
+        scheduleOnce(initFoleoVnavActiveTracking, [0, 500]);
+      }
+
+      buildFoleoVnav();
+      scheduleOnce(buildFoleoVnav, [250, 1000]);
+      setInitialFoleoVnavActive();
+      scheduleOnce(setInitialFoleoVnavActive, [250]);
+      window.addEventListener('load', setInitialFoleoVnavActive, { once: true });
+    });
   }
 
   if (!isEditMode) {
@@ -1313,6 +1399,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const iframeToPlaceholder = new WeakMap();
       const iframeMeta = new WeakMap();
+      let sdkPromise = null;
       let messageListenerBound = false;
 
       const normalizeCustomer = (value) => {
@@ -1357,9 +1444,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       };
 
+      const ensureCfSdk = () => {
+        if (typeof Stream === "function") return Promise.resolve();
+        if (sdkPromise) return sdkPromise;
+        sdkPromise = new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
+          script.async = true;
+          script.onload = () => resolve();
+          script.onerror = reject;
+          document.head.appendChild(script);
+        }).catch(() => {});
+        return sdkPromise;
+      };
+
+      const addLinkHint = (rel, href) => {
+        if (!href) return;
+        const existing = document.querySelector(`link[rel="${rel}"][href="${href}"]`);
+        if (existing) return;
+        const link = document.createElement("link");
+        link.rel = rel;
+        link.href = href;
+        document.head.appendChild(link);
+      };
+
+      const preconnectForCustomer = (customerInfo) => {
+        if (!customerInfo || !customerInfo.origin) return;
+        addLinkHint("dns-prefetch", customerInfo.origin);
+        addLinkHint("preconnect", customerInfo.origin);
+        addLinkHint("dns-prefetch", "https://embed.cloudflarestream.com");
+        addLinkHint("preconnect", "https://embed.cloudflarestream.com");
+      };
+
+      let warmupBound = false;
+      const warmupSdkOnFirstInteraction = () => {
+        if (warmupBound) return;
+        warmupBound = true;
+        const handler = () => {
+          ensureCfSdk();
+          window.removeEventListener("pointerdown", handler, { passive: true });
+          window.removeEventListener("touchstart", handler, { passive: true });
+          window.removeEventListener("keydown", handler);
+        };
+        window.addEventListener("pointerdown", handler, { passive: true, once: true });
+        window.addEventListener("touchstart", handler, { passive: true, once: true });
+        window.addEventListener("keydown", handler, { once: true });
+      };
+
+      warmupSdkOnFirstInteraction();
+
       const ensureHint = (placeholder, text) => {
         if (!placeholder) return;
         if (placeholder.querySelector(".cf-stream-hint")) return;
+        const spinner = placeholder.querySelector(".cf-stream-spinner");
+        if (spinner) spinner.remove();
         const hint = document.createElement("div");
         hint.className = "cf-stream-hint";
         hint.textContent = text;
@@ -1376,12 +1514,21 @@ document.addEventListener('DOMContentLoaded', () => {
         hint.style.pointerEvents = "none";
         hint.style.zIndex = "2";
         placeholder.appendChild(hint);
+        // Let the iframe play button receive the next tap if autoplay fails.
+        placeholder.style.pointerEvents = "none";
+        placeholder.style.opacity = "0.35";
       };
 
       const markPlaying = (placeholder) => {
         if (!placeholder) return;
+        const iframe = placeholder.__foleoIframe;
+        if (!iframe || !iframe.isConnected) return;
         if (placeholder.dataset.foleoState === "playing") return;
         placeholder.dataset.foleoState = "playing";
+        iframe.style.opacity = "1";
+        iframe.style.visibility = "visible";
+        const spinner = placeholder.querySelector(".cf-stream-spinner");
+        if (spinner) spinner.remove();
         placeholder.style.pointerEvents = "none";
         placeholder.style.opacity = "0";
         setTimeout(() => {
@@ -1431,6 +1578,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (existingLive && (state === "loading" || state === "ready")) {
           const meta = iframeMeta.get(existing) || {};
           tryPostMessagePlay(existing, meta.origin || "*");
+          ensureCfSdk().then(() => {
+            try {
+              const p = Stream?.(existing);
+              p?.play?.().catch?.(() => {});
+            } catch (e) {}
+          });
           return true;
         }
         if (state === "playing") return;
@@ -1444,6 +1597,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (placeholder.dataset.foleoLazyInit === "1" && existingLive) return false;
         placeholder.dataset.foleoLazyInit = "1";
         placeholder.dataset.foleoState = "loading";
+        if (!placeholder.querySelector(".cf-stream-spinner")) {
+          const spinner = document.createElement("div");
+          spinner.className = "cf-stream-spinner";
+          placeholder.appendChild(spinner);
+        }
+        preconnectForCustomer(customerInfo);
 
         const iframe = document.createElement("iframe");
         const params = new URLSearchParams();
@@ -1464,6 +1623,8 @@ document.addEventListener('DOMContentLoaded', () => {
         iframe.style.height = "100%";
         iframe.style.width = "100%";
         iframe.style.zIndex = "0";
+        iframe.style.opacity = "0";
+        iframe.style.visibility = "hidden";
 
         const parent = placeholder.parentElement;
         if (parent) {
@@ -1478,16 +1639,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
           iframe.addEventListener("load", () => {
             placeholder.dataset.foleoState = "ready";
-            tryPostMessagePlay(iframe, origin);
-            setTimeout(() => tryPostMessagePlay(iframe, origin), 250);
-            setTimeout(() => tryPostMessagePlay(iframe, origin), 700);
+            iframe.style.opacity = "1";
+            iframe.style.visibility = "visible";
+            const tryPlay = () => {
+              tryPostMessagePlay(iframe, origin);
+              ensureCfSdk().then(() => {
+                try {
+                  const player = Stream?.(iframe);
+                  if (player && player.addEventListener) {
+                    player.addEventListener("play", () => markPlaying(placeholder), { once: true });
+                    player.addEventListener("playing", () => markPlaying(placeholder), { once: true });
+                  }
+                  player?.play?.().catch?.(() => {});
+                } catch (e) {}
+              });
+            };
+            tryPlay();
+            setTimeout(tryPlay, 250);
+            setTimeout(tryPlay, 700);
+            setTimeout(tryPlay, 1200);
+            setTimeout(tryPlay, 1800);
 
             setTimeout(() => {
               if (placeholder.dataset.foleoState !== "playing") {
                 ensureHint(placeholder, "Tap to play");
                 placeholder.dataset.foleoState = "ready";
               }
-            }, 1100);
+            }, 1600);
           }, { once: true });
           return true;
         } else {
