@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Foleo Maker to Module Workflow V1</title>
+  <style>
+    :root { --bg:#ffffff; --panel:#f7f7f9; --text:#121212; --muted:#5a5f6a; --accent:#ff4a00; --border:#e6e6e6; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 32px 18px 80px; }
+    h1 { font-size: 28px; margin: 0 0 6px; }
+    h2 { font-size: 18px; margin: 32px 0 10px; }
+    h3 { font-size: 15px; margin: 18px 0 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    p, li { line-height: 1.45; color: var(--text); }
+    .muted { color: var(--muted); }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .grid { display: grid; gap: 12px; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    pre { background: #f6f7f9; border: 1px solid var(--border); border-radius: 12px; padding: 14px; overflow:auto; color: #121212; }
+    .tag { display:inline-block; padding: 2px 8px; border-radius: 999px; background: rgba(255,74,0,.12); border: 1px solid rgba(255,74,0,.3); color: #7a1f00; font-size: 12px; }
+    .two { display:grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 820px) { .two { grid-template-columns: 1fr 1fr; } }
+    a { color: #c73a00; }
+    .hr { height: 1px; background: var(--border); margin: 18px 0; }
+    .callout { border-left: 4px solid var(--accent); padding-left: 12px; color: var(--muted); }
+    .kbd { padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 6px; background: #ffffff; color: var(--text); font-size: 12px; }
+    .workflow-nav{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #ffffff;
+      border-bottom: 1px solid #e6e6e6;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    .workflow-nav a{
+      margin-left: 12px;
+      text-decoration: none;
+      color: #000000;
+    }
+    .workflow-nav a:hover{
+      text-decoration: underline;
+    }
+    .code-block{
+      position: relative;
+      margin: 20px 0;
+    }
+    .code-block pre{
+      background: #f6f7f9;
+      color: #121212;
+      padding: 16px;
+      overflow-x: auto;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .copy-btn{
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.04);
+      color: #121212;
+      cursor: pointer;
+    }
+    .copy-btn:hover{
+      background: rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Foleo Maker to Module Workflow V1</h1>
+    <nav class="workflow-nav">
+      <strong>Workflow:</strong>
+      <a href="#overview">Overview</a>
+      <a href="#strict-mode">STRICT</a>
+      <a href="#flex-mode">FLEX</a>
+      <a href="#snapshot">Snapshot</a>
+      <a href="#ask-ai">Ask AI</a>
+      <a href="#codex">Codex</a>
+    </nav>
+    <p class="muted">Use this as your step by step guide for building in Breakdance, capturing multi breakpoint snapshots, and working with AI on STRICT and FLEX sections.</p>
+
+    <div class="hr"></div>
+
+    <h2>Where to store this document</h2>
+    <div class="card">
+      <ul>
+        <li><b>Best for server access:</b> <span class="tag">/wp-content/uploads/foleo/docs/</span> (public, simple)</li>
+        <li><b>Best for versioning:</b> store in your repo under <span class="tag">/docs/</span> and also publish to the uploads folder.</li>
+        <li><b>Best for internal SOP:</b> <span class="tag">/wp-content/uploads/foleo/ops/</span> and optionally protect with basic auth later.</li>
+      </ul>
+      <p class="muted">Recommendation: put it in <b>/wp-content/uploads/foleo/docs/foleo-maker-module-workflow-v1.html</b> so you can open it quickly while building.</p>
+    </div>
+
+    <h2 id="overview">Core idea</h2>
+    <div class="card">
+      <p><b>Maker page</b> is your freestyle reference in Breakdance.</p>
+      <p><b>Module page</b> is the production-like clone used to apply STRICT spec and module CSS/JS.</p>
+      <p><b>STRICT</b> aims for parity on stripped sections. <b>FLEX</b> stays as-built and is used to discover standards over time.</p>
+    </div>
+
+    <h2 id="strict-mode">STRICT Mode</h2>
+    <div class="two">
+      <div class="card">
+        <h3>STRICT</h3>
+        <ul>
+          <li>On section root: <span class="tag">foleo-grid</span> <span class="tag">foleo-responsive--strict</span></li>
+          <li>Rows: add <span class="tag">foleo-grid__row</span> (even if it is a Breakdance Columns element)</li>
+          <li>Panels: wrap panel surfaces with <span class="tag">foleo-grid__panel</span></li>
+          <li>Utilities: <span class="tag">foleo-text--cols-2</span> only on the text block that should be multi column on desktop</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>FLEX</h3>
+        <ul>
+          <li>On section root: <span class="tag">foleo-responsive--flex</span></li>
+          <li>Optional type tags when helpful:
+            <span class="tag">foleo-type--tabs</span>
+            <span class="tag">foleo-type--table</span>
+            <span class="tag">foleo-type--gallery</span>
+          </li>
+          <li>Optional: use <span class="tag">foleo-grid__panel</span> only if it helps, not required</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="flex-mode">Step by step workflow</h2>
+
+    <div class="card grid">
+      <h3>Step 1: Build in Maker</h3>
+      <ol>
+        <li>Create or open the Maker page.</li>
+        <li>Design freely in Breakdance.</li>
+        <li>Mark each section as STRICT or FLEX:
+          <ul>
+            <li>STRICT sections get <span class="tag">foleo-grid</span> <span class="tag">foleo-responsive--strict</span></li>
+            <li>FLEX sections get <span class="tag">foleo-responsive--flex</span></li>
+          </ul>
+        </li>
+        <li>For STRICT sections, add structure classes:
+          <ul>
+            <li>Rows get <span class="tag">foleo-grid__row</span></li>
+            <li>Panels get <span class="tag">foleo-grid__panel</span></li>
+          </ul>
+        </li>
+      </ol>
+
+      <h3>Step 2: Create the Module page</h3>
+      <ol>
+        <li>Duplicate Maker page into Module page.</li>
+        <li>STRICT sections: strip Breakdance styling as much as possible.</li>
+        <li>FLEX sections: keep styling, do not strip. FLEX is not expected to translate from scratch.</li>
+      </ol>
+
+      <h3>Step 3: Capture snapshots (the standard input)</h3>
+      <p class="muted">The goal is one-shot capture at three widths: 430, 800, 1200. You will run the script twice for STRICT parity work: Maker then Module. For FLEX discovery work: Maker only.</p>
+
+      <div class="callout">
+        <p><b>Important:</b> Always capture the correct root. For STRICT sections, capture the node that contains <span class="tag">foleo-grid</span> and <span class="tag">foleo-responsive--strict</span>. For FLEX sections, capture the section root you care about.</p>
+      </div>
+    </div>
+
+    <h2 id="snapshot">Console scripts</h2>
+
+    <div class="card">
+      <h3>Script A: One-shot multi breakpoint snapshot (uses selected element)</h3>
+      <p class="muted">How to use: in DevTools Elements panel, click the section (or wrapper) you want. Then run this in Console. It logs an object and you can right click and copy the object if clipboard is blocked.</p>
+      <div class="code-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>(async () =&gt; {
+  const selected = $0; // selected in Elements panel
+  if (!selected) return console.warn('No selected element ($0). Click something in Elements first.');
+
+  const WIDTHS = [430, 800, 1200];
+  const WAIT_MS = 350;
+
+  const props = [
+    'display','position','boxSizing','width','maxWidth','minWidth',
+    'paddingTop','paddingRight','paddingBottom','paddingLeft',
+    'marginTop','marginRight','marginBottom','marginLeft',
+    'gap','rowGap','columnGap','flexDirection','alignItems','justifyContent',
+    'fontFamily','fontSize','fontWeight','lineHeight','letterSpacing',
+    'textTransform','color',
+    'backgroundColor','borderTopWidth','borderTopStyle','borderTopColor',
+    'borderRadius','boxShadow'
+  ];
+
+  const pick = (rootEl, sel) =&gt; rootEl.querySelector(sel);
+
+  const snapshotForRoot = (rootEl) =&gt; {
+    const targets = {
+      root: rootEl,
+      sectionContainer: rootEl.querySelector('.section-container') || rootEl,
+      row: pick(rootEl, '.foleo-grid__row') || pick(rootEl, '.bde-columns') || rootEl,
+      columns: pick(rootEl, '.bde-columns'),
+      col: pick(rootEl, '.bde-column'),
+      h: pick(rootEl, 'h1, h2, h3, .bde-heading'),
+      p: pick(rootEl, 'p, .bde-text'),
+      hr: pick(rootEl, 'hr')
+    };
+
+    const out = {};
+    for (const [key, el] of Object.entries(targets)) {
+      if (!el) continue;
+      const cs = getComputedStyle(el);
+      out[key] = {
+        tag: el.tagName.toLowerCase(),
+        class: el.className || '',
+        props: Object.fromEntries(props.map(p =&gt; [p, cs[p]]))
+      };
+    }
+    return out;
+  };
+
+  const buildIframeAtWidth = async (width) =&gt; {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = `position:fixed;left:-99999px;top:0;width:${width}px;height:1800px;border:0;visibility:hidden;`;
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentDocument;
+    doc.open();
+    doc.write('&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;');
+    doc.close();
+
+    const headClone = document.head.cloneNode(true);
+    doc.head.replaceWith(doc.importNode(headClone, true));
+
+    const cloned = selected.cloneNode(true);
+    const imported = doc.importNode(cloned, true);
+    doc.body.appendChild(imported);
+
+    await new Promise(r =&gt; setTimeout(r, WAIT_MS));
+
+    try {
+      if (doc.fonts &amp;&amp; doc.fonts.ready) {
+        await Promise.race([doc.fonts.ready, new Promise(r =&gt; setTimeout(r, 800))]);
+      }
+    } catch (e) {}
+
+    return { iframe, root: imported };
+  };
+
+  const results = {};
+  const iframes = [];
+
+  for (const w of WIDTHS) {
+    const built = await buildIframeAtWidth(w);
+    iframes.push(built.iframe);
+    results[String(w)] = snapshotForRoot(built.root);
+  }
+
+  iframes.forEach(f =&gt; f.remove());
+
+  console.log('SNAPSHOT_MULTI_BP', results);
+
+  try {
+    await navigator.clipboard.writeText(JSON.stringify(results, null, 2));
+    console.log('Copied JSON to clipboard.');
+  } catch (e) {
+    console.log('Clipboard blocked. Right click SNAPSHOT_MULTI_BP in console and choose Copy object.');
+  }
+})();</code></pre>
+      </div>
+
+      <h3>Script B: Strict auto-root picker (snapshots the strict grid wrapper inside selection)</h3>
+      <p class="muted">Use this when you click a section but the strict wrapper is a child. Select the section, run script. It will prefer <span class="tag">.foleo-grid.foleo-responsive--strict</span> inside the selected subtree.</p>
+      <div class="code-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>(async () =&gt; {
+  const selected = $0;
+  if (!selected) return console.warn('No selected element ($0). Click something in Elements first.');
+
+  const WIDTHS = [430, 800, 1200];
+  const WAIT_MS = 350;
+
+  const pickRoot = (node) =&gt;
+    node.matches?.('.foleo-grid.foleo-responsive--strict')
+      ? node
+      : node.querySelector?.('.foleo-grid.foleo-responsive--strict')
+        || node.querySelector?.('.foleo-grid')
+        || node;
+
+  const props = [
+    'display','position','boxSizing','width','maxWidth','minWidth',
+    'paddingTop','paddingRight','paddingBottom','paddingLeft',
+    'marginTop','marginRight','marginBottom','marginLeft',
+    'gap','rowGap','columnGap','flexDirection','alignItems','justifyContent',
+    'fontFamily','fontSize','fontWeight','lineHeight','letterSpacing',
+    'textTransform','color',
+    'backgroundColor','borderTopWidth','borderTopStyle','borderTopColor',
+    'borderRadius','boxShadow'
+  ];
+
+  const pick = (rootEl, sel) =&gt; rootEl.querySelector(sel);
+
+  const snapshotForRoot = (rootEl) =&gt; {
+    const targets = {
+      root: rootEl,
+      sectionContainer: rootEl.querySelector('.section-container') || rootEl,
+      row: pick(rootEl, '.foleo-grid__row') || pick(rootEl, '.bde-columns') || rootEl,
+      columns: pick(rootEl, '.bde-columns'),
+      col: pick(rootEl, '.bde-column'),
+      h: pick(rootEl, 'h1, h2, h3, .bde-heading'),
+      p: pick(rootEl, 'p, .bde-text'),
+      hr: pick(rootEl, 'hr')
+    };
+
+    const out = {};
+    for (const [key, el] of Object.entries(targets)) {
+      if (!el) continue;
+      const cs = getComputedStyle(el);
+      out[key] = {
+        tag: el.tagName.toLowerCase(),
+        class: el.className || '',
+        props: Object.fromEntries(props.map(p =&gt; [p, cs[p]]))
+      };
+    }
+    return out;
+  };
+
+  const buildIframeAtWidth = async (width) =&gt; {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = `position:fixed;left:-99999px;top:0;width:${width}px;height:1800px;border:0;visibility:hidden;`;
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentDocument;
+    doc.open();
+    doc.write('&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;');
+    doc.close();
+
+    const headClone = document.head.cloneNode(true);
+    doc.head.replaceWith(doc.importNode(headClone, true));
+
+    const cloned = selected.cloneNode(true);
+    const imported = doc.importNode(cloned, true);
+    doc.body.appendChild(imported);
+
+    await new Promise(r =&gt; setTimeout(r, WAIT_MS));
+
+    const iframeRoot = pickRoot(imported);
+    return { iframe, root: iframeRoot };
+  };
+
+  const results = {};
+  const iframes = [];
+
+  for (const w of WIDTHS) {
+    const built = await buildIframeAtWidth(w);
+    iframes.push(built.iframe);
+    results[String(w)] = snapshotForRoot(built.root);
+  }
+
+  iframes.forEach(f =&gt; f.remove());
+
+  console.log('SNAPSHOT_STRICT_ROOTED', results);
+
+  try {
+    await navigator.clipboard.writeText(JSON.stringify(results, null, 2));
+    console.log('Copied JSON to clipboard.');
+  } catch (e) {
+    console.log('Clipboard blocked. Right click SNAPSHOT_STRICT_ROOTED and choose Copy object.');
+  }
+})();</code></pre>
+      </div>
+
+      <div class="callout">
+        <p><b>Tip:</b> If clipboard is blocked, use Console copy: right click the logged object (SNAPSHOT_*) and choose <b>Copy object</b>.</p>
+      </div>
+    </div>
+
+    <h2 id="ask-ai">What to ask AI, so we do not derail</h2>
+    <div class="card grid">
+      <h3>STRICT parity request template</h3>
+      <div class="code-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Context:
+- Mode: STRICT
+- Goal: Maker to Module parity
+Inputs:
+- Maker snapshot JSON (430/800/1200): [paste]
+- Module snapshot JSON (430/800/1200): [paste]
+Constraints:
+- Scope all CSS to .foleo-grid.foleo-responsive--strict
+- Propose CSS split: Body.css spec vs Foleo_Modules.css module
+Output format:
+- One Codex block with file, exact selectors, and where to place changes
+- Avoid debugging loops, prefer snapshot diff
+Review loop:
+-- I will visually review and reply with bullet deltas by breakpoint</code></pre>
+      </div>
+
+      <h3>FLEX discovery request template</h3>
+      <div class="code-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Context:
+- Mode: FLEX discovery
+- Goal: catalog standards, do not force parity
+Inputs:
+- Maker FLEX snapshot JSON (430/800/1200): [paste]
+- Section type tag: Tabs / Table / Gallery / Hero / Quote / Chart / Mixed
+Constraints:
+- Do not propose large refactors
+- Identify repeatable tendencies and propose candidates for:
+  (1) Flex Baseline defaults
+  (2) Category standards
+  (3) Strict evolution backlog
+Output format:
+- A short list of observed patterns
+- 1 to 3 standards candidates max
+-- Suggested class utilities only if repeated patterns justify them</code></pre>
+      </div>
+
+      <h3>Feedback format (how Jon replies after visual review)</h3>
+      <div class="code-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Review notes:
+- Desktop:
+  - [bullet]
+- Tablet:
+  - [bullet]
+- Mobile:
+  - [bullet]
+Constraints:
+- Keep STRICT scoping
+- Prefer minimal delta patch</code></pre>
+      </div>
+    </div>
+
+    <h2>AI responsibilities (quick recap)</h2>
+    <div class="card">
+      <ol>
+        <li>Use the snapshot JSON, do not guess breakpoints.</li>
+        <li>Diff Maker minus Module per breakpoint.</li>
+        <li>Propose round 1 CSS split:
+          <ul>
+            <li>Spec rules to <span class="tag">Body.css</span></li>
+            <li>Module rules to <span class="tag">Foleo_Modules.css</span></li>
+          </ul>
+        </li>
+        <li>Keep changes strictly scoped to STRICT or FLEX selectors.</li>
+        <li>Avoid debugging loops. Only ask for more data when snapshots are insufficient.</li>
+        <li>Wait for Jon’s bullet review, then iterate quickly with small patches.</li>
+      </ol>
+    </div>
+
+    <h2 id="codex">Codex responsibilities</h2>
+    <div class="card">
+      <ul>
+        <li>Follow this SOP. Produce patches as a single copyable instruction block.</li>
+        <li>Preserve cascade and specificity. Do not merge rules across breakpoint contexts.</li>
+        <li>Prefer minimal deltas. Do not introduce new classes unless repeated patterns justify it.</li>
+        <li>Reference file name and the nearest comment header for placement.</li>
+      </ul>
+    </div>
+
+    <h2>Standards Catalog V1 (recommended structure)</h2>
+    <div class="card">
+      <p class="muted">Keep a living catalog file, either in repo docs or in uploads. Suggested sections:</p>
+      <ol>
+        <li><b>FLEX Baseline candidates</b> (padding trends, alignment norms, rhythm)</li>
+        <li><b>Category standards</b> (Tabs, Table, Gallery, Chart cards, Quote blocks)</li>
+        <li><b>STRICT evolution backlog</b> (when something repeats enough to become deterministic)</li>
+      </ol>
+      <p class="muted">Each entry should include: section type, observed pattern, breakpoint notes, proposed rule, proposed class, and whether it is spec or module.</p>
+    </div>
+
+    <div class="hr"></div>
+    <p class="muted">End of document. Version: V1. Update this file when workflow changes.</p>
+  </div>
+  <script>
+  (function(){
+    document.querySelectorAll('.copy-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const block = btn.closest('.code-block');
+        if (!block) return;
+
+        const pre = block.querySelector('pre');
+        if (!pre) return;
+
+        try {
+          await navigator.clipboard.writeText(pre.innerText);
+          const old = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(() => btn.textContent = old, 1200);
+        } catch (e) {
+          btn.textContent = 'Copy failed';
+          setTimeout(() => btn.textContent = 'Copy', 1200);
+        }
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

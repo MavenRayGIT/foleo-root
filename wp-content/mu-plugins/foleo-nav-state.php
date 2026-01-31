@@ -53,10 +53,15 @@ function foleo_resolve_nav_state() {
 
     $standalone = isset( $_GET['standalone'] ) && (string) $_GET['standalone'] === '1';
     $binder_id  = isset( $_GET['binder'] ) ? sanitize_key( wp_unslash( $_GET['binder'] ) ) : '';
+    $binder_id_norm = $binder_id ? str_replace( '_', '-', $binder_id ) : '';
 
     if ( $standalone ) {
         $state = [ 'mode' => 'standalone' ];
         return $state;
+    }
+
+    if ( $binder_id && ! isset( $binders[ $binder_id ] ) && $binder_id_norm && isset( $binders[ $binder_id_norm ] ) ) {
+        $binder_id = $binder_id_norm;
     }
 
     if ( $binder_id && isset( $binders[ $binder_id ] ) ) {

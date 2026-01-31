@@ -226,6 +226,8 @@ function renderFoleoDynamicTable(mount) {
 
 function initVideoBugModule() {
   const bugs = document.querySelectorAll('.video-bug');
+  const bugSections = document.querySelectorAll('[data-video-bug="1"]');
+  if (!bugs.length && !bugSections.length) return;
   if (!bugs.length) return;
 
   let config = null;
@@ -600,6 +602,8 @@ function initVideoBugModule() {
 // Public init
 Modules.init = function initFoleoModules() {
   const mounts = document.querySelectorAll('[data-foleo-dynamic-table]');
+  const hasVideoBug = !!document.querySelector('.video-bug, [data-video-bug="1"]');
+  if (!mounts.length && !hasVideoBug) return;
   if (mounts.length) {
     mounts.forEach(renderFoleoDynamicTable);
   }

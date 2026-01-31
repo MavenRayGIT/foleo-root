@@ -9,17 +9,183 @@
  * Final overrides:
  * - Bottom "FINAL OVERRIDES: nav layering must beat hero media".
  */
-:root {
-  --foleo-gap-0: 0px;
-  --foleo-gap-20: 20px;
-  --foleo-gap-40: 40px;
-}
+
 
 [data-foleo-responsive="strict"] .bde-column { order: 0 !important; }
 /* Video-bug is owned by Foleo_Modules.js. Do not add new video-bug code here. */
 body.page-id-455 , body.page-id-287 , .bgbody {
   position: relative;
   background: none;
+}
+
+/* Foleo bottom tray */
+.foleo-tray-bot {
+  will-change: transform;
+  transition: transform 280ms ease;
+}
+
+.foleo-tray-bot.foleo-tray-portal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 1001;
+  margin: 0;
+}
+
+.foleo-tray-bot .data-foleo-tray-toggle .bde-icon-icon {
+  transition: transform 350ms ease;
+}
+
+.foleo-tray-bot.tray-closed .data-foleo-tray-toggle .bde-icon-icon {
+  --eeiTransform: rotate(135deg);
+}
+
+.foleo-tray-bot.tray-open.is-open .data-foleo-tray-toggle .bde-icon-icon {
+  --eeiTransform: rotate(-45deg);
+}
+
+.foleo-tray-bot.tray-closed {
+  transform: translateY(0);
+  transition: opacity 160ms ease;
+}
+
+.foleo-tray-bot.tray-closed.is-visible {
+  opacity: 1;
+}
+
+.foleo-tray-bot.tray-open {
+  transform: translateY(110%);
+}
+
+.foleo-tray-bot.tray-open.is-open {
+  transform: translateY(0);
+}
+
+.foleo-tray-bot.tray-open.is-hidden {
+  transform: translateY(110%);
+  pointer-events: none;
+}
+
+.foleo-tray-bot.tray-closed.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.foleo-tray-bot .bde-columns {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  column-gap: var(--bde-column-gap, 32px);
+  align-items: stretch;
+}
+
+.foleo-tray-bot .bde-column {
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.foleo-tray-bot .bde-column > * {
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foleo-tray-bot {
+    transition: none;
+  }
+}
+
+html.foleo-tray-opened body {
+  padding-bottom: var(--foleo-tray-open-height, 0px);
+}
+
+/* DEBUG: force global nav visible */
+.foleo-globalnav {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Admin-only sections: collapse layout on public pages, keep contents alive */
+.admin-only {
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: visible !important;
+}
+
+html.foleo-edit .admin-only,
+body.logged-in .admin-only {
+  height: auto !important;
+  min-height: initial !important;
+  padding: initial !important;
+  margin: initial !important;
+  overflow: visible !important;
+}
+
+
+@media (max-width: 767px) {
+  html.foleo-tray-opened body {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  html.foleo-tray-opened body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1000;
+  }
+
+  .foleo-tray-bot.tray-closed {
+    padding: 5px 30px;
+  }
+
+  .foleo-tray-bot.tray-closed .section-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .foleo-tray-bot.tray-closed .bde-columns {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+  }
+
+  .foleo-tray-bot.tray-closed .bde-column:not(:first-child) {
+    display: none;
+  }
+
+  .foleo-tray-bot.tray-open {
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    padding: 24px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .foleo-tray-bot.tray-open.is-open {
+    transform: translateY(0);
+  }
+
+  .foleo-tray-bot.tray-open .bde-columns {
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: 16px;
+  }
+
+  .foleo-tray-bot.tray-open .bde-column {
+    width: 100%;
+  }
 }
 
 body.page-id-455::before,
@@ -419,6 +585,152 @@ html.foleo-nav-reveal.foleo-binder .foleo-switch{
   html.foleo-binder .foleo-switch{
     display: flex;
   }
+
+  .foleo-switch__close{
+    display: none !important;
+  }
+}
+
+@media (max-width: 900px){
+  html.foleo-binder .foleo-switch{
+    display: flex;
+  }
+
+  .foleo-switch{
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 100000 !important;
+    pointer-events: auto;
+  }
+
+  .foleo-switch__btn{
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.7);
+    border: 0;
+    display: grid;
+    place-items: center;
+    color: #fff;
+  }
+
+  .foleo-switch__hamburger{
+    display: block;
+    position: relative;
+    width: 18px;
+    height: 14px;
+    margin: 0;
+    padding: 0;
+    transform: translateX(0px) translateY(0px);
+  }
+
+  .foleo-switch__hamburger::before,
+  .foleo-switch__hamburger::after,
+  .foleo-switch__hamburger span{
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform .16s ease, opacity .16s ease, top .16s ease;
+  }
+
+  .foleo-switch__hamburger::before{ top: 0px; }
+  .foleo-switch__hamburger span{ top: 6px; }
+  .foleo-switch__hamburger::after{ top: 12px; }
+
+  .foleo-switch.is-open .foleo-switch__hamburger::before{
+    top: 6px;
+    transform: rotate(45deg);
+  }
+  .foleo-switch.is-open .foleo-switch__hamburger::after{
+    top: 6px;
+    transform: rotate(-45deg);
+  }
+  .foleo-switch.is-open .foleo-switch__hamburger span{
+    opacity: 0;
+  }
+
+  .foleo-switch__panel{
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50vw;
+    max-width: 420px;
+    min-width: 220px;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 64px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 220ms ease, opacity 220ms ease;
+    z-index: 100001;
+    pointer-events: auto;
+    overflow: visible;
+  }
+
+  .foleo-switch.is-open .foleo-switch__panel{
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .foleo-switch__close{
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 1000000;
+    pointer-events: auto;
+    display: grid;
+    place-items: center;
+    border-radius: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .foleo-switch:not(.is-open) .foleo-switch__close{
+    display: none;
+  }
+
+  .foleo-switch.is-open .foleo-switch__btn{
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .foleo-switch__link{
+    display: block;
+    padding: 8px 0;
+    color: #fff !important;
+    text-decoration: none !important;
+    border-bottom: 1px dotted rgba(255,255,255,0.55);
+    font-family: inherit;
+  }
+
+  .foleo-switch__panel .foleo-switch__link{
+    color: #fff !important;
+    text-decoration: none !important;
+  }
+
+  .foleo-switch__link.is-active{
+    border-bottom: 2px solid rgba(255,255,255,0.9);
+    font-weight: 700;
+  }
 }
 
 /* FINAL OVERRIDES: nav layering must beat hero media */
@@ -443,3 +755,392 @@ div.no_pointer {pointer-events: none;}
   Do not add Foleo module styles here.
   Module CSS lives in Foleo_Modules.css.
 */
+
+/* Components */
+/* Canvas Story (pinned crossfade) */
+.canvas-story {
+  position: relative;
+  width: 100%;
+  height: 800px;
+  overflow: hidden;
+  contain: paint;
+}
+
+.canvas-story:not(.canvas-story--edit) {
+  height: 800px !important;
+  min-height: 800px !important;
+  max-height: none !important;
+}
+
+.canvas-story__panel{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: visible;
+  pointer-events: none;
+  will-change: opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.canvas-story__dots{
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+  transform: none;
+}
+.canvas-story__dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #cbd1d6;
+}
+.canvas-story__dot.is-active{
+  background: rgb(253, 81, 8);
+}
+
+.canvas-story:not(.canvas-story--edit) .canvas-story__panel{
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Canvas Story: fill panel height without collapsing images */
+.canvas-story:not(.canvas-story--edit) .section-container {
+  height: 100%;
+}
+.canvas-story:not(.canvas-story--edit) .canvas-story__panel {
+  height: 100%;
+}
+.canvas-story:not(.canvas-story--edit) .canvas-story__panel > .bde-columns {
+  height: 100%;
+  align-items: stretch !important;
+}
+.canvas-story:not(.canvas-story--edit) .canvas-story__panel > .bde-columns > .bde-column {
+  height: 100%;
+}
+.canvas-story:not(.canvas-story--edit) .canvas-story__panel img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block;
+}
+
+/* Ensure canvases (if present) fill their panel */
+.canvas-story__panel canvas{
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Canvas Story edit mode: stack panels for easy editing */
+.canvas-story.canvas-story--edit{
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  height: auto !important;
+  max-height: none !important;
+  width: 100% !important;
+  overflow: visible;
+}
+.canvas-story.canvas-story--edit .canvas-story__panel{
+  position: static !important;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  will-change: auto;
+  width: 100%;
+  min-height: 100vh;
+}
+.canvas-story.canvas-story--edit .canvas-story__panel canvas{
+  height: auto;
+}
+.canvas-story.canvas-story--edit .section-container{
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+}
+
+@media (max-width: 767px) {
+  .canvas-story.canvas-story--stacked {
+    position: relative !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible;
+  }
+
+  .canvas-story.canvas-story--stacked .canvas-story__panel {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto;
+    transform: none !important;
+    will-change: auto;
+    height: auto !important;
+  }
+
+  .canvas-story.canvas-story--stacked .canvas-story__dots {
+    display: none !important;
+  }
+
+  .canvas-story.canvas-story--stacked .section-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px;
+  }
+
+  .canvas-story.canvas-story--stacked .canvas-story__panel > .bde-columns {
+    height: auto !important;
+  }
+
+  .canvas-story.canvas-story--stacked .canvas-story__panel img {
+    height: auto !important;
+  }
+}
+
+/* =========================
+   FOLEO Responsive Spec v1
+   STRICT sections: enforce natural stacking order
+   ========================= */
+:root {
+  --foleo-gap-0: 0px;
+  --foleo-gap-20: 20px;
+  --foleo-gap-32: 32px;
+  --foleo-gap-40: 40px;
+}
+
+.foleo-responsive--strict .bde-column {
+  order: 0 !important;
+}
+
+/* List style: foleo-list1 */
+ul.foleo-list1  {
+  padding-left: 0px!important;
+  margin-top: 10px!important;
+}
+ul.foleo-list1 li {
+  border-top: 1px dotted !important;
+  padding-top: 10px!important;
+  padding-bottom: 0px!important;
+  padding-left: 0px!important;  ;
+  list-style: none!important;
+  line-height: 0.9em!important;
+
+}
+
+/* GRID responsive (Maker parity) */
+/* Layout (gap + direction) */
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-grid__row,
+.breakdance .foleo-grid.foleo-responsive--strict .bde-columns.foleo-grid__row {
+  gap: var(--foleo-gap-40);
+}
+.breakdance .foleo-grid.foleo-responsive--strict .bde-columns.foleo-grid__row {
+  display: flex !important;
+  gap: var(--foleo-gap-40) !important;
+  row-gap: var(--foleo-gap-40) !important;
+  column-gap: var(--foleo-gap-40) !important;
+}
+.breakdance .foleo-grid.foleo-responsive--strict .bde-columns { flex-direction: inherit !important; }
+.breakdance .foleo-grid.foleo-responsive--strict .bde-column {
+  padding-top: var(--foleo-gap-20);
+  flex: 1 1 0;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  border-top: 0;
+}
+/* Media cover + masking */
+.breakdance .foleo-grid.foleo-responsive--strict img,
+.breakdance .foleo-grid.foleo-responsive--strict svg,
+.breakdance .foleo-grid.foleo-responsive--strict canvas,
+.breakdance .foleo-grid.foleo-responsive--strict video,
+.breakdance .foleo-grid.foleo-responsive--strict iframe {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+}
+/* Panel padding + flow */
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-grid__panel {
+  padding: var(--foleo-gap-40) !important;
+  border-top: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+.breakdance .foleo-grid.foleo-responsive--strict .bde-heading {
+  margin-top: 0 !important;
+  margin-bottom: var(--foleo-gap-20) !important;
+}
+
+.breakdance .foleo-grid.foleo-responsive--strict .bde-text {
+  margin-top: 0 !important;
+}
+
+/* tighten common “heading then text” stacks inside columns */
+.breakdance .foleo-grid.foleo-responsive--strict .bde-heading + .bde-text {
+  margin-top: 0 !important;
+}
+
+/* STRICT: images default to masked cover boxes */
+.breakdance .foleo-grid.foleo-responsive--strict .bde-image,
+.breakdance .foleo-grid.foleo-responsive--strict figure:has(img) {
+  overflow: hidden !important;
+}
+
+.breakdance .foleo-grid.foleo-responsive--strict .bde-image {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.breakdance .foleo-grid.foleo-responsive--strict .bde-image img,
+.breakdance .foleo-grid.foleo-responsive--strict figure img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block;
+}
+
+/* STRICT: add a top rule to text-only columns, skip columns that contain images */
+/* Borders (text-only rule) */
+.breakdance .foleo-grid.foleo-responsive--strict .bde-column:not(:has(img, picture, .bde-image)) {
+  border-top: 2px solid #000;
+  padding-top: var(--foleo-gap-20);
+}
+
+/* Icons reset */
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-icon,
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-icon *,
+.breakdance .foleo-grid.foleo-responsive--strict [class*="icon"],
+.breakdance .foleo-grid.foleo-responsive--strict [class*="icon"] * {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Media cover + masking */
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-grid__panel img,
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-grid__panel picture,
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-grid__panel figure {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* STRICT: normalize print/download icon buttons inside strict sections */
+.breakdance .foleo-grid.foleo-responsive--strict .fdt-controls .fdt-toolbar .fdt-icon-btn,
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-dynamic-table .fdt-tool {
+  width: 44px !important;
+  height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
+}
+
+.breakdance .foleo-grid.foleo-responsive--strict .fdt-controls .fdt-toolbar .fdt-icon,
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-dynamic-table .fdt-icon,
+.breakdance .foleo-grid.foleo-responsive--strict .fdt-controls .fdt-toolbar svg,
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-dynamic-table svg {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  display: block !important;
+}
+.breakdance .foleo-grid.foleo-responsive--strict .foleo-grid__row {
+  flex-direction: inherit;
+}
+.breakdance .foleo-grid.foleo-responsive--strict .bde-columns.foleo-grid__row {
+  flex-direction: inherit !important;
+}
+
+@media (min-width: 1024px) {
+  .breakdance .foleo-grid.foleo-responsive--strict .section-container {
+    padding-top: 120px !important;
+    padding-right: 80px !important;
+    padding-bottom: 120px !important;
+    padding-left: 80px !important;
+  }
+  .breakdance .foleo-grid.foleo-responsive--strict .bde-columns.foleo-grid__row { flex-direction: row !important; }
+}
+
+@media (max-width: 1023px) {
+  /* Tablet overrides */
+  .breakdance .foleo-grid.foleo-responsive--strict .section-container {
+    padding-top: 80px !important;
+    padding-right: 40px !important;
+    padding-bottom: 80px !important;
+    padding-left: 40px !important;
+  }
+  .breakdance .foleo-grid.foleo-responsive--strict .bde-columns.foleo-grid__row {
+    flex-direction: column !important;
+  }
+  /* STRICT tablet: stacked columns must be 100% width */
+  .breakdance .foleo-grid.foleo-responsive--strict .bde-columns.foleo-grid__row > .bde-column {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  /* STRICT tablet+mobile: panel padding */
+  .breakdance .foleo-grid.foleo-responsive--strict .foleo-grid__panel {
+    padding: var(--foleo-gap-40) !important;
+  }
+  /* STRICT: always collapse the 2-col text utility on tablet and below */
+  .breakdance .foleo-grid.foleo-responsive--strict .foleo-text--cols-2 {
+    column-count: 1 !important;
+    column-gap: var(--foleo-gap-20) !important;
+  }
+}
+
+@media (max-width: 479px) {
+  /* Mobile overrides */
+  .breakdance .foleo-grid.foleo-responsive--strict .section-container {
+    padding-top: 60px !important;
+    padding-right: 20px !important;
+    padding-bottom: 60px !important;
+    padding-left: 20px !important;
+  }
+  .breakdance .foleo-grid.foleo-responsive--strict .foleo-text--cols-2 {
+    column-count: 1 !important;
+    column-gap: 0 !important;
+  }
+}
+/*two column text */
+
+.foleo-text--cols-2 {
+  column-count: 2;
+  column-gap: var(--foleo-gap-20);
+}
+
+/* Tablet Portrait and below: single column */
+@media (max-width: 1023px) {
+  .foleo-text--cols-2 {
+    column-count: 1;
+  }
+}
+
+/* =========================
+   END FOLEO Responsive Spec v1
+   ========================= */
+
+
+   .foleo-globalnav {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}

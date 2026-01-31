@@ -1,5 +1,6 @@
 (() => {
   const tabSets = document.querySelectorAll(".feature-tabs");
+  if (!tabSets.length) return;
 
   tabSets.forEach(set => {
     const row = set.querySelector(".row-grid");

@@ -1,5 +1,9 @@
 (function () {
   if (window.innerWidth > 767) return;
+  if (!document.querySelector(".tabs-mobile-root") &&
+      !document.querySelector(".tab-card[data-panel]")) {
+    return;
+  }
 
   // Ensure the global SnapScroll suppression flag exists
   if (typeof window.__FOLEO_SUPPRESS_SNAP__ === "undefined") {

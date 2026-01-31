@@ -1,6 +1,40 @@
 (function () {
   "use strict";
 
+  function isEditMode() {
+    try {
+      if (window.FOLEO_EDIT_MODE) return true;
+      if (document.documentElement.classList.contains("foleo-edit")) return true;
+
+      var isLoggedIn = (function () {
+        try {
+          return (
+            (document.body &&
+              document.body.classList &&
+              document.body.classList.contains("logged-in")) ||
+            !!document.getElementById("wpadminbar")
+          );
+        } catch (e) {
+          return false;
+        }
+      })();
+
+      if (document.documentElement.classList.contains("breakdance")) return isLoggedIn;
+      if (document.body && document.body.classList.contains("breakdance")) return isLoggedIn;
+      if (/^\/cx(\/|$)/.test(window.location.pathname || "")) return true;
+      var params = new URLSearchParams(window.location.search || "");
+      if (params.has("breakdance") || params.has("bdbuilder") || params.has("breakdance_iframe")) {
+        return isLoggedIn;
+      }
+      if (params.get("foleo_edit") === "1" || params.get("foleo_edit") === "true") {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
   /**
    * Generic Lottie + ScrollTrigger loader
    * - Keeps behavior global and predictable
@@ -291,48 +325,89 @@
   }
 
   function init() {
-    waitForLibs(DEFAULTS.libTimeout)
-      .then(function () {
-        gsap.registerPlugin(ScrollTrigger);
+    if (isEditMode()) return;
+    var sections = document.querySelectorAll(".lottie-scroll-section");
+    if (!sections.length) return;
 
-        initLenisIfPresent();
+    var libsPromise = null;
+    var resizeBound = false;
+    var refreshTimer = null;
 
-        var sections = document.querySelectorAll(".lottie-scroll-section");
-        if (!sections.length) return;
+    function scheduleRefresh(delay) {
+      clearTimeout(refreshTimer);
+      refreshTimer = setTimeout(function () {
+        ScrollTrigger.refresh();
+      }, delay);
+    }
 
-        var loadPromises = [];
-        sections.forEach(function (section) {
-          loadPromises.push(loadLottieForSection(section));
+    function ensureLibs() {
+      if (libsPromise) return libsPromise;
+      libsPromise = waitForLibs(DEFAULTS.libTimeout)
+        .then(function () {
+          gsap.registerPlugin(ScrollTrigger);
+          initLenisIfPresent();
+
+          if (!resizeBound) {
+            resizeBound = true;
+            var resizeTimer = null;
+            window.addEventListener("resize", function () {
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(function () {
+                ScrollTrigger.refresh();
+              }, 200);
+            });
+          }
         });
+      return libsPromise;
+    }
 
-        Promise.all(loadPromises).then(function (results) {
-          results.forEach(setupScrollTrigger);
+    function idleRun(fn) {
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(fn, { timeout: 2000 });
+      } else {
+        setTimeout(fn, 400);
+      }
+    }
 
-          // Refresh after everything is laid out
-          var delay = DEFAULTS.refreshDelay;
-          // If any section specifies a higher delay, use the max
-          sections.forEach(function (s) {
-            var d = toNumber(s.getAttribute("data-refresh-delay"), DEFAULTS.refreshDelay);
-            if (d > delay) delay = d;
+    function initSection(section) {
+      if (!section || section.dataset.lottieInit === "1" || section.dataset.lottieQueued === "1") return;
+      section.dataset.lottieQueued = "1";
+      ensureLibs()
+        .then(function () {
+          return loadLottieForSection(section);
+        })
+        .then(function (result) {
+          if (!result) return;
+          setupScrollTrigger(result);
+          var delay = toNumber(section.getAttribute("data-refresh-delay"), DEFAULTS.refreshDelay);
+          scheduleRefresh(delay);
+        })
+        .catch(function (e) {
+          console.error("Lottie init error:", e);
+        });
+    }
+
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          io.unobserve(entry.target);
+          idleRun(function () {
+            initSection(entry.target);
           });
-
-          setTimeout(function () {
-            ScrollTrigger.refresh();
-          }, delay);
         });
+      }, { rootMargin: "200px 0px", threshold: 0.1 });
 
-        // Optional: refresh on resize/orientation changes
-        var resizeTimer = null;
-        window.addEventListener("resize", function () {
-          clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(function () {
-            ScrollTrigger.refresh();
-          }, 200);
-        });
-      })
-      .catch(function (e) {
-        console.error("Lottie init error:", e);
+      sections.forEach(function (section) {
+        io.observe(section);
       });
+    } else {
+      sections.forEach(function (section) {
+        idleRun(function () {
+          initSection(section);
+        });
+      });
+    }
   }
 
   if (document.readyState === "loading") {
@@ -341,4 +416,3 @@
     init();
   }
 })();
-
