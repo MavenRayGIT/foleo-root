@@ -22,6 +22,23 @@
  * - style.display: vnav/switcher/hamburger visibility, iframe visibility, noCast slot display.
  * - innerHTML: vnav dots, switcher panel links.
  */
+// Debug toggle: default false, enable via ?debug=1 or localStorage FOLEO_DEBUG=1.
+(() => {
+  if (typeof window === "undefined") return;
+  if (window.FOLEO_DEBUG === true) return;
+  let enabled = false;
+  try {
+    const params = new URLSearchParams(window.location.search || "");
+    enabled = params.get("debug") === "1";
+  } catch (e) {}
+  if (!enabled) {
+    try {
+      enabled = window.localStorage?.getItem("FOLEO_DEBUG") === "1";
+    } catch (e) {}
+  }
+  window.FOLEO_DEBUG = enabled;
+})();
+
 // to make the GDPR link to HCG site in new tab //
 
 function getQueryParam(name) {
