@@ -65,6 +65,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
     $host = foleo_current_host();
     $post_id = is_singular( 'page' ) ? get_queried_object_id() : 0;
+    // Config -> flags on save -> conditional enqueue on view.
     $flags   = $post_id ? get_post_meta( $post_id, 'foleo_page_flags', true ) : null;
     if ( is_string( $flags ) ) {
         $decoded = json_decode( $flags, true );

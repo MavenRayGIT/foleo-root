@@ -33,6 +33,7 @@ function getQueryParam(name) {
 }
 
 const FOLEO_PROFILE_STORAGE_KEY = 'foleoProfile';
+const FOLEO_DEBUG = window.FOLEO_DEBUG === true;
 
 function loadNavRegistrySync() {
   return window.__FOLEO_NAV_REGISTRY__ || null;
@@ -139,8 +140,9 @@ resolveFoleoEditMode();
 function initFoleoEditPerfLogger() {
   try {
     const params = new URLSearchParams(window.location.search || "");
-    const enabled =
-      params.get("foleo_perf") === "1" || params.get("foleo_perf") === "true";
+    const enabled = FOLEO_DEBUG && (
+      params.get("foleo_perf") === "1" || params.get("foleo_perf") === "true"
+    );
     if (!enabled) return;
     if (!resolveFoleoEditMode()) return;
   } catch (e) {
@@ -954,7 +956,6 @@ function initFoleoVnavActiveTracking() {
 
 function initFoleoTrayBottom() {
   if (window.__foleoTrayBottomInit) return;
-  const TRAY_DEBUG = false;
   const trayOpen = document.querySelector('.foleo-tray-bot.tray-open');
   const trayClosed = document.querySelector('.foleo-tray-bot.tray-closed');
   if (!trayOpen || !trayClosed) {
@@ -1013,7 +1014,7 @@ function initFoleoTrayBottom() {
   const updateBodyOffset = () => {
     const isOpen = trayOpen.classList.contains('is-open');
     const h = trayOpen.offsetHeight || 0;
-    if (TRAY_DEBUG) {
+    if (FOLEO_DEBUG) {
       console.log('[foleo-tray] updateBodyOffset', {
         isOpen,
         height: h,
@@ -1063,7 +1064,7 @@ function initFoleoTrayBottom() {
       window.requestAnimationFrame(() => {
         trayOpen.classList.add('is-open');
         trayOpen.scrollTop = 0;
-        if (TRAY_DEBUG) console.log('[foleo-tray] opened');
+        if (FOLEO_DEBUG) console.log('[foleo-tray] opened');
         window.requestAnimationFrame(updateBodyOffset);
         scheduleOffsetSync();
         setTimeout(forceBodyOffset, 320);
@@ -1073,7 +1074,7 @@ function initFoleoTrayBottom() {
     }
 
     trayOpen.classList.remove('is-open');
-    if (TRAY_DEBUG) console.log('[foleo-tray] closed');
+    if (FOLEO_DEBUG) console.log('[foleo-tray] closed');
     setTimeout(() => {
       trayOpen.classList.add('is-hidden');
     }, 280);
@@ -1156,7 +1157,7 @@ function initFoleoTrayBottom() {
   window.addEventListener('load', maybeOpenAtBottom, { once: true });
   setTimeout(maybeOpenAtBottom, 250);
   trayOpen.addEventListener('scroll', () => {
-    if (!TRAY_DEBUG) return;
+    if (!FOLEO_DEBUG) return;
     console.log('[foleo-tray] tray scroll', {
       scrollTop: trayOpen.scrollTop,
       scrollHeight: trayOpen.scrollHeight,
@@ -1381,7 +1382,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const placeholders = document.querySelectorAll(".cf-stream-placeholder");
       if (!placeholders.length) return;
 
-      const CF_DEBUG = false;
 
       const isCxPage = (() => {
         const path = (window.location && window.location.pathname) ? window.location.pathname : "";
@@ -1692,7 +1692,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!candidates.length) return;
           const valid = candidates.find(hasRequiredData);
           if (!valid) return;
-          if (candidates.length > 1 && CF_DEBUG) {
+          if (candidates.length > 1 && FOLEO_DEBUG) {
             console.warn("[CFStream] Multiple placeholders found; using first valid only.", embed);
           }
           candidates.forEach((node) => {
@@ -1714,7 +1714,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (valid.dataset.foleoBound !== "1") {
             const onIntent = (e) => {
               const started = initFromPlaceholder(valid);
-              if (!started && CF_DEBUG) {
+              if (!started && FOLEO_DEBUG) {
                 const styles = window.getComputedStyle(valid);
                 console.warn("[CFStream] Click did not start init", {
                   target: e?.target,
@@ -1760,10 +1760,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initCfStreamPlaceholders();
 
-    // Vidstack Stream Replacement
-    const VIDSTACK_DEBUG = false;
-    const LEGACY_CF_DEBUG = false;
+    // Vidstack Stream Replacement (legacy path for non-CX pages)
     const playingPlayers = new Set();
+    // CX uses the placeholder-first CF Stream flow above; keep legacy swap for non-CX pages.
     const isCxPage = (() => {
       const path = (window.location && window.location.pathname) ? window.location.pathname : "";
       const clean = path.replace(/\/+$/, "");
@@ -1771,7 +1770,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     const legacyLog = (tag, extra) => {
-      if (!LEGACY_CF_DEBUG) return;
+      if (!FOLEO_DEBUG) return;
       const payload = Object.assign(
         { tag, ts: Math.round(performance.now()) },
         extra || {}
@@ -1813,57 +1812,6 @@ document.addEventListener('DOMContentLoaded', () => {
       player.addEventListener("ended", handleStop);
     }
 
-    function getPosterFromIframe(iframe) {
-      if (!iframe) return "";
-      const direct =
-        iframe.getAttribute("data-poster") ||
-        iframe.getAttribute("data-poster-url") ||
-        iframe.getAttribute("data-thumbnail") ||
-        iframe.getAttribute("data-thumb") ||
-        iframe.getAttribute("poster") ||
-        iframe.dataset?.poster ||
-        iframe.dataset?.posterUrl ||
-        iframe.dataset?.thumbnail ||
-        iframe.dataset?.thumb ||
-        "";
-      if (direct) return direct;
-      const wrapper = iframe.closest(".cf-stream-embed");
-      return (
-        wrapper?.getAttribute?.("data-poster") ||
-        wrapper?.getAttribute?.("data-poster-url") ||
-        wrapper?.dataset?.poster ||
-        wrapper?.dataset?.posterUrl ||
-        ""
-      );
-    }
-
-    function createLazyPlaceholder(iframe, data, isPopup) {
-      const hls = `https://${data.customer}.cloudflarestream.com/${data.videoId}/manifest/video.m3u8`;
-      const placeholder = document.createElement("div");
-      placeholder.className = "cf-stream-placeholder";
-      placeholder.setAttribute("role", "button");
-      placeholder.setAttribute("tabindex", "0");
-      placeholder.dataset.foleoLazyVideo = "1";
-      placeholder.dataset.foleoHls = hls;
-      placeholder.dataset.foleoCustomer = data.customer;
-      placeholder.dataset.foleoVideoId = data.videoId;
-      placeholder.dataset.foleoIsPopup = isPopup ? "1" : "0";
-
-      const poster = getPosterFromIframe(iframe);
-      placeholder.style.position = "absolute";
-      placeholder.style.inset = "0";
-      placeholder.style.width = "100%";
-      placeholder.style.height = "100%";
-      placeholder.style.backgroundColor = "#000";
-      placeholder.style.backgroundPosition = "center";
-      placeholder.style.backgroundRepeat = "no-repeat";
-      placeholder.style.backgroundSize = "cover";
-      if (poster) {
-        placeholder.style.backgroundImage = `url("${poster}")`;
-      }
-      return placeholder;
-    }
-
     function createPlayerFromData(data, isPopup) {
       const hls = `https://${data.customer}.cloudflarestream.com/${data.videoId}/manifest/video.m3u8`;
       const player = document.createElement("media-player");
@@ -1894,68 +1842,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return player;
     }
 
-    function initFromPlaceholder(placeholder) {
-      if (!placeholder || placeholder.dataset.foleoLazyInit === "1") return;
-      placeholder.dataset.foleoLazyInit = "1";
-      const data = {
-        customer: placeholder.dataset.foleoCustomer,
-        videoId: placeholder.dataset.foleoVideoId
-      };
-      const isPopup = placeholder.dataset.foleoIsPopup === "1";
-      const player = createPlayerFromData(data, isPopup);
-
-      function applyNoCast(target) {
-        const v = target.querySelector("video");
-        if (!v) return false;
-        v.disableRemotePlayback = true;
-        v.setAttribute("controlslist", "noremoteplayback");
-        return true;
-      }
-
-      player.addEventListener("loadedmetadata", () => applyNoCast(player), { once: true });
-      placeholder.replaceWith(player);
-      applyNoCast(player);
-      requestAnimationFrame(() => applyNoCast(player));
-      setTimeout(() => applyNoCast(player), 300);
-
-      if (isPopup) {
-        const tryPlay = () => {
-          const v = player.querySelector("video");
-          if (!v) return false;
-          v.muted = true;
-          v.loop = true;
-          v.playsInline = true;
-          v.removeAttribute("controls");
-          player.play?.().catch(() => {});
-          return true;
-        };
-
-        tryPlay();
-        requestAnimationFrame(tryPlay);
-        setTimeout(tryPlay, 200);
-        setTimeout(tryPlay, 800);
-      }
-    }
-
-    function idleRun(fn) {
-      if (typeof window.requestIdleCallback === "function") {
-        window.requestIdleCallback(fn, { timeout: 2000 });
-      } else {
-        setTimeout(fn, 400);
-      }
-    }
-
-    const lazyObserver = ("IntersectionObserver" in window)
-      ? new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            const target = entry.target;
-            lazyObserver.unobserve(target);
-            idleRun(() => initFromPlaceholder(target));
-          });
-        }, { rootMargin: "200px 0px", threshold: 0.1 })
-      : null;
-
     function replaceIframe(iframe) {
       if (!iframe || iframe.dataset.vidstackDone === "1") return;
       if (iframe.parentElement && iframe.parentElement.querySelector("media-player")) return;
@@ -1969,11 +1855,6 @@ document.addEventListener('DOMContentLoaded', () => {
         !!iframe.closest(".breakdance-popup") ||
         !!iframe.closest(".bde-popup") ||
         !!iframe.closest(".popup-topradius");
-      const isHero =
-        !!iframe.closest(".mod-hero") ||
-        !!iframe.closest(".hero") ||
-        !!iframe.closest(".hero-video") ||
-        !!iframe.closest("[data-foleo-hero]");
 
       const data = parseCloudflareStreamSrc(iframe.src || "");
       if (!data) return;
@@ -1983,34 +1864,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const shouldLazy = isCxPage && !isPopup;
-      if (shouldLazy) {
-        const placeholder = createLazyPlaceholder(iframe, data, isPopup);
-        placeholder.dataset.foleoInit = isHero ? "intent" : "idle";
-        const onIntent = () => initFromPlaceholder(placeholder);
-        placeholder.addEventListener("click", onIntent, { once: true });
-        placeholder.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onIntent();
-          }
-        }, { once: true });
-
-        try { iframe.src = "about:blank"; } catch (e) {}
-        iframe.replaceWith(placeholder);
-        if (!isHero) {
-          if (lazyObserver) {
-            lazyObserver.observe(placeholder);
-          } else {
-            idleRun(() => initFromPlaceholder(placeholder));
-          }
-        }
-        return;
-      }
-
       const player = createPlayerFromData(data, isPopup);
 
-      if (VIDSTACK_DEBUG) {
+      if (FOLEO_DEBUG) {
         const wrapperClass = iframe.parentElement ? iframe.parentElement.className : "";
         console.log("Vidstack swap", {
           customer: data.customer,
@@ -2054,11 +1910,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-      const initial = document.querySelectorAll('iframe[src*="cloudflarestream.com"]');
-      if (LEGACY_CF_DEBUG) {
-        legacyLog("initial_scan", { count: initial.length });
-      }
-      initial.forEach(replaceIframe);
+    const initial = document.querySelectorAll('iframe[src*="cloudflarestream.com"]');
+    legacyLog("initial_scan", { count: initial.length });
+    initial.forEach(replaceIframe);
 
     const existingPlayers = document.querySelectorAll("media-player");
     existingPlayers.forEach(registerPlayer);
@@ -2117,8 +1971,6 @@ function disableFoleoPinningInSections() {
   if (!sections.length) return;
 
   sections.forEach((section) => {
-    section.style.outline = "2px solid red";
-
     const spacers = section.querySelectorAll(".pin-spacer");
     if (!spacers.length) return;
 
@@ -2129,7 +1981,7 @@ function disableFoleoPinningInSections() {
       window.ScrollTrigger.getAll().forEach((trigger) => {
         if (trigger && trigger.pin === pinned) {
           trigger.kill(true);
-          console.log("FOLEO: Pin disabled", pinned);
+          if (FOLEO_DEBUG) console.log("FOLEO: Pin disabled", pinned);
         }
       });
 
@@ -2139,7 +1991,6 @@ function disableFoleoPinningInSections() {
       pinned.style.removeProperty("transform");
       pinned.style.removeProperty("width");
       pinned.style.removeProperty("height");
-      pinned.style.outline = "2px solid blue";
 
       spacer.replaceWith(pinned);
     });

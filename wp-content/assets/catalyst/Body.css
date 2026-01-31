@@ -100,14 +100,6 @@ html.foleo-tray-opened body {
   padding-bottom: var(--foleo-tray-open-height, 0px);
 }
 
-/* DEBUG: force global nav visible */
-.foleo-globalnav {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-}
-
 /* Admin-only sections: collapse layout on public pages, keep contents alive */
 .admin-only {
   height: 0 !important;

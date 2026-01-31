@@ -1,6 +1,7 @@
 (function () {
   window.FoleoModules = window.FoleoModules || {};
   const Modules = window.FoleoModules;
+  const FOLEO_DEBUG = window.FOLEO_DEBUG === true;
 
   /*
   VIDEO-BUG OWNERSHIP MAP
@@ -51,7 +52,7 @@ function renderFoleoDynamicTable(mount) {
 
   const dataEl = mount.querySelector('[data-foleo-dynamic-table-json]');
   if (!dataEl) {
-    console.warn('[FoleoModules] Missing dynamic table JSON');
+    if (FOLEO_DEBUG) console.warn('[FoleoModules] Missing dynamic table JSON');
     return;
   }
 
@@ -59,7 +60,7 @@ function renderFoleoDynamicTable(mount) {
   try {
     data = JSON.parse(dataEl.textContent || '');
   } catch (e) {
-    console.warn('[FoleoModules] Invalid dynamic table JSON');
+    if (FOLEO_DEBUG) console.warn('[FoleoModules] Invalid dynamic table JSON');
     return;
   }
 
@@ -68,10 +69,10 @@ function renderFoleoDynamicTable(mount) {
   const rawColumns = Array.isArray(config.columns) ? config.columns : [];
   const columns = normalizeColumns(rawColumns);
   const rows = Array.isArray(config.rows) ? config.rows : [];
-  const debug = settings && settings.debug === true;
+  const debug = FOLEO_DEBUG && settings && settings.debug === true;
 
   if (!columns.length || !rows.length) {
-    console.warn('[FoleoModules] Empty dynamic table data');
+    if (FOLEO_DEBUG) console.warn('[FoleoModules] Empty dynamic table data');
     return;
   }
 
@@ -85,7 +86,9 @@ function renderFoleoDynamicTable(mount) {
       shell.classList.remove('is-scroll');
     }
   } else if (wantsScroll) {
-    console.warn('[FoleoModules] settings.scroll=true but no .fdt-shell wrapper found for table', mount);
+    if (FOLEO_DEBUG) {
+      console.warn('[FoleoModules] settings.scroll=true but no .fdt-shell wrapper found for table', mount);
+    }
   }
 
   const root = document.createElement('div');
@@ -237,7 +240,7 @@ function initVideoBugModule() {
       const parsed = JSON.parse(configEl.textContent || '');
       config = parsed && typeof parsed === 'object' ? parsed : null;
     } catch (e) {
-      console.warn('[FoleoModules] Invalid video bug config JSON');
+      if (FOLEO_DEBUG) console.warn('[FoleoModules] Invalid video bug config JSON');
     }
   }
 
@@ -622,7 +625,7 @@ Modules.init = function initFoleoModules() {
 
     Modules.init();
   } catch (e) {
-    console.warn("[FoleoModules] boot failed", e);
+    if (FOLEO_DEBUG) console.warn("[FoleoModules] boot failed", e);
   }
 })();
 })();

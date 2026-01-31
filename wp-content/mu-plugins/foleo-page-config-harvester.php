@@ -8,43 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-function foleo_page_config_log( $message, array $context = [] ) {}
-
-function foleo_extract_page_config_json( $content ) {
-    if ( ! is_string( $content ) || $content === '' ) {
-        return null;
-    }
-
-    $pattern = '/<script[^>]*type=["\']application\/json["\'][^>]*data-foleo-page-config[^>]*>(.*?)<\/script>/is';
-    if ( ! preg_match( $pattern, $content, $matches ) ) {
-        $content_unescaped = wp_unslash( $content );
-        $content_unescaped = str_replace( [ '<br>', '<br/>', '<br />' ], "\n", $content_unescaped );
-        $shortcode_pattern = '/\[foleo_page_config\](.*?)(?:\[\/foleo_page_config\]|\z)/is';
-        if ( ! preg_match( $shortcode_pattern, $content_unescaped, $shortcode_matches ) ) {
-            return null;
-        }
-        $json = trim( $shortcode_matches[1] );
-        return $json !== '' ? $json : null;
-    }
-
-    $json = trim( $matches[1] );
-    return $json !== '' ? $json : null;
-}
-
-function foleo_extract_page_config_from_breakdance_meta( $post_id ) {
-    $raw = get_post_meta( $post_id, '_breakdance_data', true );
-    if ( ! $raw ) {
-        return null;
-    }
-    if ( is_array( $raw ) ) {
-        $raw = wp_json_encode( $raw );
-    }
-    if ( ! is_string( $raw ) || $raw === '' ) {
-        return null;
-    }
-    return foleo_extract_page_config_json( $raw );
-}
-
 function foleo_bool_flag( $value ) {
     return $value === true || $value === 1 || $value === '1' || $value === 'true';
 }
@@ -127,6 +90,9 @@ function foleo_build_page_flags( array $config ) {
     return $flags;
 }
 
+/**
+ * Config -> flags on save -> conditional enqueue on view.
+ */
 add_action( 'save_post', function ( $post_id, $post, $update ) {
     if ( ! $post ) {
         return;
@@ -135,27 +101,19 @@ add_action( 'save_post', function ( $post_id, $post, $update ) {
         return;
     }
 
+    // Source of truth is the custom field `foleo_page_config_json`.
     $meta_json = get_post_meta( $post_id, 'foleo_page_config_json', true );
-    $json = null;
-    if ( is_string( $meta_json ) && trim( $meta_json ) !== '' ) {
-        $json = trim( $meta_json );
-    }
-    if ( $json === null ) {
-        $json = foleo_extract_page_config_json( $post->post_content );
-    }
-    if ( $json === null ) {
-        $json = foleo_extract_page_config_from_breakdance_meta( $post_id );
-    }
-    if ( $json === null ) {
+    if ( ! is_string( $meta_json ) || trim( $meta_json ) === '' ) {
         delete_post_meta( $post_id, 'foleo_page_config_json' );
         delete_post_meta( $post_id, 'foleo_page_flags' );
         delete_post_meta( $post_id, 'foleo_page_config_error' );
         return;
     }
 
+    $json = trim( $meta_json );
     $data = json_decode( $json, true );
     if ( json_last_error() !== JSON_ERROR_NONE || ! is_array( $data ) ) {
-        update_post_meta( $post_id, 'foleo_page_config_error', 'Invalid JSON in data-foleo-page-config.' );
+        update_post_meta( $post_id, 'foleo_page_config_error', 'Invalid JSON in foleo_page_config_json.' );
         delete_post_meta( $post_id, 'foleo_page_flags' );
         return;
     }
