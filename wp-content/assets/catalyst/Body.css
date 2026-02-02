@@ -38,6 +38,18 @@ body.page-id-455 , body.page-id-287 , .bgbody {
   transition: transform 350ms ease;
 }
 
+/* Allow Breakdance color controls to drive tray toggle icon */
+.foleo-tray-bot .data-foleo-tray-toggle .bde-icon-icon svg,
+.foleo-tray-bot .data-foleo-tray-toggle .bde-icon-icon svg path,
+.foleo-tray-bot .data-foleo-tray-toggle .bde-icon-icon svg rect,
+.foleo-tray-bot .data-foleo-tray-toggle .bde-icon-icon svg circle,
+.foleo-tray-bot .data-foleo-tray-toggle .bde-icon-icon svg line,
+.foleo-tray-bot .data-foleo-tray-toggle .bde-icon-icon svg polyline,
+.foleo-tray-bot .data-foleo-tray-toggle .bde-icon-icon svg polygon {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
 .foleo-tray-bot.tray-closed .data-foleo-tray-toggle .bde-icon-icon {
   --eeiTransform: rotate(135deg);
 }
@@ -73,6 +85,33 @@ body.page-id-455 , body.page-id-287 , .bgbody {
   pointer-events: none;
 }
 
+/* Tray edit mode: show both states stacked for editing */
+html.foleo-edit .foleo-tray-bot,
+body.logged-in .foleo-tray-bot {
+  position: static !important;
+  transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+html.foleo-edit .foleo-tray-bot.foleo-tray-portal,
+body.logged-in .foleo-tray-bot.foleo-tray-portal {
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: auto !important;
+}
+
+html.foleo-edit .foleo-tray-bot.tray-open,
+html.foleo-edit .foleo-tray-bot.tray-closed,
+body.logged-in .foleo-tray-bot.tray-open,
+body.logged-in .foleo-tray-bot.tray-closed {
+  transform: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
 .foleo-tray-bot .bde-columns {
   width: 100%;
   display: flex;
@@ -96,8 +135,8 @@ body.page-id-455 , body.page-id-287 , .bgbody {
   }
 }
 
-html.foleo-tray-opened body {
-  padding-bottom: var(--foleo-tray-open-height, 0px);
+html.foleo-tray-present body {
+  padding-bottom: var(--foleo-tray-safe-height, 0px);
 }
 
 /* Admin-only sections: collapse layout on public pages, keep contents alive */
@@ -121,6 +160,46 @@ body.logged-in .admin-only {
 
 
 @media (max-width: 767px) {
+  #case_studies {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+  html.foleo-canvas-story-stacked .canvas-story {
+    position: relative !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible;
+  }
+
+  html.foleo-canvas-story-stacked .canvas-story .canvas-story__panel {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto;
+    transform: none !important;
+    will-change: auto;
+    height: auto !important;
+  }
+
+  html.foleo-canvas-story-stacked .canvas-story .canvas-story__dots {
+    display: none !important;
+  }
+
+  html.foleo-canvas-story-stacked .canvas-story .section-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px;
+  }
+
+  html.foleo-canvas-story-stacked .canvas-story .canvas-story__panel > .bde-columns {
+    height: auto !important;
+  }
+
+  html.foleo-canvas-story-stacked .canvas-story .canvas-story__panel img {
+    height: auto !important;
+  }
   html.foleo-tray-opened body {
     overflow: hidden;
     touch-action: none;
@@ -180,12 +259,12 @@ body.logged-in .admin-only {
   }
 }
 
-body.page-id-455::before,
+/*body.page-id-455::before,
 body.page-id-287::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 0;                /* was -1 */
+  z-index: 0;                
   pointer-events: none;
   background: linear-gradient(
     29deg,
@@ -194,7 +273,7 @@ body.page-id-287::before {
     rgba(253, 81, 8, 0.38) 98.97435897435898%
   );
   background-size: cover;
-} 
+} */
 
 
 
@@ -351,6 +430,18 @@ body.foleo-mode-standalone .hamburger {
   .foleo-switch__link.is-active{
     color: rgba(255,255,255,1) !important;
     font-weight: 700;
+  }
+
+  /* Right-aligned variant (shortcode align="right") */
+  .foleo-globalnav--right .foleo-switch{
+    left: auto;
+    right: 18px;
+    flex-direction: row-reverse;
+  }
+
+  .foleo-globalnav--right .foleo-switch__panel{
+    padding-left: 18px;
+    padding-right: 16px;
   }
 
   .foleo-switch__hamburger{
@@ -754,14 +845,14 @@ div.no_pointer {pointer-events: none;}
 .canvas-story {
   position: relative;
   width: 100%;
-  height: 800px;
+  height: auto;
   overflow: hidden;
   contain: paint;
 }
 
 .canvas-story:not(.canvas-story--edit) {
-  height: 800px !important;
-  min-height: 800px !important;
+  height: auto !important;
+  min-height: calc(100vh - var(--foleo-tray-safe-height, 80px)) !important;
   max-height: none !important;
 }
 
@@ -781,20 +872,22 @@ div.no_pointer {pointer-events: none;}
 .canvas-story__dots{
   position: absolute;
   left: 24px;
-  bottom: 24px;
+  bottom: calc(24px + var(--foleo-tray-safe-height, 80px));
   display: flex;
   gap: 8px;
   z-index: 3;
   transform: none;
 }
+
+/* Allow Breakdance to layout dots when opting out of absolute positioning */
 .canvas-story__dot{
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: #cbd1d6;
+  background: var(--canvas-story-dot);
 }
 .canvas-story__dot.is-active{
-  background: rgb(253, 81, 8);
+  background: var(--canvas-story-dot-active);
 }
 
 .canvas-story:not(.canvas-story--edit) .canvas-story__panel{
@@ -862,7 +955,112 @@ div.no_pointer {pointer-events: none;}
   flex-wrap: nowrap !important;
 }
 
+/* Force stacked layout in Breakdance edit mode (even if class not present) */
+html.foleo-edit .canvas-story{
+  position: relative !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible;
+}
+html.foleo-edit .canvas-story .canvas-story__panel{
+  position: static !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto;
+  transform: none !important;
+  will-change: auto;
+  height: auto !important;
+}
+html.foleo-edit .canvas-story .canvas-story__dots{
+  display: none !important;
+}
+html.foleo-edit .canvas-story .section-container{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px;
+  height: auto !important;
+}
+html.foleo-edit .canvas-story .canvas-story__panel > .bde-columns{
+  height: auto !important;
+}
+html.foleo-edit .canvas-story .canvas-story__panel > .bde-columns > .bde-column{
+  height: auto !important;
+}
+html.foleo-edit .canvas-story .canvas-story__panel img{
+  height: auto !important;
+}
+html.foleo-edit .canvas-story .canvas-panel-keyimg,
+html.foleo-edit .canvas-story .canvas-panel-keycopy,
+html.foleo-edit .canvas-story .canvas-panel-keyprofile{
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  position: static !important;
+  height: auto !important;
+}
+
+/* Canvas Story stacked mode: always stack when class is present */
+.canvas-story.canvas-story--stacked {
+  position: relative !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible;
+}
+
+.canvas-story.canvas-story--stacked .canvas-story__panel {
+  position: static !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto;
+  transform: none !important;
+  will-change: auto;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+.canvas-story.canvas-story--stacked .canvas-story__dots {
+  display: none !important;
+}
+
+.canvas-story.canvas-story--stacked .section-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px;
+  height: auto !important;
+}
+
+.canvas-story.canvas-story--stacked .canvas-story__panel > .bde-columns {
+  height: auto !important;
+  align-items: stretch !important;
+}
+
+.canvas-story.canvas-story--stacked .canvas-story__panel > .bde-columns > .bde-column {
+  height: auto !important;
+}
+
+.canvas-story.canvas-story--stacked .canvas-story__panel img {
+  height: auto !important;
+}
+
+.canvas-story.canvas-story--stacked .canvas-panel-keyimg,
+.canvas-story.canvas-story--stacked .canvas-panel-keycopy,
+.canvas-story.canvas-story--stacked .canvas-panel-keyprofile {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  position: static !important;
+  height: auto !important;
+}
+
 @media (max-width: 767px) {
+  .canvas-story {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
   .canvas-story.canvas-story--stacked {
     position: relative !important;
     height: auto !important;
@@ -1136,4 +1334,56 @@ ul.foleo-list1 li {
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
+}
+
+/* Logo notch */
+.foleo-logo-notch{
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 99999;
+  padding: 0;
+  box-shadow: none;
+  pointer-events: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.foleo-logo-notch__link{
+  text-decoration: none;
+}
+
+.foleo-logo-notch__icon{
+  display: block;
+  transition: transform 220ms ease, width 220ms ease, height 220ms ease;
+}
+
+.foleo-logo-notch__word{
+  display: block;
+  transform-origin: left center;
+  max-width: 500px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 220ms ease, transform 220ms ease, width 220ms ease, max-width 220ms ease, margin 220ms ease;
+}
+
+/* scrolled state */
+body.foleo--logo-collapsed .foleo-logo-notch__icon{
+  transform: scale(.88);
+}
+
+body.foleo--logo-collapsed .foleo-logo-notch__word{
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+  max-width: 0;
+  width: 0;
+  margin: 0;
+}
+
+body.foleo--logo-collapsed .foleo-logo-notch{
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  padding-left: 12px !important;
+  padding-right: 6px !important;
 }

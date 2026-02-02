@@ -3,9 +3,18 @@
 Plugin Name: Foleo Global Nav Include
 */
 
-add_shortcode('foleo_globalnav', function () {
+add_shortcode('foleo_globalnav', function ($atts = array()) {
+  $atts = shortcode_atts(
+    array(
+      'align' => '',
+    ),
+    $atts,
+    'foleo_globalnav'
+  );
+  $align = is_string($atts['align']) ? strtolower(trim($atts['align'])) : '';
+  $variant_class = ($align === 'right') ? ' foleo-globalnav--right' : '';
   $log_enabled = defined('WP_DEBUG') && WP_DEBUG;
-  $mount_base = '<div class="foleo-globalnav" data-foleo-globalnav data-nav-source="shortcode"';
+  $mount_base = '<div class="foleo-globalnav' . $variant_class . '" data-foleo-globalnav data-nav-source="shortcode"';
 
   $tracked_file = plugin_dir_path(__FILE__) . 'foleo/partials/globalnav.html';
   $uploads_file = WP_CONTENT_DIR . '/uploads/foleo/globalnav.html';
@@ -58,6 +67,9 @@ add_shortcode('foleo_globalnav', function () {
     if ($log_enabled) {
       error_log('[foleo_globalnav] source=' . $source . ' file=' . $file);
     }
+    if ($variant_class) {
+      return '<div class="foleo-globalnav-variant' . $variant_class . '" data-foleo-globalnav-variant="right">' . $html . '</div>';
+    }
     return $html;
   }
 
@@ -65,5 +77,9 @@ add_shortcode('foleo_globalnav', function () {
     error_log('[foleo_globalnav] source=' . $source . ' file=' . $file . ' append_mount=1');
   }
 
-  return $html . $mount_base . ' data-nav-reason="' . $source . '"></div>';
+  $output = $html . $mount_base . ' data-nav-reason="' . $source . '"></div>';
+  if ($variant_class) {
+    return '<div class="foleo-globalnav-variant' . $variant_class . '" data-foleo-globalnav-variant="right">' . $output . '</div>';
+  }
+  return $output;
 });

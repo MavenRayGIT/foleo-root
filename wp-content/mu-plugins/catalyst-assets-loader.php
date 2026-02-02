@@ -8,12 +8,19 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-function foleo_catalyst_assets_base_dir() {
-    return WP_CONTENT_DIR . '/assets/catalyst/';
+function foleo_get_assets_namespace( $blog_id = null ) {
+    $blog_id = $blog_id ? (int) $blog_id : get_current_blog_id();
+    $namespace = get_blog_option( $blog_id, 'foleo_assets_namespace' );
+    $namespace = is_string( $namespace ) ? trim( $namespace ) : '';
+    return $namespace !== '' ? $namespace : 'catalyst';
 }
 
-function foleo_catalyst_assets_base_url() {
-    return content_url( '/assets/catalyst/' );
+function foleo_assets_base_dir( $namespace ) {
+    return WP_CONTENT_DIR . '/assets/' . $namespace . '/';
+}
+
+function foleo_assets_base_url( $namespace ) {
+    return content_url( '/assets/' . $namespace . '/' );
 }
 
 function foleo_current_host() {
@@ -23,10 +30,11 @@ function foleo_current_host() {
 /**
  * Enqueue a list of asset files from /wp-content/assets/catalyst/
  */
-function foleo_enqueue_asset_files( array $files ) {
+function foleo_enqueue_asset_files( array $files, $namespace = null ) {
 
-    $base_dir = foleo_catalyst_assets_base_dir();
-    $base_url = foleo_catalyst_assets_base_url();
+    $namespace = $namespace ? $namespace : foleo_get_assets_namespace();
+    $base_dir = foleo_assets_base_dir( $namespace );
+    $base_url = foleo_assets_base_url( $namespace );
 
     foreach ( $files as $file ) {
 
@@ -63,6 +71,7 @@ function foleo_enqueue_asset_files( array $files ) {
 
 add_action( 'wp_enqueue_scripts', function () {
 
+    $namespace = foleo_get_assets_namespace();
     $host = foleo_current_host();
     $post_id = is_singular( 'page' ) ? get_queried_object_id() : 0;
     // Config -> flags on save -> conditional enqueue on view.
@@ -116,37 +125,61 @@ add_action( 'wp_enqueue_scripts', function () {
     ];
 
     // Enqueue core everywhere
-    foleo_enqueue_asset_files( $core_assets );
+    foleo_enqueue_asset_files( $core_assets, $namespace );
+
+    // Expose namespace for JS consumers (nav registry, etc).
+    $body_handle = 'catalyst-body';
+    if ( wp_script_is( $body_handle, 'enqueued' ) ) {
+        $base_url = foleo_assets_base_url( $namespace );
+        $inline = 'window.FOLEO_ASSETS_NAMESPACE=' . wp_json_encode( $namespace ) . ';';
+        $inline .= 'window.FOLEO_ASSETS_BASE_URL=' . wp_json_encode( $base_url ) . ';';
+        wp_add_inline_script( $body_handle, $inline, 'before' );
+    }
 
     if ( $has_flags ) {
         if ( ! empty( $flags['tabs_enabled'] ) ) {
-            foleo_enqueue_asset_files( [ 'Tabs.css', 'Tabs.js' ] );
+            foleo_enqueue_asset_files( [ 'Tabs.css', 'Tabs.js' ], $namespace );
         }
         if ( ! empty( $flags['tabs_mobile_enabled'] ) ) {
-            foleo_enqueue_asset_files( [ 'Tabs_Mobile.css', 'Tabs_Mobile.js' ] );
+            foleo_enqueue_asset_files( [ 'Tabs_Mobile.css', 'Tabs_Mobile.js' ], $namespace );
         }
         if ( ! empty( $flags['lottie_enabled'] ) ) {
-            foleo_enqueue_asset_files( $lottie_assets );
+            foleo_enqueue_asset_files( $lottie_assets, $namespace );
         }
         if ( ! empty( $flags['snapScroll_enabled'] ) ) {
-            foleo_enqueue_asset_files( [ 'SnapScroll.js' ] );
+            foleo_enqueue_asset_files( [ 'SnapScroll.js' ], $namespace );
         }
         if ( ! empty( $flags['dynamicTable_enabled'] ) || ! empty( $flags['videoBug_enabled'] ) ) {
-            foleo_enqueue_asset_files( [ 'Foleo_Modules.js' ] );
+            foleo_enqueue_asset_files( [ 'Foleo_Modules.js' ], $namespace );
+        } else {
+            // Ensure dynamic table/video-bug runtime is available when flags are present but unset.
+            foleo_enqueue_asset_files( [ 'Foleo_Modules.js' ], $namespace );
         }
     } else {
         // Enqueue Tabs only where allowed
         if ( in_array( $host, $tabs_allow_hosts, true ) ) {
-            foleo_enqueue_asset_files( $tabs_assets );
+            foleo_enqueue_asset_files( $tabs_assets, $namespace );
         }
 
         // Enqueue Lottie only where allowed
         if ( in_array( $host, $lottie_allow_hosts, true ) ) {
-            foleo_enqueue_asset_files( $lottie_assets );
+            foleo_enqueue_asset_files( $lottie_assets, $namespace );
         }
 
         // Legacy defaults
-        foleo_enqueue_asset_files( [ 'Foleo_Modules.js', 'SnapScroll.js' ] );
+        foleo_enqueue_asset_files( [ 'Foleo_Modules.js', 'SnapScroll.js' ], $namespace );
+    }
+
+    // Brand.css: enqueue last if present.
+    $brand_path = foleo_assets_base_dir( $namespace ) . 'Brand.css';
+    if ( file_exists( $brand_path ) ) {
+        $ver = filemtime( $brand_path );
+        wp_enqueue_style(
+            'catalyst-brand',
+            foleo_assets_base_url( $namespace ) . 'Brand.css',
+            [],
+            $ver
+        );
     }
 
 }, 100 );

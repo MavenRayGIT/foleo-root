@@ -194,17 +194,30 @@ function renderFoleoDynamicTable(mount) {
     const toolbar = document.createElement('div');
     toolbar.className = 'fdt-toolbar';
 
+    const iconDownloadSvg = `
+      <svg class="fdt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M12 3a1 1 0 0 1 1 1v9.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42L11 13.59V4a1 1 0 0 1 1-1z"/>
+        <path fill="currentColor" d="M5 19a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/>
+      </svg>
+    `;
+    const iconPrintSvg = `
+      <svg class="fdt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M6 9V3h12v6H6zm2-4v2h8V5H8z"/>
+        <path fill="currentColor" d="M6 19v-4h12v4H6zm-2-9h16a2 2 0 0 1 2 2v5h-3v-4H5v4H2v-5a2 2 0 0 1 2-2z"/>
+      </svg>
+    `;
+
     const btnDl = document.createElement('button');
     btnDl.type = 'button';
     btnDl.className = 'fdt-tool fdt-tool--download fdt-icon-btn is-download';
     btnDl.setAttribute('aria-label', 'Download');
-    btnDl.innerHTML = '<img class="fdt-icon" src="https://foleo.co/wp-content/uploads/SVG/download-icon2.svg" alt="" aria-hidden="true">';
+    btnDl.innerHTML = iconDownloadSvg;
 
     const btnPrint = document.createElement('button');
     btnPrint.type = 'button';
     btnPrint.className = 'fdt-tool fdt-tool--print fdt-icon-btn is-print';
     btnPrint.setAttribute('aria-label', 'Print');
-    btnPrint.innerHTML = '<img class="fdt-icon" src="https://foleo.co/wp-content/uploads/SVG/Print-icon.svg" alt="" aria-hidden="true">';
+    btnPrint.innerHTML = iconPrintSvg;
 
     toolbar.appendChild(btnDl);
     toolbar.appendChild(btnPrint);
@@ -399,6 +412,19 @@ function initVideoBugModule() {
     const bugs = Array.from(document.querySelectorAll('.video-bug'));
     if (!bugs.length) return;
 
+    const pauseOtherBugs = (currentBug) => {
+      const allBugs = Array.from(document.querySelectorAll('.video-bug'));
+      for (const other of allBugs) {
+        if (other === currentBug) continue;
+        const otherPlayer = other.__player || other.querySelector('.video-bug__player');
+        if (otherPlayer && typeof otherPlayer.pause === 'function') {
+          try { otherPlayer.pause(); } catch (e) {}
+        }
+        other.dataset.state = 'paused';
+        other.classList.add('is-paused');
+      }
+    };
+
     const findTransformedAncestor = (el) => {
       let node = el && el.parentElement;
       while (node && node !== document.body) {
@@ -506,6 +532,7 @@ function initVideoBugModule() {
 
       const play = async () => {
         try {
+          pauseOtherBugs(bug);
           await player.play?.();
           markStarted();
           setState('playing');
@@ -526,12 +553,14 @@ function initVideoBugModule() {
       });
 
       player.addEventListener('play', () => {
+        pauseOtherBugs(bug);
         setState('playing');
         markStarted();
         setPausedState(false);
       });
 
       player.addEventListener('playing', () => {
+        pauseOtherBugs(bug);
         setState('playing');
         markStarted();
         setPausedState(false);

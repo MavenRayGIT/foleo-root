@@ -684,7 +684,7 @@ video {
 .foleo-dynamic-table .fdt-tool {
   appearance: none;
   border: 0;
-  background: #ff5a1f;
+  background: var(--bde-links-color);
   width: 34px;
   height: 34px;
   border-radius: 6px;
@@ -697,13 +697,41 @@ video {
 
 .foleo-dynamic-table .fdt-tool:hover,
 .foleo-dynamic-table .fdt-tool:focus-visible {
-  background: #000000;
+  background: var(--bde-brand-primary-color);
 }
 
 .foleo-dynamic-table .fdt-icon {
   width: 18px;
   height: 18px;
   display: block;
+  color: #ffffff;
+}
+
+/* Dynamic table toolbar icon color variants */
+.foleo-dynamic-table.icons-dark .fdt-icon,
+.foleo-dynamic-table.icons-dark .fdt-icon svg,
+.foleo-dynamic-table.icons-dark .fdt-icon svg path,
+.foleo-dynamic-table.icons-dark .fdt-icon svg rect,
+.foleo-dynamic-table.icons-dark .fdt-icon svg circle,
+.foleo-dynamic-table.icons-dark .fdt-icon svg line,
+.foleo-dynamic-table.icons-dark .fdt-icon svg polyline,
+.foleo-dynamic-table.icons-dark .fdt-icon svg polygon {
+  color: #000000;
+  fill: #000000;
+  stroke: #000000;
+}
+
+.icons-dark .foleo-dynamic-table .fdt-icon,
+.icons-dark .foleo-dynamic-table .fdt-icon svg,
+.icons-dark .foleo-dynamic-table .fdt-icon svg path,
+.icons-dark .foleo-dynamic-table .fdt-icon svg rect,
+.icons-dark .foleo-dynamic-table .fdt-icon svg circle,
+.icons-dark .foleo-dynamic-table .fdt-icon svg line,
+.icons-dark .foleo-dynamic-table .fdt-icon svg polyline,
+.icons-dark .foleo-dynamic-table .fdt-icon svg polygon {
+  color: #000000;
+  fill: #000000;
+  stroke: #000000;
 }
 
 .fdt-shell.is-scroll .fdt-controls .fdt-toolbar .fdt-icon-btn {
@@ -712,7 +740,7 @@ video {
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: #ff4a00;
+  background: var(--bde-links-color);
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -51,6 +51,12 @@ function getQueryParam(name) {
 
 const FOLEO_PROFILE_STORAGE_KEY = 'foleoProfile';
 const FOLEO_DEBUG = window.FOLEO_DEBUG === true;
+const FOLEO_ASSETS_BASE_URL = (() => {
+  let base = window.FOLEO_ASSETS_BASE_URL || '/wp-content/assets/catalyst/';
+  if (typeof base !== 'string') base = '/wp-content/assets/catalyst/';
+  if (!base.endsWith('/')) base += '/';
+  return base;
+})();
 
 function loadNavRegistrySync() {
   return window.__FOLEO_NAV_REGISTRY__ || null;
@@ -64,7 +70,7 @@ function loadNavRegistryAsync() {
     return window.__FOLEO_NAV_REGISTRY_PROMISE__;
   }
 
-  const url = '/wp-content/assets/catalyst/nav-registry.json';
+  const url = `${FOLEO_ASSETS_BASE_URL}nav-registry.json`;
   window.__FOLEO_NAV_REGISTRY_PROMISE__ = fetch(url, { cache: 'force-cache' })
     .then((res) => {
       if (!res.ok) throw new Error('nav-registry fetch failed');
@@ -328,14 +334,42 @@ function initCanvasStory() {
   const section = document.querySelector(".canvas-story");
   if (!section) return;
   if (section.classList.contains("canvas-story--edit")) return;
-  if (window.matchMedia && window.matchMedia("(max-width: 767px)").matches) {
-    section.classList.add("canvas-story--stacked");
+  const mq = window.matchMedia ? window.matchMedia("(max-width: 767px)") : null;
+  const applyStackedMode = (isStacked) => {
+    document.documentElement.classList.toggle("foleo-canvas-story-stacked", !!isStacked);
+    if (isStacked) {
+      section.classList.add("canvas-story--stacked");
+      const panels = Array.from(section.querySelectorAll(".canvas-story__panel"));
+      panels.forEach((panel) => {
+        panel.style.position = "static";
+        panel.style.opacity = "1";
+        panel.style.visibility = "visible";
+        panel.style.pointerEvents = "auto";
+        panel.style.transform = "none";
+        panel.style.willChange = "auto";
+        panel.style.height = "auto";
+      });
+      window.gsap?.set?.(panels, { clearProps: "all" });
+      if (window.ScrollTrigger && typeof window.ScrollTrigger.getAll === "function") {
+        window.ScrollTrigger.getAll().forEach((t) => {
+          if (t?.vars?.trigger === section) t.kill();
+        });
+      }
+    } else {
+      section.classList.remove("canvas-story--stacked");
+    }
+  };
+  if (mq && mq.matches) {
+    applyStackedMode(true);
     return;
   }
 
   const panels = Array.from(section.querySelectorAll(".canvas-story__panel"));
   if (panels.length < 2) return;
   const dots = section.querySelector(".canvas-story__dots");
+  if (dots && dots.parentElement !== section) {
+    section.appendChild(dots);
+  }
   if (dots) {
     dots.innerHTML = panels.map(() => `<span class="canvas-story__dot"></span>`).join("");
   }
@@ -355,13 +389,10 @@ function initCanvasStory() {
     return { panel, img, profile, copy };
   });
 
-  const copyBg = "#f4f0ea";
-  const profileBg = "#ffffff";
-
   keyPanels.forEach(({ img, profile, copy }) => {
     if (img) window.gsap.set(img, { opacity: 0 });
-    if (profile) window.gsap.set(profile, { opacity: 0, backgroundColor: profileBg });
-    if (copy) window.gsap.set(copy, { opacity: 0, backgroundColor: copyBg });
+    if (profile) window.gsap.set(profile, { opacity: 0 });
+    if (copy) window.gsap.set(copy, { opacity: 0 });
   });
 
   const first = keyPanels[0];
@@ -375,7 +406,7 @@ function initCanvasStory() {
   const tl = window.gsap.timeline({
     scrollTrigger: {
       trigger: section,
-      start: "top 5%",
+      start: "top top",
       end: "+=" + endPct + "%",
       scrub: 0.2,
       snap: {
@@ -387,6 +418,16 @@ function initCanvasStory() {
       anticipatePin: 1
     }
   });
+
+  if (mq && typeof mq.addEventListener === "function") {
+    mq.addEventListener("change", (e) => {
+      applyStackedMode(e.matches);
+    });
+  } else if (mq && typeof mq.addListener === "function") {
+    mq.addListener((e) => {
+      applyStackedMode(e.matches);
+    });
+  }
 
   if (dots) {
     const dotEls = Array.from(dots.querySelectorAll(".canvas-story__dot"));
@@ -437,6 +478,26 @@ function initCanvasStory() {
       p.style.visibility = idx === 0 ? "visible" : "hidden";
     });
   }
+}
+
+function forceCanvasStoryStackedOnMobile() {
+  if (!window.matchMedia || !window.matchMedia("(max-width: 767px)").matches) return;
+  const sections = document.querySelectorAll(".canvas-story");
+  if (!sections.length) return;
+  document.documentElement.classList.add("foleo-canvas-story-stacked");
+  sections.forEach((section) => {
+    section.classList.add("canvas-story--stacked");
+    const panels = Array.from(section.querySelectorAll(".canvas-story__panel"));
+    panels.forEach((panel) => {
+      panel.style.position = "static";
+      panel.style.opacity = "1";
+      panel.style.visibility = "visible";
+      panel.style.pointerEvents = "auto";
+      panel.style.transform = "none";
+      panel.style.willChange = "auto";
+      panel.style.height = "auto";
+    });
+  });
 }
 
 function initFoleoWaitForScrollParallax() {
@@ -999,6 +1060,7 @@ function initFoleoTrayBottom() {
 
   portalTray(trayOpen);
   portalTray(trayClosed);
+  document.documentElement.classList.add('foleo-tray-present');
 
   const prefersReduced =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1030,21 +1092,25 @@ function initFoleoTrayBottom() {
 
   const updateBodyOffset = () => {
     const isOpen = trayOpen.classList.contains('is-open');
-    const h = trayOpen.offsetHeight || 0;
+    const openH = trayOpen.offsetHeight || 0;
+    const closedH = trayClosed.offsetHeight || 0;
     if (FOLEO_DEBUG) {
       console.log('[foleo-tray] updateBodyOffset', {
         isOpen,
-        height: h,
+        height: openH,
         scrollTop: trayOpen.scrollTop,
         scrollHeight: trayOpen.scrollHeight
       });
     }
-    if (!isOpen || h === 0) {
+    document.documentElement.style.setProperty('--foleo-tray-closed-height', `${closedH}px`);
+    if (!isOpen || openH === 0) {
       document.documentElement.classList.remove('foleo-tray-opened');
       document.documentElement.style.setProperty('--foleo-tray-open-height', '0px');
+      document.documentElement.style.setProperty('--foleo-tray-safe-height', `${closedH}px`);
       return;
     }
-    document.documentElement.style.setProperty('--foleo-tray-open-height', `${h}px`);
+    document.documentElement.style.setProperty('--foleo-tray-open-height', `${openH}px`);
+    document.documentElement.style.setProperty('--foleo-tray-safe-height', `${openH}px`);
     document.documentElement.classList.add('foleo-tray-opened');
   };
 
@@ -1053,6 +1119,7 @@ function initFoleoTrayBottom() {
     const h = trayOpen.offsetHeight || 0;
     if (h === 0) return;
     document.documentElement.style.setProperty('--foleo-tray-open-height', `${h}px`);
+    document.documentElement.style.setProperty('--foleo-tray-safe-height', `${h}px`);
     document.documentElement.classList.add('foleo-tray-opened');
   };
 
@@ -1147,6 +1214,8 @@ function initFoleoTrayBottom() {
     setTimeout(() => trayClosed.classList.add('is-visible'), 500);
   }
 
+  updateBodyOffset();
+
   let openedByScroll = false;
   let ticking = false;
   const maybeOpenAtBottom = () => {
@@ -1198,6 +1267,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('foleo-edit');
   } else {
     if (document.querySelector(".canvas-story")) {
+      forceCanvasStoryStackedOnMobile();
       ensureGsap(initCanvasStory);
     }
     if (document.querySelector("[data-parallax]")) {
@@ -1397,7 +1467,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initCfStreamPlaceholders() {
       const placeholders = document.querySelectorAll(".cf-stream-placeholder");
-      if (!placeholders.length) return;
+      const hasPlaceholders = !!placeholders.length;
 
 
       const isCxPage = (() => {
@@ -1451,11 +1521,19 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             if (!event || !event.origin) return;
             const placeholder = iframeToPlaceholder.get(event.source);
-            if (!placeholder) return;
-            const meta = iframeMeta.get(placeholder.__foleoIframe) || {};
-            if (meta.origin && event.origin !== meta.origin) return;
+            if (placeholder) {
+              const meta = iframeMeta.get(placeholder.__foleoIframe) || {};
+              if (meta.origin && event.origin !== meta.origin) return;
+              if (isPlayingMessage(event.data)) {
+                markPlaying(placeholder);
+              }
+              return;
+            }
+            const iframe = Array.from(document.querySelectorAll(".cf-stream-embed iframe"))
+              .find((node) => node.contentWindow === event.source);
+            if (!iframe) return;
             if (isPlayingMessage(event.data)) {
-              markPlaying(placeholder);
+              pauseOtherStreams(iframe);
             }
           } catch (e) {}
         });
@@ -1540,6 +1618,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!placeholder) return;
         const iframe = placeholder.__foleoIframe;
         if (!iframe || !iframe.isConnected) return;
+        pauseOtherStreams(iframe);
         if (placeholder.dataset.foleoState === "playing") return;
         placeholder.dataset.foleoState = "playing";
         iframe.style.opacity = "1";
@@ -1563,6 +1642,61 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         messages.forEach((msg) => {
           try { iframe.contentWindow.postMessage(msg, origin); } catch (e) {}
+        });
+      };
+
+      const tryPostMessagePause = (iframe, origin) => {
+        if (!iframe || !iframe.contentWindow) return;
+        const messages = [
+          { type: "pause" },
+          { event: "pause" },
+          { action: "pause" },
+          "pause"
+        ];
+        messages.forEach((msg) => {
+          try { iframe.contentWindow.postMessage(msg, origin); } catch (e) {}
+        });
+      };
+
+      const pauseOtherStreams = (currentIframe) => {
+        const iframes = document.querySelectorAll(".cf-stream-embed iframe");
+        iframes.forEach((iframe) => {
+          if (iframe === currentIframe) return;
+          const meta = iframeMeta.get(iframe) || {};
+          const origin = meta.origin || "*";
+          tryPostMessagePause(iframe, origin);
+          ensureCfSdk().then(() => {
+            try {
+              const player = Stream?.(iframe);
+              player?.pause?.();
+            } catch (e) {}
+          });
+        });
+      };
+
+      const bindDirectIframeControls = () => {
+        const iframes = document.querySelectorAll(".cf-stream-embed iframe");
+        iframes.forEach((iframe) => {
+          if (iframe.dataset.foleoStreamBound === "1") return;
+          iframe.dataset.foleoStreamBound = "1";
+          const origin = (() => {
+            try {
+              const url = new URL(iframe.src);
+              return `${url.protocol}//${url.host}`;
+            } catch (e) {
+              return "*";
+            }
+          })();
+          iframeMeta.set(iframe, { origin });
+          ensureCfSdk().then(() => {
+            try {
+              const player = Stream?.(iframe);
+              if (player && player.addEventListener) {
+                player.addEventListener("play", () => pauseOtherStreams(iframe));
+                player.addEventListener("playing", () => pauseOtherStreams(iframe));
+              }
+            } catch (e) {}
+          });
         });
       };
 
@@ -1762,12 +1896,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       };
 
-      processEmbeds();
+      bindMessageListener();
+      bindDirectIframeControls();
+      if (hasPlaceholders) {
+        processEmbeds();
+      }
 
       const embedObserver = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
           if (mutation.addedNodes && mutation.addedNodes.length) {
-            processEmbeds();
+            bindDirectIframeControls();
+            if (hasPlaceholders) {
+              processEmbeds();
+            }
             break;
           }
         }
@@ -2064,3 +2205,82 @@ document.addEventListener("pointerout", (e) => {
 
 document.querySelectorAll('.feature-tabs.is-tabs-ready')
   .forEach(el => el.classList.remove('is-tabs-ready'));
+
+// Logo notch collapse on scroll
+(function(){
+  const CLASS_COLLAPSED = 'foleo--logo-collapsed';
+  const THRESHOLD = 40;
+  let ticking = false;
+
+  function apply(){
+    ticking = false;
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    if (y > THRESHOLD) document.body.classList.add(CLASS_COLLAPSED);
+    else document.body.classList.remove(CLASS_COLLAPSED);
+  }
+
+  function onScroll(){
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(apply);
+  }
+
+  let notchTemplate = null;
+
+  function captureNotchTemplate(){
+    const notch = document.querySelector('.foleo-logo-notch');
+    if (notch && !notchTemplate) {
+      notchTemplate = notch.cloneNode(true);
+    }
+  }
+
+  function getNotchHost(){
+    const bdRoot = document.querySelector('.breakdance');
+    if (bdRoot) {
+      const style = window.getComputedStyle(bdRoot);
+      if (!style.transform || style.transform === 'none') {
+        return bdRoot;
+      }
+    }
+    return document.body;
+  }
+
+  function ensureNotch(){
+    const host = getNotchHost();
+    const notch = document.querySelector('.foleo-logo-notch');
+    if (notch) {
+      if (notch.parentElement !== host) {
+        host.appendChild(notch);
+      }
+      return;
+    }
+    if (notchTemplate) {
+      const clone = notchTemplate.cloneNode(true);
+      host.appendChild(clone);
+    }
+  }
+
+  function bindNotchObserver(){
+    const observer = new MutationObserver(() => {
+      ensureNotch();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      captureNotchTemplate();
+      ensureNotch();
+      bindNotchObserver();
+      apply();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    });
+  } else {
+    captureNotchTemplate();
+    ensureNotch();
+    bindNotchObserver();
+    apply();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+})();
