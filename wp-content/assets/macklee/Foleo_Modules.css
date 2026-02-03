@@ -1,0 +1,1406 @@
+/*
+  Foleo Modules Styles
+  -------------------
+  - Dynamic Table (default no-scroll)
+  - Dynamic Table (scroll variant via .fdt-shell.is-scroll)
+  - Foleo toolbar (print / download)
+  - Module-level video fixes
+*/
+/* =========================================================
+   Cloudflare Stream embeds + Breakdance popup hero utilities
+   ========================================================= */
+
+/* 1) Cloudflare Stream responsive embed (ratio box) */
+.cf-stream-embed {
+  position: relative;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.cf-stream-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.cf-stream-embed .cf-stream-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: pointer;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 1;
+}
+
+.cf-stream-embed .cf-stream-placeholder:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.cf-stream-embed .cf-stream-placeholder::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.cf-stream-embed .cf-stream-placeholder::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 16px;
+  border-color: transparent transparent transparent #fff;
+  transform: translateX(2px);
+  pointer-events: none;
+}
+
+.cf-stream-embed .cf-stream-placeholder[data-foleo-state="loading"]::before,
+.cf-stream-embed .cf-stream-placeholder[data-foleo-state="loading"]::after {
+  opacity: 0;
+}
+
+.cf-stream-embed .cf-stream-spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  animation: cf-stream-spin 0.8s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes cf-stream-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* HERO Cloudflare Stream embeds */
+.mod-hero.intent-social .cf-stream-embed {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.mod-hero.intent-social .cf-stream-embed > iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.foleo-media-player {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cf-stream-embed .foleo-media-player,
+.foleo-media-player {
+  --media-icon-color: rgba(0,0,0,0.85);
+  --media-controls-color: rgba(0,0,0,0.85);
+  --media-controls-hover-color: rgba(0,0,0,0.95);
+}
+
+.cf-stream-embed .foleo-media-player {
+  --media-controls-bg: rgba(255,255,255,0.35);
+}
+
+.cf-stream-embed .foleo-media-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: transparent;
+  z-index: 1;
+}
+
+.cf-stream-embed .foleo-media-player media-provider {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cf-stream-embed .foleo-media-player video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.cf-name-panel {
+  position: relative;
+  z-index: 10;
+}
+
+.cf-stream-embed media-video-layout,
+.cf-stream-embed media-plyr-layout {
+  background: transparent !important;
+}
+
+.cf-stream-embed [data-media-player][data-layout~="video"] {
+  --video-bg: transparent;
+}
+
+.cf-stream-embed,
+.cf-stream-embed .foleo-media-player,
+.cf-stream-embed video,
+.cf-stream-embed [data-media-player] {
+  border-radius: 0 !important;
+}
+
+.cf-stream-embed {
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: hidden;
+}
+
+.cf-stream-embed [data-media-player][data-layout~="video"]:not([data-fullscreen]) {
+  border: 0 !important;
+}
+
+.cf-stream-embed video {
+  display: block;
+}
+
+/* Vidstack UI tweaks */
+.cf-stream-embed [data-media-control="cast"],
+.cf-stream-embed media-cast-button,
+.cf-stream-embed button[aria-label="Cast"] {
+  display: none !important;
+}
+
+.cf-stream-embed [data-media-control="settings"],
+.cf-stream-embed media-menu-button,
+.cf-stream-embed button[aria-label*="Settings"],
+.foleo-media-player [data-media-control="settings"],
+.foleo-media-player media-menu-button,
+.foleo-media-player button[aria-label*="Settings"] {
+  display: none !important;
+}
+
+.foleo-media-player media-play-button,
+.foleo-media-player [data-media-control="play"],
+.foleo-media-player [data-media-button="play"] {
+  transition: opacity 140ms ease;
+}
+
+.foleo-media-player[data-playing] media-play-button,
+.foleo-media-player[data-playing] [data-media-control="play"],
+.foleo-media-player[data-playing] [data-media-button="play"],
+[data-media-player][data-playing] media-play-button,
+[data-media-player][data-playing] [data-media-control="play"],
+[data-media-player][data-playing] [data-media-button="play"] {
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 80ms;
+}
+
+[data-media-player][data-playing]:hover media-play-button,
+[data-media-player][data-playing]:hover [data-media-control="play"],
+[data-media-player][data-playing]:hover [data-media-button="play"],
+.foleo-media-player[data-playing]:hover media-play-button,
+.foleo-media-player[data-playing]:hover [data-media-control="play"],
+.foleo-media-player[data-playing]:hover [data-media-button="play"] {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0ms;
+}
+
+.cf-stream-embed [data-media-control="fullscreen"],
+.cf-stream-embed button[aria-label*="Fullscreen"] {
+  background: rgba(0,0,0,0.35);
+}
+
+.foleo-media-player media-video-layout::part(scrim),
+.foleo-media-player media-video-layout::part(overlay),
+.foleo-media-player media-video-layout::part(controls),
+.foleo-media-player [data-media-scrim],
+.foleo-media-player [data-media-overlay],
+.foleo-media-player .vds-scrim {
+  border-radius: 0 !important;
+}
+
+.cf-stream-embed.landscape { padding-top: 56.25%; }
+.cf-stream-embed.portrait  { padding-top: 177.7778%; }
+.cf-stream-embed.square    { padding-top: 100%; }
+
+/* 2) Breakdance flex/code-block sizing guardrails */
+.bde-code-block {
+  width: 100%;
+  max-width: 100%;
+  min-width: 1px;
+  align-self: stretch;
+  display: block;
+}
+
+.cf-video-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 1px;
+  display: block;
+  align-self: stretch;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 3) Background video behavior (opt-in via classes) */
+.cf-bg-video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Base fill (no inset shorthand conflicts later) */
+.cf-bg-video iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  z-index:0;
+}
+
+/* Cover behavior: oversize + center */
+.cf-bg-video.is-cover iframe {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+}
+
+/* Popup card: top corners only */
+.popup-topradius {
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  overflow: hidden;
+  position: relative;
+}
+
+.popup-topradius .foleo-media-player,
+.popup-topradius [data-media-player],
+.popup-topradius media-provider,
+.popup-topradius video {
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.popup-topradius .foleo-media-player {
+  --video-border-radius: 0px;
+}
+
+.breakdance-popup-content {
+  position: relative;
+}
+
+.breakdance-popup-content .cf-stream-embed.popup-topradius {
+  z-index: 1;
+}
+
+.breakdance-popup-content .popup-body,
+.breakdance-popup-content .bde-div-1442-112,
+.breakdance-popup-content .bde-div-1442-108 {
+  position: relative;
+  z-index: 5;
+}
+
+.vidover {
+  border: 2px solid red!important; 
+  }
+
+.no_x .breakdance-popup-close-button {display: none !important;}
+
+/* Card wrapper */
+.cf-card {
+  position: relative;
+  width: 100%;
+}
+
+/* Video layer */
+.cf-video-layer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+/* Make the card stack children vertically */
+.cf-card{
+  display: flex;
+  flex-direction: column;
+}
+
+/* Push the label panel to the bottom of the card */
+.cf-name-panel{
+  margin-top: auto;
+  overflow: hidden;
+  max-height: 100%;
+  transition: max-height 280ms ease-in-out;
+}
+
+/* Collapse on hover / active */
+.cf-card:hover .cf-name-panel,
+.cf-card.is-active .cf-name-panel{
+  max-height: 0;
+  pointer-events: none;
+}
+
+.cf-card.is-playing .cf-name-panel {
+  max-height: 0;
+  pointer-events: none;
+}
+
+/* Hide Google Cast only inside FOLEO Vidstack instances */
+.cf-stream-embed media-google-cast-button,
+.foleo-media-player media-google-cast-button {
+  display: none !important;
+}
+
+/* ================================
+   Vidstack control contrast tuning
+   ================================ */
+.cf-stream-embed .foleo-media-player,
+.foleo-media-player {
+  --media-icon-color: rgba(0,0,0,0.9);
+  --media-icon-hover-color: rgba(0,0,0,1);
+  --media-slider-track-bg: rgba(255,255,255,0.22);
+  --media-slider-track-fill-bg: rgba(255,255,255,0.55);
+  --media-slider-thumb-bg: rgba(255,255,255,0.95);
+  --media-slider-thumb-border: rgba(0,0,0,0);
+  --media-menu-bg: rgba(0, 0, 0, 0.78);
+  --media-menu-border: rgba(255, 255, 255, 0.10);
+  --media-menu-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  --media-popover-bg: rgba(0, 0, 0, 0.78);
+  --media-tooltip-bg: rgba(0, 0, 0, 0.78);
+}
+
+.cf-stream-embed media-volume-slider {
+  backdrop-filter: saturate(1.1);
+  background: rgba(0, 0, 0, 0.78) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+}
+
+.cf-stream-embed,
+.cf-bg-video,
+iframe[src*="cloudflarestream"],
+video {
+  position: relative;
+  z-index: 1;
+}
+.fdt-shell {
+  display: block;
+}
+
+.fdt-shell.is-scroll {
+  display: flex;
+  flex-direction: column;
+}
+
+.fdt-scroll {
+  position: static;
+  max-height: none;
+  overflow: visible;
+  border: 0;
+}
+
+.fdt-shell.is-scroll .fdt-scroll {
+  position: relative;
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-bottom: 1px solid #000000;
+}
+
+.fdt-controls {
+  display: none;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 12px 0;
+  border: 0;
+}
+
+.fdt-shell.is-scroll .fdt-controls {
+  display: flex;
+}
+
+.fdt-shell.is-scroll .fdt-controls .fdt-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  margin-top: 0;
+  gap: 20px;
+}
+
+.foleo-dynamic-table {
+  width: 100%;
+}
+
+.foleo-dynamic-table .fdt {
+  display: grid;
+  gap: 0;
+  position: relative;
+}
+
+.foleo-dynamic-table .fdt-row {
+  display: grid;
+  grid-template-columns: var(--fdt-cols);
+  gap: 0;
+  align-items: stretch;
+  padding: 12px 8px;
+  border-left: 1px solid rgba(0, 0, 0, 0.55);
+  border-right: 1px solid rgba(0, 0, 0, 0.55);
+  border-top: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+  background-color: rgba(255,255,255,0.60);
+  position: relative;
+  z-index: 1;
+  transition: background-color 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):first-child,
+.foleo-dynamic-table .fdt-header-row + .fdt-row {
+  border-top: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+.foleo-dynamic-table .fdt-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border-radius: inherit;
+  z-index: 0;
+  transition: background-color 180ms ease;
+}
+
+.foleo-dynamic-table .fdt-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+.foleo-dynamic-table .fdt-cell {
+  min-width: 0;
+  line-height: 1.2;
+  padding-left: 13px;
+  padding-right: 23px;
+  position: relative;
+  display: flex;
+  align-items: end;
+  text-align: left;
+  justify-self: start;
+}
+
+.foleo-dynamic-table .fdt-cell:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 6px;
+  width: 0;
+  border-left: 2px dotted rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.foleo-dynamic-table .fdt-cell:not(:first-child) {
+  padding-left: 23px;
+  padding-right: 23px;
+}
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):hover .fdt-cell:not(:first-child)::before,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):focus-within .fdt-cell:not(:first-child)::before {
+  top: 0;
+  bottom: 0;
+}
+
+.foleo-dynamic-table .fdt-row > .fdt-cell:nth-child(1) {
+  font-weight: 600;
+}
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row) > .fdt-cell:nth-child(2) {
+  font-size: 14px;
+  
+}
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row) > .fdt-cell:nth-child(3) {
+  font-size: 14px;
+}
+
+.foleo-dynamic-table .fdt-row > .fdt-cell:nth-child(4) {
+  justify-self: start;
+  text-align: left;
+  display: flex;
+  align-items: end;
+}
+
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):hover,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):focus-within {
+  z-index: 5;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.10);
+}
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):hover::before,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):focus-within::before {
+  background: #ffffff;
+}
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):hover .fdt-cell,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):focus-within .fdt-cell {
+  font-size: 1.04em;
+  line-height: 1.2;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover,
+.foleo-dynamic-table .fdt-header-row:focus-within {
+  z-index: 1;
+  box-shadow: none;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover::before,
+.foleo-dynamic-table .fdt-header-row:focus-within::before {
+  background: transparent;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover .fdt-cell,
+.foleo-dynamic-table .fdt-header-row:focus-within .fdt-cell {
+  font-size: inherit;
+  line-height: inherit;
+}
+.foleo-dynamic-table .fdt-header-row {
+  position: static;
+  top: auto;
+  z-index: auto;
+  background: transparent;
+  color: inherit;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.65);
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.foleo-dynamic-table .fdt-header-row,
+.foleo-dynamic-table .fdt-header-row:hover,
+.foleo-dynamic-table .fdt-header-row:focus-within {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.foleo-dynamic-table .fdt-header-row::before,
+.foleo-dynamic-table .fdt-header-row:hover::before,
+.foleo-dynamic-table .fdt-header-row:focus-within::before {
+  background: transparent !important;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover .fdt-cell,
+.foleo-dynamic-table .fdt-header-row:focus-within .fdt-cell {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover .fdt-cell:not(:first-child)::before,
+.foleo-dynamic-table .fdt-header-row:focus-within .fdt-cell:not(:first-child)::before {
+  top: 15% !important;
+  bottom: 15% !important;
+}
+
+.foleo-dynamic-table .fdt-header-row {
+  pointer-events: none;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover,
+.foleo-dynamic-table .fdt-header-row:focus-within {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.foleo-dynamic-table .fdt-header-row::before {
+  display: none !important;
+}
+
+.foleo-dynamic-table .fdt-header-row .fdt-cell {
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  color: inherit;
+}
+
+.foleo-dynamic-table .fdt-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.foleo-dynamic-table .fdt-tool {
+  appearance: none;
+  border: 0;
+  background: var(--bde-links-color);
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: end;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.foleo-dynamic-table .fdt-tool:hover,
+.foleo-dynamic-table .fdt-tool:focus-visible {
+  background: var(--bde-brand-primary-color);
+}
+
+.foleo-dynamic-table .fdt-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  color: #ffffff;
+}
+
+/* Dynamic table toolbar icon color variants */
+.foleo-dynamic-table.icons-dark .fdt-icon,
+.foleo-dynamic-table.icons-dark .fdt-icon svg,
+.foleo-dynamic-table.icons-dark .fdt-icon svg path,
+.foleo-dynamic-table.icons-dark .fdt-icon svg rect,
+.foleo-dynamic-table.icons-dark .fdt-icon svg circle,
+.foleo-dynamic-table.icons-dark .fdt-icon svg line,
+.foleo-dynamic-table.icons-dark .fdt-icon svg polyline,
+.foleo-dynamic-table.icons-dark .fdt-icon svg polygon {
+  color: #000000;
+  fill: #000000;
+  stroke: #000000;
+}
+
+.icons-dark .foleo-dynamic-table .fdt-icon,
+.icons-dark .foleo-dynamic-table .fdt-icon svg,
+.icons-dark .foleo-dynamic-table .fdt-icon svg path,
+.icons-dark .foleo-dynamic-table .fdt-icon svg rect,
+.icons-dark .foleo-dynamic-table .fdt-icon svg circle,
+.icons-dark .foleo-dynamic-table .fdt-icon svg line,
+.icons-dark .foleo-dynamic-table .fdt-icon svg polyline,
+.icons-dark .foleo-dynamic-table .fdt-icon svg polygon {
+  color: #000000;
+  fill: #000000;
+  stroke: #000000;
+}
+
+.fdt-shell.is-scroll .fdt-controls .fdt-toolbar .fdt-icon-btn {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--bde-links-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.fdt-shell.is-scroll .fdt-controls .fdt-toolbar .fdt-icon-btn:hover {
+  filter: brightness(1.05);
+}
+
+.fdt-shell.is-scroll .fdt-controls .fdt-toolbar .fdt-icon-btn:active {
+  filter: brightness(0.95);
+}
+
+.fdt-shell.is-scroll .fdt-controls .fdt-toolbar .fdt-icon-btn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.45);
+  outline-offset: 2px;
+}
+
+.fdt-shell.is-scroll .fdt-controls .fdt-toolbar .fdt-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.fdt-shell.is-scroll .foleo-dynamic-table .fdt-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #000000;
+  color: #ffffff;
+}
+
+.fdt-shell.is-scroll .foleo-dynamic-table .fdt-header-row:hover,
+.fdt-shell.is-scroll .foleo-dynamic-table .fdt-header-row:focus-within {
+  background: #000000 !important;
+}
+
+.fdt-shell.is-scroll .foleo-dynamic-table .fdt-header-row .fdt-cell:not(:first-child)::before {
+  border-left-color: rgba(255, 255, 255, 0.7);
+}
+
+.foleo-dynamic-table .fdt-header-cell {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 23px;
+  padding-right: 23px;
+  line-height: 1.2;
+}
+
+.foleo-dynamic-table .fdt-header-row > .fdt-cell {
+  font-size: 12px;
+}
+
+.foleo-dynamic-table .fdt-header-cell:not(:first-child)::before {
+  border-left-style: solid;
+}
+
+.foleo-dynamic-table .fdt-header-cell:first-child::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px solid rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover,
+.foleo-dynamic-table .fdt-header-row:focus-within {
+  box-shadow: none;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover::before,
+.foleo-dynamic-table .fdt-header-row:focus-within::before {
+  background: transparent;
+}
+
+.foleo-dynamic-table .fdt-header-row:hover .fdt-cell,
+.foleo-dynamic-table .fdt-header-row:focus-within .fdt-cell {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.foleo-dynamic-table .fdt-cell p {
+  margin: 0;
+}
+
+.foleo-dynamic-table .fdt-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 2px; 
+}
+
+.foleo-dynamic-table .fdt-badge.is-ongoing { }
+.foleo-dynamic-table .fdt-badge.is-hold { }
+.foleo-dynamic-table .fdt-badge.is-complete { }
+.foleo-dynamic-table .fdt-badge.is-in-progress { }
+
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):hover .fdt-badge,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):focus-within .fdt-badge {
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: none;
+  transform: none;
+  cursor: default;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+@media (max-width: 768px) {
+  .foleo-dynamic-table .fdt-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "title status"
+      "helper helper"
+      "desc desc";
+    row-gap: 6px;
+  }
+
+  .foleo-dynamic-table .fdt-row > .fdt-cell:nth-child(1) { grid-area: title; }
+  .foleo-dynamic-table .fdt-row > .fdt-cell:nth-child(2) { grid-area: helper; }
+  .foleo-dynamic-table .fdt-row > .fdt-cell:nth-child(3) { grid-area: desc; }
+  .foleo-dynamic-table .fdt-row > .fdt-cell:nth-child(4) { grid-area: status; }
+
+  .foleo-dynamic-table .fdt-cell:not(:first-child)::before {
+    content: none;
+  }
+
+  .foleo-dynamic-table .fdt-cell:not(:first-child) {
+    padding-left: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .foleo-dynamic-table .fdt-row {
+    border-left: 1px solid rgba(255, 255, 255, 0.28);
+    border-right: 1px solid rgba(255, 255, 255, 0.28);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .foleo-dynamic-table .fdt-row:not(.fdt-header-row):first-child,
+  .foleo-dynamic-table .fdt-header-row + .fdt-row {
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+  }
+
+  .foleo-dynamic-table .fdt-row:not(.fdt-header-row):last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  }
+}
+
+@media (hover: none) {
+  .foleo-dynamic-table .fdt-row:not(.fdt-header-row):hover,
+  .foleo-dynamic-table .fdt-row:not(.fdt-header-row):focus-within {
+    box-shadow: none;
+  }
+
+  .foleo-dynamic-table .fdt-row:not(.fdt-header-row):hover::before,
+  .foleo-dynamic-table .fdt-row:not(.fdt-header-row):focus-within::before {
+    background: transparent;
+  }
+
+  .foleo-dynamic-table .fdt-row:not(.fdt-header-row):hover .fdt-cell,
+  .foleo-dynamic-table .fdt-row:not(.fdt-header-row):focus-within .fdt-cell {
+    font-size: inherit;
+    line-height: inherit;
+  }
+}
+
+/* =========================================================
+   VIDEO BUG MODULE
+   ========================================================= */
+
+.video-bug,
+.video-bug__sticky,
+.video-bug__frame,
+.video-bug__player,
+.video-bug__ui,
+.video-bug__nameplate {
+  outline: none !important;
+  border: 0;
+}
+
+.video-bug {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  left: auto;
+  transform: translate3d(0, 0, 0);
+  width: auto;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  overflow: visible !important;
+}
+
+.video-bug.is-inview {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-bug__frame {
+  position: relative;
+  overflow: visible !important;
+}
+
+.video-bug__media,
+.video-bug__player {
+  overflow: hidden;
+}
+
+.video-bug__player {
+  position: relative;
+  z-index: 1;
+}
+
+.video-bug__ui {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+}
+
+.video-bug .video-bug__controls {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.video-bug .video-bug__controls-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  height: 56px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 18px;
+  align-items: end;
+  justify-content: left;
+  column-gap: 11px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.video-bug .video-bug__controls-spacer {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.video-bug:not(.has-started) .video-bug__btn-play {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 44px;
+  height: 44px;
+  z-index: 13;
+  pointer-events: auto;
+}
+
+.video-bug.has-started .video-bug__btn-play {
+  position: static;
+  width: 20px;
+  height: 20px;
+  z-index: auto;
+}
+
+.video-bug .video-bug__controls .video-bug__btn,
+.video-bug .video-bug__controls .video-bug__btn-size {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-bug .video-bug__controls img,
+.video-bug .video-bug__controls svg,
+.video-bug .video-bug__controls svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .video-bug .video-bug__controls-rail {
+    flex-wrap: nowrap;
+  }
+}
+
+.video-bug__nameplate {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 13;
+}
+
+.video-bug__nameplate {
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  padding: 8px 12px;
+  transform: none !important;
+  clip-path: none !important;
+  animation: none !important;
+  overflow: visible;
+  transition: opacity 200ms ease;
+  opacity: 1;
+  pointer-events: none;
+  font-size: 13px;
+  font-weight: 100;
+  letter-spacing: .02em;
+  line-height: 1em;
+  min-height: 60px;
+}
+
+.video-bug__scrim {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 30%);
+  opacity: 1;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+.video-bug__ui {
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.video-bug__ui::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 56px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.video-bug__ui > * {
+  position: relative;
+  z-index: 1;
+}
+
+.video-bug.is-inview:not(.has-started):hover .video-bug__nameplate {
+  opacity: 0;
+}
+
+.video-bug.is-inview:not(.has-started):hover .video-bug__ui {
+  pointer-events: auto;
+}
+
+.video-bug.is-inview:not(.has-started) .video-bug__btn:not(.video-bug__btn-play) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-bug.is-inview:not(.has-started):hover .video-bug__btn:not(.video-bug__btn-play) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-bug.is-inview:not(.has-started) .video-bug__ui::before {
+  opacity: 0;
+}
+
+.video-bug.is-inview:not(.has-started):hover .video-bug__ui::before {
+  opacity: 1;
+}
+
+.video-bug.is-inview:not(.has-started) .video-bug__btn-play {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-bug.has-started .video-bug__nameplate,
+.video-bug.has-started .video-bug__scrim,
+.video-bug.has-started:not(.is-paused) .video-bug__btn-play {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-bug.has-started .video-bug__ui {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.video-bug.has-started:hover .video-bug__ui {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-bug.is-paused .video-bug__btn-play {
+  display: inline-flex;
+}
+
+.video-bug.is-paused .video-bug__btn-pause {
+  display: none;
+}
+
+.video-bug:not(.is-paused) .video-bug__btn-play {
+  display: none;
+}
+
+.video-bug:not(.is-paused) .video-bug__btn-pause {
+  display: inline-flex;
+}
+
+.video-bug.has-started:hover .video-bug__ui::before {
+  opacity: 1;
+}
+
+/* =========================================================
+   VIDEO BUG RESTORE OVERRIDES
+   Purpose: defeat Breakdance defaults + Vidstack inline sizing
+   ========================================================= */
+
+.video-bug .video-bug__frame {
+  position: relative !important;
+  display: block !important;
+  width: 120px !important;
+  aspect-ratio: 9 / 16 !important;
+}
+
+.video-bug[data-video-bug-size="lg"] .video-bug__frame { width: 160px !important; }
+.video-bug[data-video-bug-size="sm"] .video-bug__frame { width: 120px !important; }
+
+.video-bug {
+  position: fixed !important;
+  top: var(--video-bug-top, 60px) !important;
+  right: var(--video-bug-right, 20px) !important;
+  z-index: 99999 !important;
+  opacity: 0 !important;
+  transition: opacity 220ms ease !important;
+  pointer-events: none !important;
+}
+
+.video-bug.is-inview {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.video-bug .video-bug__player {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  --player-width: 100% !important;
+  --player-height: 100% !important;
+  --media-width: 100% !important;
+  --media-height: 100% !important;
+}
+
+.video-bug .video-bug__player media-provider,
+.video-bug .video-bug__player video {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+.video-bug .video-bug__scrim {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+}
+
+.video-bug .video-bug__ui {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+}
+
+.video-bug .video-bug__ui .video-bug__btn {
+  pointer-events: auto !important;
+}
+
+.video-bug .video-bug__nameplate {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 15 !important;
+}
+
+.video-bug,
+.video-bug .video-bug__sticky,
+.video-bug .video-bug__frame {
+  display: block !important;
+}
+
+
+/* =========================================
+   ENHANCEMENT: Scroll table fills parent height
+   - Safe additive layer
+   - Only applies when .fdt-shell has .is-scroll
+   ========================================= */
+
+.fdt-shell.is-scroll {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0; /* enables nested scrolling in flex */
+}
+
+.fdt-shell.is-scroll .fdt-scroll {
+  flex: 1 1 auto;
+  min-height: 0; /* critical: allows inner scroller to scroll */
+}
+
+.fdt-shell.is-scroll .fdt-controls {
+  flex: 0 0 auto;
+}
+
+/* =========================================================
+   FOLEO GRID V1
+   Tokens: 2px borders, 20px and 40px spacing
+   ========================================================= */
+
+.foleo-grid {
+  --fg-border: 2px;
+  --fg-space-20: 20px;
+  --fg-space-40: 40px;
+  --fg-bg-canvas: #F9F7F7;
+  --fg-bg-panel: #FFFFFF;
+  --fg-accent: #FFE8D4;
+  --fg-max-width: 1120px;
+  background: var(--fg-bg-canvas);
+}
+
+.foleo-grid__inner {
+  max-width: var(--fg-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.foleo-grid__row {
+  max-width: var(--fg-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.foleo-grid__row + .foleo-grid__row {
+  margin-top: var(--fg-space-40);
+}
+
+.foleo-grid__row.has-divider {
+  border-top: var(--fg-border) solid #000;
+  padding-top: var(--fg-space-20);
+}
+
+.foleo-grid__panel {
+  background: var(--fg-bg-panel);
+  padding: var(--fg-space-40);
+}
+
+.foleo-grid__panel > .foleo-grid__block + .foleo-grid__block {
+  margin-top: var(--fg-space-20);
+}
+
+.foleo-grid__block.is-accent-top {
+  border-top: var(--fg-border) solid var(--fg-accent);
+  padding-top: 10px;
+  margin-top: var(--fg-space-20);
+}
+
+.foleo-grid__row.row-2up {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--fg-space-40);
+}
+
+.foleo-grid__row.row-3up {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--fg-space-40);
+}
+
+.foleo-grid__row.row-media-2up {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--fg-space-40);
+}
+
+.foleo-grid__row.row-full,
+.foleo-grid__row.row-text,
+.foleo-grid__row.row-chart {
+  display: block;
+}
+
+/* Breakdance Columns compatibility: enforce 40px spacing */
+.foleo-grid .bde-columns.foleo-grid__row {
+  gap: var(--fg-space-40);
+  column-gap: var(--fg-space-40);
+}
+
+/* Force equal column widths for Breakdance Columns rows */
+.foleo-grid .bde-columns.foleo-grid__row.row-2up > .bde-column {
+  flex: 0 0 calc(50% - (var(--fg-space-40) / 2));
+  max-width: calc(50% - (var(--fg-space-40) / 2));
+}
+
+.foleo-grid .bde-columns.foleo-grid__row.row-3up > .bde-column {
+  flex: 0 0 calc(33.333% - (var(--fg-space-40) * 2 / 3));
+  max-width: calc(33.333% - (var(--fg-space-40) * 2 / 3));
+}
+
+@media (max-width: 768px) {
+  .foleo-grid__row.row-2up,
+  .foleo-grid__row.row-3up,
+  .foleo-grid__row.row-media-2up {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile stacking */
+@media (max-width: 768px) {
+  .foleo-grid .bde-columns.foleo-grid__row.row-2up > .bde-column,
+  .foleo-grid .bde-columns.foleo-grid__row.row-3up > .bde-column {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+.foleo-grid__block[data-block-type="image"] img,
+.foleo-grid__block.is-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* NOTE: Use .foleo-grid__inner in Breakdance to enforce max width centering. */

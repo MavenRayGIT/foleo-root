@@ -841,53 +841,6 @@ div.no_pointer {pointer-events: none;}
 */
 
 /* Components */
-/* Image fade swap (use on a wrapper div, set CSS vars in Breakdance) */
-.foleo-fade-swap {
-  position: relative;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-image: var(--fade-img-1);
-}
-
-.foleo-fade-swap::before,
-.foleo-fade-swap::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-size: inherit;
-  background-position: inherit;
-  background-repeat: inherit;
-  opacity: 0;
-  transition: opacity 600ms ease;
-  pointer-events: none;
-}
-
-.foleo-fade-swap::before {
-  background-image: var(--fade-img-2);
-  animation: foleoFadeSwap 12s infinite;
-}
-
-.foleo-fade-swap::after {
-  background-image: var(--fade-img-3);
-  animation: foleoFadeSwap 12s infinite;
-  animation-delay: 4s;
-}
-
-@keyframes foleoFadeSwap {
-  0%, 20% { opacity: 0; }
-  30%, 55% { opacity: 1; }
-  65%, 100% { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .foleo-fade-swap::before,
-  .foleo-fade-swap::after {
-    animation: none;
-  }
-}
-
 /* Canvas Story (pinned crossfade) */
 .canvas-story {
   position: relative;

@@ -1,0 +1,660 @@
+(function () {
+  window.FoleoModules = window.FoleoModules || {};
+  const Modules = window.FoleoModules;
+  const FOLEO_DEBUG = window.FOLEO_DEBUG === true;
+
+  /*
+  VIDEO-BUG OWNERSHIP MAP
+  - Markup source: Breakdance page content (not file-backed in repo)
+  - Runtime initializer: Foleo_Modules.js initVideoBugModule() (lines 393-557)
+  - Size toggle wiring: Foleo_Modules.js initVideoBugModule() (lines 530-535)
+  - Icon injection: Foleo_Modules.js initVideoBugModule() (lines 442-445)
+  - CSS owner: Foleo_Modules.css "VIDEO BUG MODULE" (lines 815-1067)
+  */
+
+function normalizeFoleoBadgeVariant(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/*
+Dynamic Table schema (v1)
+columns[]:
+- key: string (stable id)
+- label: string
+- type: "text" | "badge" | "richtext"(future)
+- width: "xs"|"sm"|"md"|"lg"|"xl"
+- dock: "end" (optional)  // future admin option: “Move column to right”
+rows[]:
+- each row is an object keyed by columns[].key
+*/
+function normalizeColumns(columns) {
+  const cols = Array.isArray(columns) ? columns.slice() : [];
+  const normal = cols.filter((c) => c && c.dock !== 'end');
+  const docked = cols.filter((c) => c && c.dock === 'end');
+  return normal.concat(docked);
+}
+
+function widthTokenToFr(token) {
+  const t = String(token || '').toLowerCase();
+  if (t === 'narrow' || t === 'xs') return '0.6fr';
+  if (t === 'sm') return '0.8fr';
+  if (t === 'md' || t === 'med') return '1fr';
+  if (t === 'wide' || t === 'lg') return '1.4fr';
+  if (t === 'xl') return '2fr';
+  return '1fr';
+}
+
+function renderFoleoDynamicTable(mount) {
+  if (!mount || mount.dataset.rendered === '1') return;
+
+  const dataEl = mount.querySelector('[data-foleo-dynamic-table-json]');
+  if (!dataEl) {
+    if (FOLEO_DEBUG) console.warn('[FoleoModules] Missing dynamic table JSON');
+    return;
+  }
+
+  let data;
+  try {
+    data = JSON.parse(dataEl.textContent || '');
+  } catch (e) {
+    if (FOLEO_DEBUG) console.warn('[FoleoModules] Invalid dynamic table JSON');
+    return;
+  }
+
+  const config = data && typeof data === 'object' ? data : {};
+  const settings = config.settings || {};
+  const rawColumns = Array.isArray(config.columns) ? config.columns : [];
+  const columns = normalizeColumns(rawColumns);
+  const rows = Array.isArray(config.rows) ? config.rows : [];
+  const debug = FOLEO_DEBUG && settings && settings.debug === true;
+
+  if (!columns.length || !rows.length) {
+    if (FOLEO_DEBUG) console.warn('[FoleoModules] Empty dynamic table data');
+    return;
+  }
+
+  const shell = mount.closest('.fdt-shell');
+  const wantsScroll = settings.scroll === true;
+
+  if (shell) {
+    if (wantsScroll && !shell.classList.contains('is-scroll')) {
+      shell.classList.add('is-scroll');
+    } else if (!wantsScroll && shell.classList.contains('is-scroll')) {
+      shell.classList.remove('is-scroll');
+    }
+  } else if (wantsScroll) {
+    if (FOLEO_DEBUG) {
+      console.warn('[FoleoModules] settings.scroll=true but no .fdt-shell wrapper found for table', mount);
+    }
+  }
+
+  const root = document.createElement('div');
+  root.className = 'fdt';
+  if (settings.mobileStack) root.classList.add('is-mobile-stack');
+  const minColPx = Number(settings.minColPx || 140);
+  const template = columns
+    .map((col) => `minmax(${minColPx}px, ${widthTokenToFr(col && col.width)})`)
+    .join(' ');
+  root.style.setProperty('--fdt-cols', template);
+
+  if (debug) {
+    console.debug('[DynamicTable] columns effective order:', columns.map((col) => col.key));
+  }
+
+  const showHeader = settings.showHeader === true;
+  if (showHeader && columns.length) {
+    const headerRow = document.createElement('div');
+    headerRow.className = 'fdt-row fdt-header-row';
+    columns.forEach((col) => {
+      const cell = document.createElement('div');
+      cell.className = 'fdt-cell fdt-header-cell';
+      const label = (col && typeof col.label === 'string') ? col.label.trim() : '';
+      cell.textContent = label || '';
+      headerRow.appendChild(cell);
+    });
+    root.appendChild(headerRow);
+  }
+
+  rows.forEach((row) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'fdt-row';
+
+    columns.forEach((col) => {
+      const cell = document.createElement('div');
+      cell.className = 'fdt-cell';
+      const key = col && col.key;
+      const value =
+        (row && key && Object.prototype.hasOwnProperty.call(row, key)) ? row[key] : '';
+      const type = (col.type || 'text').toLowerCase();
+
+      if (type === 'badge') {
+        let text = '';
+        let variant = '';
+        if (value && typeof value === 'object') {
+          text = value.text || '';
+          variant = value.variant || '';
+        } else {
+          text = value || '';
+        }
+        const badge = document.createElement('span');
+        badge.className = 'fdt-badge';
+        const norm = normalizeFoleoBadgeVariant(variant || text);
+        if (norm) badge.classList.add(`is-${norm}`);
+        badge.textContent = text;
+        cell.appendChild(badge);
+      } else {
+        cell.textContent = value == null ? '' : String(value);
+      }
+
+      rowEl.appendChild(cell);
+    });
+
+    root.appendChild(rowEl);
+  });
+
+  function buildCsvValue(value) {
+    const text = value == null ? '' : String(value);
+    return `"${text.replaceAll('"', '""')}"`;
+  }
+
+  function downloadTableAsCSV(filename, cols, dataRows) {
+    const header = cols.map((col) => buildCsvValue(col.label || col.key || '')).join(',');
+    const body = dataRows.map((row) => cols.map((col) => {
+      const key = col && col.key;
+      const cellValue =
+        (row && key && Object.prototype.hasOwnProperty.call(row, key)) ? row[key] : '';
+
+      if (col.type === 'badge' && cellValue && typeof cellValue === 'object') {
+        return buildCsvValue(cellValue.text || '');
+      }
+
+      return buildCsvValue(cellValue);
+    }).join(',')).join('\n');
+
+    const csv = `${header}\n${body}`;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  mount.appendChild(root);
+
+  if (settings.showToolbar === true) {
+    const toolbar = document.createElement('div');
+    toolbar.className = 'fdt-toolbar';
+
+    const iconDownloadSvg = `
+      <svg class="fdt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M12 3a1 1 0 0 1 1 1v9.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42L11 13.59V4a1 1 0 0 1 1-1z"/>
+        <path fill="currentColor" d="M5 19a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/>
+      </svg>
+    `;
+    const iconPrintSvg = `
+      <svg class="fdt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M6 9V3h12v6H6zm2-4v2h8V5H8z"/>
+        <path fill="currentColor" d="M6 19v-4h12v4H6zm-2-9h16a2 2 0 0 1 2 2v5h-3v-4H5v4H2v-5a2 2 0 0 1 2-2z"/>
+      </svg>
+    `;
+
+    const btnDl = document.createElement('button');
+    btnDl.type = 'button';
+    btnDl.className = 'fdt-tool fdt-tool--download fdt-icon-btn is-download';
+    btnDl.setAttribute('aria-label', 'Download');
+    btnDl.innerHTML = iconDownloadSvg;
+
+    const btnPrint = document.createElement('button');
+    btnPrint.type = 'button';
+    btnPrint.className = 'fdt-tool fdt-tool--print fdt-icon-btn is-print';
+    btnPrint.setAttribute('aria-label', 'Print');
+    btnPrint.innerHTML = iconPrintSvg;
+
+    toolbar.appendChild(btnDl);
+    toolbar.appendChild(btnPrint);
+
+    const shell = mount.closest('.fdt-shell.is-scroll');
+    const controls = shell ? shell.querySelector('.fdt-controls') : null;
+
+    if (controls) {
+      controls.appendChild(toolbar);
+    } else {
+      mount.appendChild(toolbar);
+    }
+
+    btnDl.addEventListener('click', () => {
+      const filename = settings.filename || 'foleo-table.csv';
+      downloadTableAsCSV(filename, columns, rows);
+    });
+  }
+
+  mount.dataset.rendered = '1';
+}
+
+function initVideoBugModule() {
+  const bugs = document.querySelectorAll('.video-bug');
+  const bugSections = document.querySelectorAll('[data-video-bug="1"]');
+  if (!bugs.length && !bugSections.length) return;
+  if (!bugs.length) return;
+
+  let config = null;
+  const configEl = document.querySelector('[data-video-bug-config]');
+  if (configEl) {
+    try {
+      const parsed = JSON.parse(configEl.textContent || '');
+      config = parsed && typeof parsed === 'object' ? parsed : null;
+    } catch (e) {
+      if (FOLEO_DEBUG) console.warn('[FoleoModules] Invalid video bug config JSON');
+    }
+  }
+
+  function setBugFromSection(bug, section) {
+    if (!bug || !section) return;
+
+    const src = section.getAttribute('data-video-src') || '';
+    const name = section.getAttribute('data-video-name') || '';
+    const title = section.getAttribute('data-video-title') || '';
+    const size = section.getAttribute('data-video-size') || 'sm';
+    const top = section.getAttribute('data-video-top') || '80';
+
+    bug.setAttribute('data-video-bug-size', size);
+    bug.setAttribute('data-video-bug-top', top);
+
+    const plate = bug.querySelector('.video-bug__nameplate');
+    if (plate) {
+      plate.innerHTML = `<b>${name}</b><br><br>${title}`;
+    }
+
+    const player = bug.__player || bug.querySelector('media-player.video-bug__player');
+    if (player && src && player.getAttribute('src') !== src) {
+      player.setAttribute('src', src);
+      try { player.currentTime = 0; } catch (e) {}
+      bug.dataset.state = 'paused';
+    }
+  }
+
+  function bindVideoBugViewportFloat(bug, config, onActiveChange) {
+    if (!bug) return;
+
+    const triggerItems = Array.isArray(config && config.triggers)
+      ? config.triggers
+          .map((trigger) => ({
+            selector: trigger && trigger.selector,
+            nameplateHtml: trigger && trigger.nameplateHtml
+          }))
+          .filter((item) => typeof item.selector === 'string' && item.selector.trim())
+          .flatMap((item) => Array.from(document.querySelectorAll(item.selector))
+            .map((el) => ({ el, nameplateHtml: item.nameplateHtml })))
+      : [];
+
+    if (!triggerItems.length) return;
+
+    let ticking = false;
+    let activeTrigger = null;
+
+    const checkVisibility = () => {
+      ticking = false;
+      const topBand = window.innerHeight * 0.1;
+      let nextActive = null;
+
+      for (const trigger of triggerItems) {
+        const rect = trigger.el.getBoundingClientRect();
+        if (rect.top <= topBand && rect.bottom >= topBand) {
+          nextActive = trigger;
+          break;
+        }
+      }
+
+      const shouldShowAny = Boolean(nextActive);
+      const isInView = bug.classList.contains('is-inview');
+      if (shouldShowAny && !isInView) {
+        bug.classList.add('is-inview');
+      } else if (!shouldShowAny && isInView) {
+        bug.classList.remove('is-inview');
+        try { bug.__player?.pause?.(); } catch (_) {}
+        bug.dataset.state = 'paused';
+      }
+
+      if (shouldShowAny && nextActive && nextActive !== activeTrigger) {
+        activeTrigger = nextActive;
+        if (typeof onActiveChange === 'function') {
+          onActiveChange(nextActive);
+        }
+      } else if (!shouldShowAny) {
+        activeTrigger = null;
+      }
+    };
+
+    const requestCheck = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(checkVisibility);
+    };
+
+    window.addEventListener('scroll', requestCheck, { passive: true });
+    window.addEventListener('resize', requestCheck);
+    requestCheck();
+  }
+
+  function initVideoBugChapters() {
+    const bug = document.querySelector('.video-bug');
+    if (!bug) return;
+
+    const sections = Array.from(document.querySelectorAll('[data-video-bug="1"]'));
+    if (!sections.length) return;
+
+    let active = null;
+
+    const setBugFromSection = (section) => {
+      const src = section.getAttribute('data-video-src') || '';
+      const name = section.getAttribute('data-video-name') || '';
+      const title = section.getAttribute('data-video-title') || '';
+      const size = section.getAttribute('data-video-size') || 'sm';
+      const top = section.getAttribute('data-video-top') || '80';
+
+      bug.setAttribute('data-video-bug-size', size);
+      bug.setAttribute('data-video-bug-top', top);
+
+      const plate = bug.querySelector('.video-bug__nameplate');
+      if (plate) {
+        plate.innerHTML = `<b>${name}</b><br><br>${title}`;
+      }
+
+      const player = bug.__player || bug.querySelector('media-player.video-bug__player');
+      if (player && src && player.getAttribute('src') !== src) {
+        player.setAttribute('src', src);
+        try { player.currentTime = 0; } catch (e) {}
+        bug.dataset.state = 'paused';
+      }
+
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      const topBand = window.innerHeight * 0.25;
+      const candidates = entries.filter((entry) => entry.isIntersecting);
+
+      if (!candidates.length) {
+        active = null;
+        try { bug.__player?.pause?.(); } catch (e) {}
+        bug.dataset.state = 'paused';
+        return;
+      }
+
+      const bandHits = candidates
+        .map((entry) => ({ entry, rect: entry.target.getBoundingClientRect() }))
+        .filter(({ rect }) => rect.top <= topBand && rect.bottom >= topBand)
+        .map(({ entry }) => entry);
+
+      const visible = (bandHits.length ? bandHits : candidates)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+      const next = visible[0].target;
+      if (active !== next) {
+        active = next;
+        setBugFromSection(next);
+      }
+
+    }, { threshold: [0.05, 0.15, 0.3, 0.5, 0.75] });
+
+    sections.forEach((section) => io.observe(section));
+  }
+
+  function initVideoBugs() {
+    const bugs = Array.from(document.querySelectorAll('.video-bug'));
+    if (!bugs.length) return;
+
+    const pauseOtherBugs = (currentBug) => {
+      const allBugs = Array.from(document.querySelectorAll('.video-bug'));
+      for (const other of allBugs) {
+        if (other === currentBug) continue;
+        const otherPlayer = other.__player || other.querySelector('.video-bug__player');
+        if (otherPlayer && typeof otherPlayer.pause === 'function') {
+          try { otherPlayer.pause(); } catch (e) {}
+        }
+        other.dataset.state = 'paused';
+        other.classList.add('is-paused');
+      }
+    };
+
+    const findTransformedAncestor = (el) => {
+      let node = el && el.parentElement;
+      while (node && node !== document.body) {
+        const style = window.getComputedStyle(node);
+        if (style.transform && style.transform !== 'none') return node;
+        node = node.parentElement;
+      }
+      return null;
+    };
+
+    for (const bug of bugs) {
+      if (bug.dataset.videoBugBound === '1') continue;
+      bug.dataset.videoBugBound = '1';
+
+      if (bug.offsetParent && findTransformedAncestor(bug)) {
+        document.body.appendChild(bug);
+      }
+
+      const position = config && typeof config === 'object' ? config.position || {} : {};
+      const topPx = Number.isFinite(Number(position.topPx)) ? Number(position.topPx) : 60;
+      const rightPx = Number.isFinite(Number(position.rightPx)) ? Number(position.rightPx) : 20;
+      bug.style.setProperty('--video-bug-top', `${topPx}px`);
+      bug.style.setProperty('--video-bug-right', `${rightPx}px`);
+
+      bindVideoBugViewportFloat(bug, config, (trigger) => {
+        if (trigger && trigger.el) {
+          setBugFromSection(bug, trigger.el);
+          const nameplateEl = bug.querySelector('.video-bug__nameplate');
+          if (nameplateEl && trigger.nameplateHtml) {
+            nameplateEl.innerHTML = trigger.nameplateHtml;
+          }
+        }
+      });
+
+      const player = bug.querySelector('.video-bug__player');
+      if (!player) continue;
+
+      bug.__player = player;
+
+      const frame = bug.querySelector('.video-bug__frame') || bug;
+      const btnPlay = bug.querySelector('.video-bug__btn-play');
+      const btnPause = bug.querySelector('.video-bug__btn-pause');
+      const btnRestart = bug.querySelector('.video-bug__btn-restart');
+      const btnExpand = bug.querySelector('.video-bug__btn-expand');
+      const btnSize = bug.querySelector('.video-bug__btn-size');
+      const controls = bug.querySelector('.video-bug__ui');
+      if (controls && !controls.classList.contains('video-bug__controls')) {
+        controls.classList.add('video-bug__controls');
+      }
+      if (controls && controls.dataset.videoBugRail !== '1') {
+        const rail = document.createElement('div');
+        rail.className = 'video-bug__controls-rail';
+        const buttons = Array.from(controls.querySelectorAll('.video-bug__btn'))
+          .filter((btn) => !btn.classList.contains('video-bug__btn-play'));
+        buttons.forEach((btn) => rail.appendChild(btn));
+        controls.appendChild(rail);
+        controls.dataset.videoBugRail = '1';
+      }
+      const getRail = () => controls?.querySelector?.('.video-bug__controls-rail');
+      const placePlayInRail = () => {
+        if (!btnPlay) return;
+        const rail = getRail();
+        if (!rail || btnPlay.dataset.videoBugInRail === '1') return;
+        rail.insertBefore(btnPlay, rail.firstChild);
+        btnPlay.dataset.videoBugInRail = '1';
+      };
+      const ensureRailSpacer = () => {
+        const rail = getRail();
+        if (!rail) return;
+        if (bug.classList.contains('has-started')) {
+          rail.querySelector('.video-bug__controls-spacer')?.remove();
+          return;
+        }
+        if (!rail.querySelector('.video-bug__controls-spacer')) {
+          const spacer = document.createElement('span');
+          spacer.className = 'video-bug__controls-spacer';
+          rail.insertBefore(spacer, rail.firstChild);
+        }
+      };
+      if (bug.classList.contains('has-started')) {
+        placePlayInRail();
+      }
+      ensureRailSpacer();
+      if (btnSize && btnSize.dataset.videoBugSizeIcon !== '1') {
+        btnSize.innerHTML = '<img class="video-bug__icon" src="https://foleo.co/wp-content/uploads/SVG/resize-icon2.svg" alt="">';
+        btnSize.dataset.videoBugSizeIcon = '1';
+      }
+      bug.dataset.state = bug.dataset.state || 'paused';
+
+      const markStarted = () => {
+        if (!bug.classList.contains('has-started')) {
+          bug.classList.add('has-started');
+          placePlayInRail();
+          ensureRailSpacer();
+        }
+      };
+
+      const setState = (nextState) => {
+        bug.dataset.state = nextState;
+      };
+
+      const setPausedState = (isPaused) => {
+        bug.classList.toggle('is-paused', Boolean(isPaused));
+      };
+
+      const play = async () => {
+        try {
+          pauseOtherBugs(bug);
+          await player.play?.();
+          markStarted();
+          setState('playing');
+        } catch (e) {}
+      };
+
+      const pause = () => {
+        try { player.pause?.(); } catch (e) {}
+        setState('paused');
+      };
+
+      setPausedState(true);
+
+      player.addEventListener('loadedmetadata', () => {
+        if (typeof player.paused === 'boolean') {
+          setPausedState(player.paused);
+        }
+      });
+
+      player.addEventListener('play', () => {
+        pauseOtherBugs(bug);
+        setState('playing');
+        markStarted();
+        setPausedState(false);
+      });
+
+      player.addEventListener('playing', () => {
+        pauseOtherBugs(bug);
+        setState('playing');
+        markStarted();
+        setPausedState(false);
+      });
+
+      player.addEventListener('pause', () => {
+        setState('paused');
+        setPausedState(true);
+      });
+
+      player.addEventListener('ended', () => {
+        setState('paused');
+        setPausedState(true);
+      });
+
+      frame.addEventListener('click', (ev) => {
+        if (ev.target?.closest?.('.video-bug__btn')) return;
+        if (bug.dataset.state === 'playing') pause();
+        else play();
+      });
+
+      btnPlay?.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        play();
+      });
+
+      btnPause?.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        pause();
+      });
+
+      btnRestart?.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        try { player.currentTime = 0; } catch (e) {}
+        play();
+      });
+
+      btnSize?.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const next = bug.getAttribute('data-video-bug-size') === 'sm' ? 'lg' : 'sm';
+        bug.setAttribute('data-video-bug-size', next);
+        bug.dataset.videoBugSize = next;
+      });
+
+      btnExpand?.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const src = player.getAttribute('src') || '';
+        if (!src) return;
+        window.FoleoVideoPopup?.open?.({ src });
+      });
+
+    }
+  }
+
+  window.initVideoBugs = initVideoBugs;
+
+  const runVideoBugs = () => {
+    try { initVideoBugs(); } catch (e) {}
+  };
+
+  runVideoBugs();
+  setTimeout(runVideoBugs, 250);
+  setTimeout(runVideoBugs, 1000);
+}
+
+// Public init
+Modules.init = function initFoleoModules() {
+  const mounts = document.querySelectorAll('[data-foleo-dynamic-table]');
+  const hasVideoBug = !!document.querySelector('.video-bug, [data-video-bug="1"]');
+  if (!mounts.length && !hasVideoBug) return;
+  if (mounts.length) {
+    mounts.forEach(renderFoleoDynamicTable);
+  }
+
+  initVideoBugModule();
+};
+
+(function bootFoleoModules() {
+  try {
+    if (typeof Modules.init !== "function") return;
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => Modules.init(), { once: true });
+      return;
+    }
+
+    Modules.init();
+  } catch (e) {
+    if (FOLEO_DEBUG) console.warn("[FoleoModules] boot failed", e);
+  }
+})();
+})();

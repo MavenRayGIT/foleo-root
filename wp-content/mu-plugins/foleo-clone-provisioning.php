@@ -47,29 +47,6 @@ function foleo_clone_get_site_slug( $site ) {
     return $slug;
 }
 
-function foleo_clone_copy_dir( $src, $dst ) {
-    if ( ! is_dir( $src ) ) {
-        return false;
-    }
-    if ( ! is_dir( $dst ) ) {
-        wp_mkdir_p( $dst );
-    }
-    $dir = new DirectoryIterator( $src );
-    foreach ( $dir as $item ) {
-        if ( $item->isDot() ) {
-            continue;
-        }
-        $src_path = $item->getPathname();
-        $dst_path = $dst . '/' . $item->getFilename();
-        if ( $item->isDir() ) {
-            foleo_clone_copy_dir( $src_path, $dst_path );
-        } else {
-            copy( $src_path, $dst_path );
-        }
-    }
-    return true;
-}
-
 function foleo_clone_provision_site( $blog_id ) {
     $blog_id = (int) $blog_id;
     if ( $blog_id <= 0 ) {
@@ -87,13 +64,12 @@ function foleo_clone_provision_site( $blog_id ) {
     }
 
     $dest_dir = WP_CONTENT_DIR . '/assets/' . $slug;
-    $source_dir = WP_CONTENT_DIR . '/assets/catalyst';
 
     if ( is_dir( $dest_dir ) ) {
-        foleo_clone_log( 'Assets dir exists, skipping copy: ' . $dest_dir );
+        foleo_clone_log( 'Assets dir exists, skipping create: ' . $dest_dir );
     } else {
         foleo_clone_log( 'Provisioning assets to: ' . $dest_dir );
-        foleo_clone_copy_dir( $source_dir, $dest_dir );
+        wp_mkdir_p( $dest_dir );
 
         $nav_path = $dest_dir . '/nav-registry.json';
         if ( ! file_exists( $nav_path ) ) {
@@ -103,6 +79,16 @@ function foleo_clone_provision_site( $blog_id ) {
         $brand_path = $dest_dir . '/Brand.css';
         if ( ! file_exists( $brand_path ) ) {
             file_put_contents( $brand_path, "/* Brand overrides */\n" );
+        }
+
+        $theme_css_path = $dest_dir . '/Theme.css';
+        if ( ! file_exists( $theme_css_path ) ) {
+            file_put_contents( $theme_css_path, "/* Theme overrides */\n" );
+        }
+
+        $theme_js_path = $dest_dir . '/Theme.js';
+        if ( ! file_exists( $theme_js_path ) ) {
+            file_put_contents( $theme_js_path, "/* Theme overrides */\n" );
         }
     }
 

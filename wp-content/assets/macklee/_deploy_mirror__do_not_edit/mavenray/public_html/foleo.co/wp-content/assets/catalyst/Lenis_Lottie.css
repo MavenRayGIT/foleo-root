@@ -1,0 +1,76 @@
+/* =========================
+   Lenis baseline
+   ========================= */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* =========================
+   Breakdance code blocks
+   (keep this minimal, do NOT force overflow)
+   ========================= */
+[class*="bde-code-block"] {
+  width: 100%;
+}
+
+/* =========================
+   Lottie scroll sections
+   ========================= */
+/* Default */
+.lottie-player { width: 100%; max-width: 900px; }
+
+/* Square */
+.lottie-square .lottie-player { width: 100% !important; height: auto !important; }
+
+.lottie-square {padding:40px 0px!important;}
+
+/* Wide + short */
+.lottie-wide-short .lottie-player { width: 100% !important; height: auto !important; max-width: none!important}
+
+.lottie-wide-short {padding:20px 0px!important;}
+
+/* Wide + tall */
+.lottie-wide-tall .lottie-player { width: 100% !important; height: auto !important; max-width: none!important;}
+
+.lottie-wide-tall {padding:20px 0px!important;}
+
+.lottie-big-80 .lottie-player { width: 85% !important; height: auto !important; max-width: none!important;}
+
+.lottie-big-80 {padding:20px 0px!important;}
+
+.lottie-scroll-section{
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* important, prevents sitting low in tall pin spacers */
+}
+
+/* Optional: only pinned sections need special behavior */
+.lottie-scroll-section.is-pinned{
+  align-items: flex-start;
+}
+
+/*Pin Group for side-byside */
+.lottie-pin-group .lottie-player { width: 100%; height: auto; }
+.lottie-pin-group .lottie-player svg { width: 100% !important; height: 100% !important; display: block; }
+
+
+
+
+/* Make the SVG fill the box */
+.lottie-player svg { width: 100% !important; height: 100% !important; display:block; }
+
+
+@media screen and (max-width: 780px) {
+  .lottie-big-80 .lottie-player { width: 100% !important; }
+}

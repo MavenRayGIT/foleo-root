@@ -1,0 +1,406 @@
+/* =========================
+   Tabs Mobile
+   Authoritative mobile-only styles
+   ========================= */
+
+@media (max-width: 768px) {
+
+  /* ---------------------------------
+     Prevent inline stacked panels on mobile
+     --------------------------------- */
+  .row-expanded,
+  .row-expanded.is-active,
+  .row-expanded.active,
+  .row-expanded[aria-hidden="false"] {
+    display: none !important;
+  }
+
+  /* ---------------------------------
+     Tab cards (mobile list style)
+     --------------------------------- */
+
+  /* Kill any legacy chevron / underline pseudo-elements from desktop */
+  .tab-card::before,
+  .tab-card::after,
+  .tab-card-trigger::before,
+  .tab-card-trigger::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  .tab-card {
+    position: relative;
+
+    background: rgba(255,255,255,1) !important;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+
+    padding: 24px 56px 24px 24px !important; /* right space for trigger zone */
+    border-bottom: none !important;
+
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    overflow: hidden;
+
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tab-card + .tab-card {
+    margin-top: 14px;
+  }
+
+  /* Keep text clear of the right trigger divider */
+  .tab-card h1,
+  .tab-card h2,
+  .tab-card h3,
+  .tab-card h4,
+  .tab-card p,
+  .tab-card .tab-card-description,
+  .tab-card .description {
+    max-width: calc(100% - 66px);
+  }
+
+  /* Hide descriptions in cards for compact layout */
+  .tab-card .tab-card-description,
+  .tab-card .description,
+  .tab-card p {
+    display: none;
+  }
+
+  /* Normalize active state so no inherited desktop styling shows */
+  .tab-card.active,
+  .tab-card.is-active {
+    background: rgba(255,255,255,1) !important;
+    background-color: rgba(255,255,255,1) !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+  }
+
+  /* ---------------------------------
+     Right-side trigger zone (tap target)
+     --------------------------------- */
+  .tab-card .tab-card-trigger {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 56px;
+    height: 100%;
+
+    display: grid;
+    place-items: center;
+
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    /* If you are using inline SVG in JS, this drives arrow color */
+    color: #FD5108;
+  }
+
+  /* Divider line inside trigger zone */
+  .tab-card .tab-card-trigger::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 1px;
+    background: rgba(0,0,0,0.08);
+    display: block !important;
+  }
+
+  /* If your JS injects inline SVG arrows into .tab-card-trigger */
+  .tab-card .tab-card-trigger svg {
+    width: 18px;
+    height: auto;
+    display: block;
+  }
+
+  /* Press state */
+  .tab-card:active {
+    transform: translateY(1px);
+  }
+
+  /* ---------------------------------
+     Optional: list shift on drawer open
+     --------------------------------- */
+  .tabs-mobile-root {
+    transition: transform 260ms ease;
+  }
+
+  .tabs-mobile-root.is-shifted {
+    transform: translateX(-14px);
+    will-change: transform;
+  }
+
+  /* ---------------------------------
+     Slide-in drawer
+     --------------------------------- */
+  .mobile-slide-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+
+     width: calc(100vw - 24px); /* creates 24px left gap */
+  max-width: calc(100vw - 24px) !important;
+    height: 100dvh;
+
+    background: #ffffff;
+    z-index: 9999;
+
+    transform: translateX(100%);
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+   touch-action: none;
+    display: flex;
+    flex-direction: column;
+    overflow:hidden;
+  }
+html.drawer-scroll-locked,
+body.drawer-scroll-locked {
+  overflow: hidden;
+  height: 100%;
+}
+/* Create or target the inner scrolling area */
+.mobile-slide-panel .mobile-slide-panel__scroll {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+  .mobile-slide-panel.is-open {
+    transform: translateX(0);
+  }
+
+  /* Left orange rail (full height) */
+  .mobile-slide-panel::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 52px;
+    background: #FFE8D5;
+    pointer-events: none;
+  }
+
+  /* Header */
+  .mobile-slide-header {
+    position: relative;
+    min-height: 84px;
+    padding: 20px 20px 12px 64px; /* clears rail */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Back button (assumes inline SVG inside) */
+  .mobile-slide-back {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 52px;
+    height: 120px;
+
+    display: grid;
+    place-items: center;
+
+    background: #FD5108;
+    border: 0;
+    padding: 0;
+    margin: 0;
+
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    /* Back arrow should be white */
+    color: #ffffff;
+  }
+
+  .mobile-slide-back svg {
+    width: 22px;
+    height: auto;
+    display: block;
+    transform: rotate(180deg);
+  }
+
+  .mobile-slide-title {
+    margin-top: 40px;
+    font-size: 18px !important;
+    line-height: 1.1em !important;
+    letter-spacing: -0.03em!important;
+    width: 200px;
+  
+  }
+
+  /* Body */
+  .mobile-slide-body {
+    padding: 20px 16px 20px 64px !important; /* tighter, consistent, clears rail*/
+    overflow: visible;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-slide-body > * {
+    max-width: 520px;
+  }
+
+  /* Quote (the big serif block) */
+  .mobile-slide-body .bde-heading {
+      font-size: 22px !important;
+  line-height: 1.2 !important;
+  margin: 10px 0 40px 0 !important;
+  letter-spacing: -0.03em;
+  }
+
+  /* Optional: tighten extra empty text blocks Breakdance sometimes inserts */
+  .mobile-slide-body .bde-text:empty {
+    display: none !important;
+  }
+
+  /* Attribution block */
+  .mobile-slide-body .bde-text {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    margin: 10px 0 0 0 !important;
+    margin-bottom: 20px!important;
+  }
+
+  /* Make bold name pop but not huge */
+  .mobile-slide-body .bde-text b {
+    font-size: 18px !important;
+    line-height: 1.25 !important;
+  }
+  /* Prevent Breakdance column widths from squeezing content */
+  .mobile-slide-body .bde-columns,
+  .mobile-slide-body .bde-column {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Do not lock body scroll */
+  body.mobile-panel-open {
+    overflow: auto;
+  }
+
+  /* ==========================================
+     PATCH: Breakdance drawer padding + icons
+     ========================================== */
+
+  /* The active expanded panel becomes the layout container */
+  .mobile-slide-panel .expanded-panel.is-active {
+    display: flex;
+    flex-direction: column;
+    min-height: auto; /* use viewport height on mobile */
+  }
+
+  /* Remove Breakdance column padding that creates dead space */
+  .mobile-slide-panel .expanded-panel.is-active .bde-column {
+    padding: 0 !important;
+  }
+
+  /* Headshot column becomes the grow zone */
+  .mobile-slide-panel .expanded-panel.is-active .bde-column.headshot {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-top: 14px;
+  }
+
+  .mobile-slide-panel .expanded-panel.is-active .bde-column.headshot img {
+    width: 100%;
+    height: 200px!important;
+    display: block;
+  }
+
+  /* 3) Ensure the background image area has height (the inner bde-div) */
+  .mobile-slide-panel .expanded-panel .bde-column.headshot .bde-div {
+    min-height: 280px !important;
+    border-radius: 12px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .mobile-slide-panel .expanded-panel .bde-column.headshot .connect-icons {
+    position: static;
+    display: flex;
+    justify-content: flex-end!important;
+    align-items: right;
+    gap: 14px;
+    padding-top: 14px;
+    padding-bottom: 20px;
+    margin: 0;
+    transform: none;
+  }
+
+  .mobile-slide-panel .expanded-panel .connect-icons .bde-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+
+  /* Keep the text column normal */
+  .mobile-slide-panel .expanded-panel .bde-column:not(.headshot) {
+    flex: 0 0 auto;
+  }
+
+  /* Ensure headshot column always renders AFTER text on mobile */
+  .expanded-panel.is-active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .expanded-panel.is-active .bde-column:not(.headshot) {
+    order: 1;
+  }
+
+  .expanded-panel.is-active .bde-column.headshot {
+    order: 2;
+  }
+
+   .mobile-slide-panel .expanded-panel.is-active .bde-column.headshot .connect-icons {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+
+    overflow: visible !important;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    padding-top: 14px;
+    padding-bottom: 20px;
+
+    margin: 0 !important;
+  }
+
+
+  .mobile-slide-back .arrow-svg, .tab-card-trigger .arrow-svg {
+  width: 19px!important;
+  height: 19px!important;
+  display: block;
+}
+
+
+}
+/* =========================
+   Mobile drawer background overlay
+   ========================= */
+
+@media (max-width: 768px) {
+  .mobile-slide-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 9998;
+  }
+}

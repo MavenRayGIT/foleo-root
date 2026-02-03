@@ -1,0 +1,50 @@
+.chevron-banner {
+  display: inline-block;
+  position: relative;
+
+  /* spacing */
+  padding: 0.9rem 2.8rem 0.9rem 1.6rem;
+
+  /* typography (tweak in Breakdance if you want) *
+  color: #000000;
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.3;/
+
+  /* right-pointing arrow */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 50px) 0,
+    100% 50%,
+    calc(100% - 50px) 100%,
+    0 100%
+  );
+  -webkit-clip-path: polygon(
+    0 0,
+    calc(100% - 50px) 0,
+    100% 50%,
+    calc(100% - 50px) 100%,
+    0 100%
+  );
+}
+
+.chevron-left {
+  /* left-pointing arrow, mirrored with same 50px depth */
+  clip-path: polygon(
+    50px 0,
+    100% 0,
+    100% 100%,
+    50px 100%,
+    0 50%
+  );
+  -webkit-clip-path: polygon(
+    50px 0,
+    100% 0,
+    100% 100%,
+    50px 100%,
+    0 50%
+  );
+
+  /* reversed padding */
+  padding: 0.9rem 1.6rem 0.9rem 2.8rem;
+}
