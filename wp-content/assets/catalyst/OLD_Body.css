@@ -851,6 +851,15 @@ div.no_pointer {pointer-events: none;}
   background-image: var(--fade-img-1);
 }
 
+.foleo-fade-swap img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
 .foleo-fade-swap::before,
 .foleo-fade-swap::after {
   content: "";
@@ -862,6 +871,7 @@ div.no_pointer {pointer-events: none;}
   opacity: 0;
   transition: opacity 600ms ease;
   pointer-events: none;
+  z-index: 1;
 }
 
 .foleo-fade-swap::before {
