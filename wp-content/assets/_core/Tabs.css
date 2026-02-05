@@ -18,7 +18,7 @@
 
 .tab-card{
   position: relative;
-  background: rgb(255, 255, 255, 70% )!important; /* light tan */
+  background: color-mix(in srgb, var(--bde-background-color) 70%, transparent) !important;
   transition: background-color .15s ease;
 }
 
@@ -36,7 +36,7 @@
 
 /* active = thin underline */
 .tab-card.is-active{
-  background: #ffffff!important;
+  background: var(--bde-background-color) !important;
 }
 .tab-card.is-active::after{
   height: 8px;
@@ -49,7 +49,7 @@
 
 /* hovered (becomes active via JS) should also go thick immediately */
 .tab-card.is-hover{
-  background: #ffffff;
+  background: var(--bde-background-color);
 }
 .tab-card.is-hover::after{
   height: 16px;
@@ -64,7 +64,7 @@
 
 /* dark variant underline */
 .tab-card.darktab::after{
-  background: #000;
+  background: var(--bde-body-text-color);
 }
 /* Breakdance sets .bde-columns to display:flex, override it for tab panels */
 .breakdance .feature-tabs .row-expanded [data-panel-content] {
@@ -73,4 +73,28 @@
 
 .breakdance .feature-tabs .row-expanded [data-panel-content].is-active {
   display: flex; 
+}
+
+/* Ensure tab panel typography inherits site globals, not page presets */
+.breakdance .feature-tabs [data-panel-content] {
+  font-family: var(--bde-body-font-family);
+  color: var(--bde-body-text-color);
+}
+
+.breakdance .feature-tabs [data-panel-content] .bde-heading {
+  font-family: var(--bde-heading-font-family) !important;
+  color: var(--bde-headings-color) !important;
+}
+
+.breakdance .feature-tabs [data-panel-content] .bde-text {
+  font-family: var(--bde-body-font-family) !important;
+  color: var(--bde-body-text-color) !important;
+}
+
+.breakdance .feature-tabs [data-panel-content] a {
+  color: var(--bde-links-color);
+}
+
+.breakdance .feature-tabs [data-panel-content] a:hover {
+  color: var(--bde-links-color-hover);
 }

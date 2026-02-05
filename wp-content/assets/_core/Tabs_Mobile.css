@@ -174,40 +174,37 @@ body.drawer-scroll-locked {
     transform: translateX(0);
   }
 
-  /* Left orange rail (full height) */
+  /* Remove left rail/divider entirely */
   .mobile-slide-panel::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 52px;
-    background: #FFE8D5;
-    pointer-events: none;
+    content: none;
+    display: none;
   }
 
   /* Header */
   .mobile-slide-header {
     position: relative;
     min-height: 84px;
-    padding: 20px 20px 12px 64px; /* clears rail */
+    padding: 20px 20px 12px 20px; /* clears rail */
     display: flex;
     align-items: center;
     gap: 12px;
   }
 
-  /* Back button (assumes inline SVG inside) */
+  /* Back button: top-right close (X) */
   .mobile-slide-back {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 52px;
-    height: 120px;
+    right: 16px;
+    top: 16px;
+    width: 32px;
+    height: 32px;
 
     display: grid;
     place-items: center;
 
-    background: var(--bde-links-color);
+    z-index: 3;
+    pointer-events: auto;
+
+    background: transparent;
     border: 0;
     padding: 0;
     margin: 0;
@@ -215,34 +212,55 @@ body.drawer-scroll-locked {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
 
-    /* Back arrow should be white */
-    color: #ffffff;
+    color: var(--bde-links-color);
   }
 
-  .mobile-slide-back svg {
-    width: 22px;
-    height: auto;
-    display: block;
-    transform: rotate(180deg);
+  .mobile-slide-back > * {
+    display: none !important;
+  }
+
+  .mobile-slide-back::before,
+  .mobile-slide-back::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 3px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+
+  .mobile-slide-back::before {
+    transform: rotate(45deg);
+  }
+
+  .mobile-slide-back::after {
+    transform: rotate(-45deg);
   }
 
   .mobile-slide-title {
     margin-top: 40px;
-    font-size: 18px !important;
+    font-size: 14px !important;
     line-height: 1.1em !important;
     letter-spacing: -0.03em!important;
+    font-weight: 700 !important;
     width: 200px;
+    /* Use site-global heading styles */
+    font-family: var(--bde-heading-font-family) !important;
+    color: var(--bde-headings-color) !important;
   
   }
 
   /* Body */
   .mobile-slide-body {
-    padding: 20px 16px 20px 64px !important; /* tighter, consistent, clears rail*/
+    padding: 20px 16px 20px 20px !important; /* tighter, consistent, clears rail*/
     overflow: visible;
     -webkit-overflow-scrolling: touch;
     flex: 1;
     display: flex;
     flex-direction: column;
+    /* Base typography should follow site globals */
+    font-family: var(--bde-body-font-family);
+    color: var(--bde-body-text-color);
   }
 
   .mobile-slide-body > * {
@@ -251,10 +269,13 @@ body.drawer-scroll-locked {
 
   /* Quote (the big serif block) */
   .mobile-slide-body .bde-heading {
-      font-size: 22px !important;
-  line-height: 1.2 !important;
-  margin: 10px 0 40px 0 !important;
-  letter-spacing: -0.03em;
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    margin: 10px 0 40px 0 !important;
+    letter-spacing: -0.03em;
+    /* Ensure tray headings use site-global typography, not page-specific presets */
+    font-family: var(--bde-heading-font-family) !important;
+    color: var(--bde-headings-color) !important;
   }
 
   /* Optional: tighten extra empty text blocks Breakdance sometimes inserts */
@@ -268,6 +289,16 @@ body.drawer-scroll-locked {
     line-height: 1.2 !important;
     margin: 10px 0 0 0 !important;
     margin-bottom: 20px!important;
+    font-family: var(--bde-body-font-family) !important;
+    color: var(--bde-body-text-color) !important;
+  }
+
+  .mobile-slide-body a {
+    color: var(--bde-links-color);
+  }
+
+  .mobile-slide-body a:hover {
+    color: var(--bde-links-color-hover);
   }
 
   /* Make bold name pop but not huge */

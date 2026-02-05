@@ -39,6 +39,12 @@
   window.FOLEO_DEBUG = enabled;
 })();
 
+console.log("[FOLEO] Body.js boot", {
+  host: location.hostname,
+  path: location.pathname,
+  search: location.search
+});
+
 // to make the GDPR link to HCG site in new tab //
 
 function getQueryParam(name) {
@@ -52,8 +58,21 @@ function getQueryParam(name) {
 const FOLEO_PROFILE_STORAGE_KEY = 'foleoProfile';
 const FOLEO_DEBUG = window.FOLEO_DEBUG === true;
 const FOLEO_ASSETS_BASE_URL = (() => {
-  let base = window.FOLEO_ASSETS_BASE_URL || '/wp-content/assets/catalyst/';
-  if (typeof base !== 'string') base = '/wp-content/assets/catalyst/';
+  let base = window.FOLEO_ASSETS_BASE_URL;
+  if (typeof base !== 'string' || !base) {
+    const ns = (typeof window.FOLEO_ASSETS_NAMESPACE === 'string' && window.FOLEO_ASSETS_NAMESPACE)
+      ? window.FOLEO_ASSETS_NAMESPACE
+      : '';
+    const host = (typeof window !== 'undefined' && window.location && window.location.hostname)
+      ? window.location.hostname
+      : '';
+    const hostNs = host && host.includes('.') ? host.split('.')[0] : '';
+    const derived = ns || (hostNs && hostNs !== 'www' ? hostNs : '');
+    if (derived) {
+      base = `/wp-content/assets/${derived}/`;
+    }
+  }
+  if (typeof base !== 'string' || !base) base = '/wp-content/assets/catalyst/';
   if (!base.endsWith('/')) base += '/';
   return base;
 })();
@@ -76,14 +95,36 @@ function loadNavRegistryAsync() {
       if (!res.ok) throw new Error('nav-registry fetch failed');
       return res.json();
     })
-    .then((data) => {
-      window.__FOLEO_NAV_REGISTRY__ = data;
-      return data;
+    .then((registry) => {
+      window.__FOLEO_NAV_REGISTRY__ = registry;
+      console.log("[FOLEO] registry assigned", Object.keys(registry?.binders || {}));
+      return registry;
     })
     .catch(() => null);
 
   return window.__FOLEO_NAV_REGISTRY_PROMISE__;
 }
+
+// Force registry fetch early when profile/binder is present.
+(() => {
+  try {
+    const qs = new URLSearchParams(window.location.search || "");
+    if (qs.get("profile") || qs.get("binder")) {
+      loadNavRegistryAsync().then((data) => {
+        if (FOLEO_DEBUG) {
+          console.log("[FOLEO] nav-registry preload", {
+            ok: !!data,
+            base: FOLEO_ASSETS_BASE_URL
+          });
+        }
+      });
+    }
+  } catch (e) {
+    if (FOLEO_DEBUG) {
+      console.warn("[FOLEO] nav-registry preload failed", e);
+    }
+  }
+})();
 
 function readStoredProfile() {
   try {
@@ -158,7 +199,210 @@ function resolveFoleoEditMode() {
   return isEdit;
 }
 
+function initFoleoVideoOverlay() {
+  const hero = document.querySelector(".foleo-snap-hero");
+  if (!hero) return;
+
+  const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+  if (!isMobile()) return;
+  hero.querySelectorAll(".cf-stream-placeholder").forEach((placeholder) => {
+    placeholder.dataset.foleoOverlayOnly = "1";
+    placeholder.style.pointerEvents = "auto";
+    const spinner = placeholder.querySelector(".cf-stream-spinner");
+    if (spinner) spinner.remove();
+  });
+  let overlay = document.querySelector(".foleo-video-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "foleo-video-overlay";
+    overlay.innerHTML =
+      '<button class="foleo-video-overlay__close" type="button" aria-label="Close">×</button>' +
+      '<button class="foleo-video-overlay__tapplay" type="button" aria-label="Tap to play">▶</button>' +
+      '<div class="foleo-video-overlay__content"></div>';
+    document.body.appendChild(overlay);
+  }
+
+  const overlayContent = overlay.querySelector(".foleo-video-overlay__content");
+  const closeBtn = overlay.querySelector(".foleo-video-overlay__close");
+  const tapBtn = overlay.querySelector(".foleo-video-overlay__tapplay");
+  const state = { activeWrap: null, restore: null, iframe: null, video: null };
+
+  const closeOverlay = () => {
+    if (state.restore) state.restore();
+    state.activeWrap = null;
+    state.restore = null;
+    if (state.iframe) {
+      state.iframe.remove();
+      state.iframe = null;
+    }
+    if (state.video) {
+      try { state.video.pause(); } catch (e) {}
+      state.video.remove();
+      state.video = null;
+    }
+    overlay.classList.remove("is-open");
+    document.documentElement.classList.remove("foleo-video-overlay-open");
+    document.body.classList.remove("foleo-video-overlay-open");
+  };
+
+  closeBtn?.addEventListener("click", closeOverlay);
+  tapBtn?.addEventListener("click", () => {
+    const iframe = state.iframe;
+    if (iframe) {
+      try { iframe.contentWindow?.focus?.(); } catch (e) {}
+    }
+  });
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("is-open")) {
+      closeOverlay();
+    }
+  });
+
+  window.FoleoOpenVideoFullscreen = (wrap) => {
+    if (!wrap || !isMobile()) return;
+    if (state.activeWrap && state.activeWrap !== wrap && state.restore) {
+      state.restore();
+    }
+    const parent = wrap.parentElement;
+    const next = wrap.nextSibling;
+    state.activeWrap = wrap;
+    state.restore = () => {
+      wrap.classList.remove("foleo-video-fullscreen");
+      if (!parent) return;
+      if (next && next.parentElement === parent) {
+        parent.insertBefore(wrap, next);
+      } else {
+        parent.appendChild(wrap);
+      }
+    };
+
+    wrap.classList.add("foleo-video-fullscreen");
+    if (overlayContent) overlayContent.appendChild(wrap);
+    overlay.classList.add("is-open");
+    if (tapBtn) tapBtn.hidden = false;
+    document.documentElement.classList.add("foleo-video-overlay-open");
+    document.body.classList.add("foleo-video-overlay-open");
+  };
+
+  hero.addEventListener("click", (e) => {
+    const placeholder = e.target?.closest?.(".cf-stream-placeholder");
+    if (!placeholder || !isMobile()) return;
+    const customer = placeholder.getAttribute("data-foleo-customer");
+    const videoId = placeholder.getAttribute("data-foleo-video-id");
+    const poster = placeholder.getAttribute("data-poster");
+    if (!customer || !videoId) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (state.iframe) {
+      state.iframe.remove();
+      state.iframe = null;
+    }
+
+    const manifest = `https://${customer}/${videoId}/manifest/video.m3u8`;
+    const video = document.createElement("video");
+    video.className = "foleo-video-overlay__video";
+    video.src = manifest;
+    video.autoplay = false;
+    video.muted = false;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.controls = false;
+    if (poster) video.poster = poster;
+    overlayContent?.appendChild(video);
+    state.video = video;
+
+    if (tapBtn) {
+      tapBtn.hidden = true;
+      tapBtn.onclick = null;
+    }
+
+    overlay.classList.add("is-open");
+    document.documentElement.classList.add("foleo-video-overlay-open");
+    document.body.classList.add("foleo-video-overlay-open");
+
+    try { video.play(); } catch (e) {}
+  });
+}
+
 resolveFoleoEditMode();
+
+function initFoleoAccordionMobile() {
+  if (!window.matchMedia || !window.matchMedia("(max-width: 768px)").matches) return;
+  const sections = document.querySelectorAll(".foleo-accordion-mobile");
+  if (!sections.length) return;
+
+  sections.forEach((section) => {
+    const columns = Array.from(section.querySelectorAll(".bde-column"));
+    columns.forEach((col) => {
+      if (col.dataset.foleoAccordionInit === "1") return;
+      const header = col.querySelector("h1, h2, h3, h4, h5, h6");
+      if (!header) return;
+      header.classList.add("foleo-accordion__header");
+
+      const content = document.createElement("div");
+      content.className = "foleo-accordion__content";
+
+      let node = header.nextSibling;
+      while (node) {
+        const next = node.nextSibling;
+        content.appendChild(node);
+        node = next;
+      }
+
+      col.appendChild(content);
+      col.dataset.foleoAccordionInit = "1";
+
+      const setClosed = () => {
+        col.classList.remove("is-open");
+        const height = content.scrollHeight;
+        content.style.maxHeight = height + "px";
+        if (content.animate) {
+          content.animate(
+            [{ maxHeight: height + "px" }, { maxHeight: "0px" }],
+            { duration: 520, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" }
+          );
+        }
+        content.style.maxHeight = "0px";
+        content.style.paddingTop = "0px";
+        content.style.paddingBottom = "0px";
+      };
+
+      const setOpen = () => {
+        col.classList.add("is-open");
+        content.style.maxHeight = "0px";
+        content.style.paddingTop = "12px";
+        content.style.paddingBottom = "40px";
+        const height = content.scrollHeight;
+        if (content.animate) {
+          content.animate(
+            [{ maxHeight: "0px" }, { maxHeight: height + "px" }],
+            { duration: 520, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" }
+          );
+        }
+        content.style.maxHeight = height + "px";
+      };
+
+      setClosed();
+
+      header.addEventListener("click", () => {
+        const isOpen = col.classList.contains("is-open");
+        if (isOpen) setClosed();
+        else setOpen();
+      });
+
+      window.addEventListener("resize", () => {
+        if (col.classList.contains("is-open")) {
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+      });
+    });
+  });
+}
 
 function initFoleoEditPerfLogger() {
   try {
@@ -598,6 +842,9 @@ function resolveFoleoNavState() {
   }
 
   // Binder mode only when explicitly present
+  const registry = loadNavRegistrySync();
+  const resolved = resolveBinderStateFromRegistry(binder, registry, page);
+  if (resolved) return resolved;
   return {
     mode: 'binder',
     binder,
@@ -636,6 +883,51 @@ function computeFoleoNavStateFromRegistry(profileId, registry) {
     page: window.location.pathname,
     profile: profileId
   };
+}
+
+function resolveBinderStateFromRegistry(binderParam, registry, page) {
+  if (!binderParam || !registry) return null;
+  const directList = registry?.binders?.[binderParam];
+  if (Array.isArray(directList) && directList.length) {
+    const pages = directList
+      .map((item) => {
+        const href = typeof item?.href === 'string' ? item.href : '';
+        const slug = href.replace(/\/+$/, '').replace(/^\//, '');
+        return slug;
+      })
+      .filter(Boolean);
+    return {
+      mode: 'binder',
+      binder: binderParam,
+      binderId: binderParam,
+      pages,
+      page
+    };
+  }
+
+  const profileCfg = registry?.profiles?.[binderParam];
+  if (profileCfg && profileCfg.mode === 'binder') {
+    const binderId = profileCfg.binder || '';
+    const binderList = registry?.binders?.[binderId] || [];
+    const pages = binderList
+      .map((item) => {
+        const href = typeof item?.href === 'string' ? item.href : '';
+        const slug = href.replace(/\/+$/, '').replace(/^\//, '');
+        return slug;
+      })
+      .filter(Boolean);
+    if (pages.length) {
+      return {
+        mode: 'binder',
+        binder: binderId,
+        binderId,
+        pages,
+        page,
+        profile: binderParam
+      };
+    }
+  }
+  return null;
 }
 
 function resolveFoleoNavStateAsync() {
@@ -892,6 +1184,9 @@ function buildFoleoSwitcher() {
   const state = meta && meta.mode ? meta : window.getFoleoNavState?.();
   if (!state || state.mode !== 'binder') return;
 
+  const needsRegistry = !!(getQueryParam('profile') || getQueryParam('binder'));
+  if (needsRegistry && !window.__FOLEO_NAV_REGISTRY__) return;
+
   const mount = document.querySelector('[data-foleo-switcher]');
   if (!mount) return;
 
@@ -916,16 +1211,6 @@ function buildFoleoSwitcher() {
   if (mount.querySelector('.foleo-switch__link')) return;
   if (!panel.dataset.foleoSwitchBound) {
     panel.dataset.foleoSwitchBound = 'true';
-    panel.addEventListener('click', (e) => {
-      const link = e.target.closest('.foleo-switch__link');
-      if (!link) return;
-      const root = document.querySelector('.foleo-switch');
-      if (!root) return;
-      root.classList.remove('is-open');
-      try {
-        window.localStorage.setItem('foleoSwitchOpen', '0');
-      } catch (err) {}
-    });
   }
 
   const pathSlug = window.location.pathname.replace(/\/+$/, '').split('/').pop() || '';
@@ -1258,7 +1543,8 @@ function initFoleoTrayBottom() {
 
 document.addEventListener('DOMContentLoaded', () => {
   const isEditMode = resolveFoleoEditMode();
-  if (!isEditMode) {
+  const safeIsEditMode = (typeof isEditMode !== "undefined" && !!isEditMode);
+  if (!safeIsEditMode) {
     document.querySelectorAll('.canvas-story--edit').forEach((el) => {
       el.classList.remove('canvas-story--edit');
     });
@@ -1270,12 +1556,16 @@ document.addEventListener('DOMContentLoaded', () => {
       forceCanvasStoryStackedOnMobile();
       ensureGsap(initCanvasStory);
     }
+    if (document.querySelector(".foleo-accordion-mobile")) {
+      initFoleoAccordionMobile();
+    }
     if (document.querySelector("[data-parallax]")) {
       initFoleoWaitForScrollParallax();
     }
     if (document.querySelector(".foleo-tray-bot")) {
       initFoleoTrayBottom();
     }
+    initFoleoVideoOverlay();
     document
       .querySelectorAll(
         '.cmplz-cookiebanner a[href], .cmplz-cookiebanner a.cmplz-document'
@@ -1286,7 +1576,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  if (!isEditMode) {
+  if (!safeIsEditMode) {
+    const isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile && document.querySelector(".foleo-snap-hero")) {
+      document.querySelectorAll(".foleo-snap-hero .cf-name-panel").forEach((el) => {
+        el.removeAttribute("data-parallax");
+        el.style.transform = "none";
+      });
+    }
     const state = window.getFoleoNavState?.();
     const switcher = document.querySelector('[data-foleo-switcher]');
     if (state) {
@@ -1336,7 +1633,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (!isEditMode) {
+  if (!safeIsEditMode) {
+    try {
+      const qs = new URLSearchParams(window.location.search || "");
+      if (qs.get("profile") || qs.get("binder")) {
+        loadNavRegistryAsync().then(() => {
+          const state = window.getFoleoNavState?.();
+          if (state && state.mode === 'binder') {
+            buildFoleoSwitcher();
+            buildFoleoVnav();
+            setInitialFoleoVnavActive();
+          }
+        });
+      }
+    } catch (e) {}
+  }
+
+  if (!safeIsEditMode) {
     initFoleoCinemaModeAllVideos();
     if (window.FoleoModules && typeof window.FoleoModules.init === "function") {
       window.FoleoModules.init();
@@ -1614,6 +1927,17 @@ document.addEventListener('DOMContentLoaded', () => {
         placeholder.style.opacity = "0.35";
       };
 
+      const applyPoster = (placeholder) => {
+        if (!placeholder) return;
+        if (placeholder.dataset.foleoPosterApplied === "1") return;
+        const poster = readDataAttr(placeholder, "data-poster");
+        if (!poster) return;
+        placeholder.style.backgroundImage = `url("${poster}")`;
+        placeholder.style.backgroundRepeat = "no-repeat";
+        placeholder.style.backgroundSize = "cover";
+        placeholder.dataset.foleoPosterApplied = "1";
+      };
+
       const markPlaying = (placeholder) => {
         if (!placeholder) return;
         const iframe = placeholder.__foleoIframe;
@@ -1627,6 +1951,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (spinner) spinner.remove();
         placeholder.style.pointerEvents = "none";
         placeholder.style.opacity = "0";
+        if (window.FoleoOpenVideoFullscreen) {
+          const wrap = placeholder.closest(".cf-video-wrap");
+          const isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+          const shouldFullscreen =
+            isMobile &&
+            !!placeholder.closest(".foleo-snap-hero, .foleo-fullscreen-on-play");
+          if (wrap && shouldFullscreen) {
+            window.FoleoOpenVideoFullscreen(wrap);
+            const tapBtn = document.querySelector(".foleo-video-overlay__tapplay");
+            if (tapBtn) tapBtn.hidden = true;
+          }
+        }
         setTimeout(() => {
           placeholder.remove();
         }, 220);
@@ -1648,6 +1984,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const tryPostMessagePause = (iframe, origin) => {
         if (!iframe || !iframe.contentWindow) return;
         const messages = [
+          { __privateUnstableMessageType: "pauseCommand" },
           { type: "pause" },
           { event: "pause" },
           { action: "pause" },
@@ -1659,18 +1996,55 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       const pauseOtherStreams = (currentIframe) => {
+        if (FOLEO_DEBUG) {
+          console.log("[CFStream] pauseOtherStreams", {
+            current: !!currentIframe,
+            iframes: document.querySelectorAll(".cf-stream-embed iframe").length
+          });
+        }
+        const currentEmbed = currentIframe?.closest?.(".cf-stream-embed") || null;
         const iframes = document.querySelectorAll(".cf-stream-embed iframe");
         iframes.forEach((iframe) => {
-          if (iframe === currentIframe) return;
+          if (currentIframe && iframe === currentIframe) return;
           const meta = iframeMeta.get(iframe) || {};
           const origin = meta.origin || "*";
           tryPostMessagePause(iframe, origin);
+          tryPostMessagePause(iframe, "*");
           ensureCfSdk().then(() => {
             try {
               const player = Stream?.(iframe);
               player?.pause?.();
             } catch (e) {}
           });
+        });
+        // Retry once shortly after to catch late-ready players (only when we know the current iframe).
+        if (currentIframe) {
+          setTimeout(() => {
+            document.querySelectorAll(".cf-stream-embed iframe").forEach((iframe) => {
+              if (iframe === currentIframe) return;
+              const meta = iframeMeta.get(iframe) || {};
+              const origin = meta.origin || "*";
+              tryPostMessagePause(iframe, origin);
+              tryPostMessagePause(iframe, "*");
+              try {
+                const player = Stream?.(iframe);
+                player?.pause?.();
+              } catch (e) {}
+            });
+            document.querySelectorAll(".cf-stream-embed video").forEach((video) => {
+              if (currentEmbed && video.closest(".cf-stream-embed") === currentEmbed) return;
+              try { video.pause(); } catch (e) {}
+            });
+          }, 120);
+        }
+        // Pause any direct video elements inside other CF embeds (vidstack/web component path).
+        document.querySelectorAll(".cf-stream-embed video").forEach((video) => {
+          if (currentEmbed && video.closest(".cf-stream-embed") === currentEmbed) return;
+          try { video.pause(); } catch (e) {}
+        });
+        // Pause any fullscreen overlay video if present.
+        document.querySelectorAll(".foleo-video-overlay__video").forEach((v) => {
+          try { v.pause(); } catch (e) {}
         });
       };
 
@@ -1721,12 +2095,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const initFromPlaceholder = (placeholder) => {
         if (!placeholder) return;
+        if (placeholder.dataset.foleoOverlayOnly === "1") return false;
         if (!hasRequiredData(placeholder)) return;
 
         const state = placeholder.dataset.foleoState || "idle";
         const existing = placeholder.__foleoIframe;
         const existingLive = isIframeLive(existing);
         if (existingLive && (state === "loading" || state === "ready")) {
+          pauseOtherStreams(existing);
           const meta = iframeMeta.get(existing) || {};
           tryPostMessagePlay(existing, meta.origin || "*");
           ensureCfSdk().then(() => {
@@ -1737,7 +2113,10 @@ document.addEventListener('DOMContentLoaded', () => {
           });
           return true;
         }
-        if (state === "playing") return;
+        if (state === "playing") {
+          pauseOtherStreams(existing || null);
+          return;
+        }
         if (!existingLive) {
           placeholder.dataset.foleoState = "idle";
         }
@@ -1792,14 +2171,19 @@ document.addEventListener('DOMContentLoaded', () => {
             placeholder.dataset.foleoState = "ready";
             iframe.style.opacity = "1";
             iframe.style.visibility = "visible";
+            pauseOtherStreams(iframe);
             const tryPlay = () => {
               tryPostMessagePlay(iframe, origin);
               ensureCfSdk().then(() => {
                 try {
                   const player = Stream?.(iframe);
                   if (player && player.addEventListener) {
-                    player.addEventListener("play", () => markPlaying(placeholder), { once: true });
-                    player.addEventListener("playing", () => markPlaying(placeholder), { once: true });
+                    const onPlay = () => {
+                      pauseOtherStreams(iframe);
+                      markPlaying(placeholder);
+                    };
+                    player.addEventListener("play", onPlay, { once: true });
+                    player.addEventListener("playing", onPlay, { once: true });
                   }
                   player?.play?.().catch?.(() => {});
                 } catch (e) {}
@@ -1836,6 +2220,17 @@ document.addEventListener('DOMContentLoaded', () => {
           }, { rootMargin: "200px 0px", threshold: 0.1 })
         : null;
 
+      const posterObserver = ("IntersectionObserver" in window)
+        ? new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const target = entry.target;
+              posterObserver.unobserve(target);
+              applyPoster(target);
+            });
+          }, { rootMargin: "300px 0px", threshold: 0.01 })
+        : null;
+
       const processEmbeds = () => {
         const embeds = document.querySelectorAll(".cf-stream-embed");
         embeds.forEach((embed) => {
@@ -1854,16 +2249,23 @@ document.addEventListener('DOMContentLoaded', () => {
           valid.dataset.foleoLazyInit = "0";
           valid.style.pointerEvents = "auto";
 
-          const poster = readDataAttr(valid, "data-poster");
-          if (poster) {
-            valid.style.backgroundImage = `url("${poster}")`;
-            valid.style.backgroundPosition = "center";
-            valid.style.backgroundRepeat = "no-repeat";
-            valid.style.backgroundSize = "cover";
+          // Remove inline poster styles so below-the-fold posters don't download early.
+          if (readDataAttr(valid, "data-poster")) {
+            valid.style.backgroundImage = "";
+            valid.style.backgroundRepeat = "";
+            valid.style.backgroundSize = "";
+            valid.dataset.foleoPosterApplied = "0";
           }
 
           if (valid.dataset.foleoBound !== "1") {
             const onIntent = (e) => {
+              if (FOLEO_DEBUG) {
+                console.log("[CFStream] intent", {
+                  target: e?.target,
+                  placeholder: valid,
+                  state: valid.dataset.foleoState
+                });
+              }
               const started = initFromPlaceholder(valid);
               if (!started && FOLEO_DEBUG) {
                 const styles = window.getComputedStyle(valid);
@@ -1886,8 +2288,16 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           const isHero = !!valid.closest('[data-foleo-hero="1"]');
+          if (isHero) {
+            applyPoster(valid);
+          } else if (posterObserver) {
+            posterObserver.observe(valid);
+            valid.dataset.foleoLazyInit = "1";
+          } else {
+            applyPoster(valid);
+          }
           if (!isCxPage && !isHero) {
-            if (observer) {
+        if (observer) {
               observer.observe(valid);
             } else {
               idleRun(() => initFromPlaceholder(valid));
@@ -1895,6 +2305,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       };
+
+      window.FoleoInitCfStream = initFromPlaceholder;
+      window.FoleoPauseOtherStreams = pauseOtherStreams;
 
       bindMessageListener();
       bindDirectIframeControls();
@@ -2119,6 +2532,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Start fade-swap animations only after full load
+window.addEventListener('load', () => {
+  document.documentElement.classList.add('foleo-fade-swap-ready');
+}, { once: true });
+
 // ==============================
 // FOLEO: Disable Pin per Section
 // ==============================
@@ -2179,6 +2597,10 @@ document.addEventListener("pointerdown", (e) => {
   const card = e.target.closest(".cf-card");
 
   if (card) {
+    const isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile && card.closest(".foleo-snap-hero")) {
+      return;
+    }
     // lock the hovered/clicked card
     document.querySelectorAll(".cf-card.is-active").forEach((el) => {
       if (el !== card) el.classList.remove("is-active");
@@ -2234,6 +2656,27 @@ document.querySelectorAll('.feature-tabs.is-tabs-ready')
     }
   }
 
+  const safeIsEditMode = (typeof isEditMode !== "undefined" && !!isEditMode);
+  if (!safeIsEditMode) {
+    const sizesValue = "(max-width: 1200px) 100vw, (max-width: 1800px) 50vw, 900px";
+    const applyHeroImageAttrs = (el, isPrimary) => {
+      if (!el) return;
+      const img = el.tagName === "IMG" ? el : el.querySelector("img");
+      if (!img) return;
+      img.setAttribute("sizes", sizesValue);
+      if (isPrimary) {
+        img.setAttribute("fetchpriority", "high");
+        img.setAttribute("loading", "eager");
+      } else {
+        img.removeAttribute("fetchpriority");
+        img.removeAttribute("loading");
+      }
+    };
+
+    applyHeroImageAttrs(document.querySelector(".bde-image2-455-1323"), true);
+    applyHeroImageAttrs(document.querySelector(".bde-image2-455-1365"), false);
+  }
+
   function getNotchHost(){
     const bdRoot = document.querySelector('.breakdance');
     if (bdRoot) {
@@ -2263,7 +2706,7 @@ document.querySelectorAll('.feature-tabs.is-tabs-ready')
   function bindNotchObserver(){
     const observer = new MutationObserver(() => {
       ensureNotch();
-    });
+});
     observer.observe(document.body, { childList: true, subtree: true });
   }
 

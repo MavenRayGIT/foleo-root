@@ -1,1 +1,71 @@
-/* Brand overrides */
+/* Macklee: Accordion theme overrides */
+:root {
+  --foleo-acc-bg: var(--bde-palette-color-2-03276616-91d1-4f5c-8620-c1820f7acc8b);
+  --foleo-acc-open-bg: var(--bde-palette-color-1-9ad3b2d2-e17a-4976-bb72-2049b3715e62);
+  --foleo-acc-line: var(--white);
+  --foleo-acc-title-color: var(--bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653);
+  --foleo-acc-body-color: var(--bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653);
+  --foleo-acc-title-size: 22px;
+  --foleo-acc-body-size: 16px;
+  --foleo-acc-line-weight: 4px;
+  --foleo-acc-chevron: var(--bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653);
+}
+
+@media (max-width: 768px) {
+  .foleo-accordion-mobile,
+  .foleo-accordion-mobile--light {
+    --accordion-line-color: var(--foleo-acc-line);
+    --accordion-closed-bg: var(--foleo-acc-bg);
+    --accordion-open-bg: var(--foleo-acc-open-bg);
+    --accordion-closed-text: var(--foleo-acc-title-color);
+    --accordion-open-text: var(--foleo-acc-body-color);
+  }
+.foleo-accordion-mobile .bde-column {
+    border-bottom: var(--foleo-acc-line-weight) solid var(--foleo-acc-line);
+  }
+
+  .foleo-accordion-mobile .foleo-accordion-first {
+    border-top: var(--foleo-acc-line-weight) solid var(--foleo-acc-line);
+  }
+  .foleo-accordion-mobile .bde-column {
+    background-color: var(--foleo-acc-bg) !important;
+  }
+
+  .foleo-accordion-mobile .bde-column.is-open .foleo-accordion__header,
+  .foleo-accordion-mobile .bde-column.is-open .foleo-accordion__content {
+    background-color: var(--foleo-acc-open-bg) !important;
+  }
+
+  .foleo-accordion-mobile .foleo-accordion__header {
+    color: var(--foleo-acc-title-color);
+    font-size: var(--foleo-acc-title-size);
+  }
+
+  .foleo-accordion-mobile .foleo-accordion__header::after {
+    border-right-color: var(--foleo-acc-chevron);
+    border-bottom-color: var(--foleo-acc-chevron);
+  }
+
+  .foleo-accordion-mobile .foleo-accordion__content {
+    color: var(--foleo-acc-body-color);
+    font-size: var(--foleo-acc-body-size);
+  }
+}
+
+/* Macklee: hide logo notch when tray is open on mobile */
+@media (max-width: 768px) {
+  html.foleo-tray-opened .foleo-logo-notch,
+  html.drawer-scroll-locked .foleo-logo-notch,
+  body.drawer-scroll-locked .foleo-logo-notch {
+    display: none !important;
+  }
+}
+
+/* Macklee: hide logo notch when mobile slide drawer is open */
+@supports selector(:has(*)) {
+  @media (max-width: 768px) {
+    html:has(.mobile-slide-panel.is-open) .foleo-logo-notch {
+      display: none !important;
+    }
+  }
+}
