@@ -1650,6 +1650,12 @@ ul.foleo-list1 li {
   visibility: visible !important;
 }
 
+/* Hide logo notch when WP admin bar is present */
+body.logged-in .foleo-logo-notch,
+html.foleo-edit .foleo-logo-notch {
+  display: none !important;
+}
+
 .foleo-logo-notch__link{
   text-decoration: none;
 }

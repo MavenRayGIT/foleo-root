@@ -470,6 +470,7 @@ function initVideoBugModule() {
       const btnRestart = bug.querySelector('.video-bug__btn-restart');
       const btnExpand = bug.querySelector('.video-bug__btn-expand');
       const btnSize = bug.querySelector('.video-bug__btn-size');
+      if (btnExpand) btnExpand.remove();
       const controls = bug.querySelector('.video-bug__ui');
       if (controls && !controls.classList.contains('video-bug__controls')) {
         controls.classList.add('video-bug__controls');
@@ -609,13 +610,7 @@ function initVideoBugModule() {
         bug.dataset.videoBugSize = next;
       });
 
-      btnExpand?.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        const src = player.getAttribute('src') || '';
-        if (!src) return;
-        window.FoleoVideoPopup?.open?.({ src });
-      });
+      // Expand button removed for now.
 
     }
   }

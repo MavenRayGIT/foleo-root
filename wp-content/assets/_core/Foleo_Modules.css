@@ -401,6 +401,27 @@
   z-index: 1;
 }
 
+/* Ensure direct CF iframes in popups fill the ratio box */
+.breakdance-popup-content .cf-stream-embed.popup-topradius > iframe {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: block;
+}
+
+/* Popup CF background video: cover the ratio box (avoid letterboxing) */
+.breakdance-popup-content .cf-bg-video.popup-topradius > iframe {
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 120% !important;
+  height: 120% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
 .breakdance-popup-content .popup-body,
 .breakdance-popup-content .bde-div-1442-112,
 .breakdance-popup-content .bde-div-1442-108 {
@@ -594,6 +615,21 @@ video {
   align-items: end;
   text-align: left;
   justify-self: start;
+}
+
+/* Row-specific vertical alignment (CX table request) */
+.foleo-dynamic-table .fdt-row.fdt-header-row + .fdt-row .fdt-cell,
+.foleo-dynamic-table .fdt-row.fdt-header-row + .fdt-row + .fdt-row .fdt-cell,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):first-child .fdt-cell,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):nth-child(2) .fdt-cell {
+  align-items: flex-start;
+}
+
+.foleo-dynamic-table .fdt-row.fdt-header-row + .fdt-row + .fdt-row + .fdt-row .fdt-cell,
+.foleo-dynamic-table .fdt-row.fdt-header-row + .fdt-row + .fdt-row + .fdt-row + .fdt-row .fdt-cell,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):nth-child(3) .fdt-cell,
+.foleo-dynamic-table .fdt-row:not(.fdt-header-row):nth-child(4) .fdt-cell {
+  align-items: center;
 }
 
 .foleo-dynamic-table .fdt-cell:not(:first-child)::before {

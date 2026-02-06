@@ -1942,7 +1942,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!placeholder) return;
         const iframe = placeholder.__foleoIframe;
         if (!iframe || !iframe.isConnected) return;
-        pauseOtherStreams(iframe);
+        const userInit = placeholder.dataset.foleoUserInit === "1";
+        pauseOtherStreams(iframe, { initial: !userInit });
         if (placeholder.dataset.foleoState === "playing") return;
         placeholder.dataset.foleoState = "playing";
         iframe.style.opacity = "1";
@@ -1995,7 +1996,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       };
 
-      const pauseOtherStreams = (currentIframe) => {
+      let pauseOtherStreamsInitialDone = false;
+      const pauseOtherStreams = (currentIframe, options) => {
+        const initial = options && options.initial === true;
+        if (initial && pauseOtherStreamsInitialDone) return;
+        if (initial) pauseOtherStreamsInitialDone = true;
         if (FOLEO_DEBUG) {
           console.log("[CFStream] pauseOtherStreams", {
             current: !!currentIframe,
@@ -2093,16 +2098,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return iframe.isConnected && iframe.tagName === "IFRAME";
       };
 
-      const initFromPlaceholder = (placeholder) => {
+      const initFromPlaceholder = (placeholder, isUserIntent) => {
         if (!placeholder) return;
         if (placeholder.dataset.foleoOverlayOnly === "1") return false;
         if (!hasRequiredData(placeholder)) return;
+        const userIntent = isUserIntent === true;
+        if (!userIntent && isCxPage) return false;
 
         const state = placeholder.dataset.foleoState || "idle";
         const existing = placeholder.__foleoIframe;
         const existingLive = isIframeLive(existing);
         if (existingLive && (state === "loading" || state === "ready")) {
-          pauseOtherStreams(existing);
+          pauseOtherStreams(existing, { initial: !userIntent });
           const meta = iframeMeta.get(existing) || {};
           tryPostMessagePlay(existing, meta.origin || "*");
           ensureCfSdk().then(() => {
@@ -2114,7 +2121,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return true;
         }
         if (state === "playing") {
-          pauseOtherStreams(existing || null);
+          pauseOtherStreams(existing || null, { initial: !userIntent });
           return;
         }
         if (!existingLive) {
@@ -2126,6 +2133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!customerInfo || !videoId) return false;
         if (placeholder.dataset.foleoLazyInit === "1" && existingLive) return false;
         placeholder.dataset.foleoLazyInit = "1";
+        placeholder.dataset.foleoUserInit = userIntent ? "1" : "0";
         placeholder.dataset.foleoState = "loading";
         if (!placeholder.querySelector(".cf-stream-spinner")) {
           const spinner = document.createElement("div");
@@ -2171,7 +2179,7 @@ document.addEventListener('DOMContentLoaded', () => {
             placeholder.dataset.foleoState = "ready";
             iframe.style.opacity = "1";
             iframe.style.visibility = "visible";
-            pauseOtherStreams(iframe);
+            pauseOtherStreams(iframe, { initial: !userIntent });
             const tryPlay = () => {
               tryPostMessagePlay(iframe, origin);
               ensureCfSdk().then(() => {
@@ -2179,7 +2187,8 @@ document.addEventListener('DOMContentLoaded', () => {
                   const player = Stream?.(iframe);
                   if (player && player.addEventListener) {
                     const onPlay = () => {
-                      pauseOtherStreams(iframe);
+                      const userInit = placeholder.dataset.foleoUserInit === "1";
+                      pauseOtherStreams(iframe, { initial: !userInit });
                       markPlaying(placeholder);
                     };
                     player.addEventListener("play", onPlay, { once: true });
@@ -2215,7 +2224,7 @@ document.addEventListener('DOMContentLoaded', () => {
               if (!entry.isIntersecting) return;
               const target = entry.target;
               observer.unobserve(target);
-              idleRun(() => initFromPlaceholder(target));
+              idleRun(() => initFromPlaceholder(target, false));
             });
           }, { rootMargin: "200px 0px", threshold: 0.1 })
         : null;
@@ -2266,7 +2275,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   state: valid.dataset.foleoState
                 });
               }
-              const started = initFromPlaceholder(valid);
+              const started = initFromPlaceholder(valid, true);
               if (!started && FOLEO_DEBUG) {
                 const styles = window.getComputedStyle(valid);
                 console.warn("[CFStream] Click did not start init", {
@@ -2300,7 +2309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (observer) {
               observer.observe(valid);
             } else {
-              idleRun(() => initFromPlaceholder(valid));
+              idleRun(() => initFromPlaceholder(valid, false));
             }
           }
         });
@@ -2327,6 +2336,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       embedObserver.observe(document.body, { childList: true, subtree: true });
+
     }
 
     initCfStreamPlaceholders();
@@ -2334,11 +2344,86 @@ document.addEventListener('DOMContentLoaded', () => {
     // Vidstack Stream Replacement (legacy path for non-CX pages)
     const playingPlayers = new Set();
     // CX uses the placeholder-first CF Stream flow above; keep legacy swap for non-CX pages.
-    const isCxPage = (() => {
+    const readPageConfig = () => {
+      const direct =
+        window.foleo_page_config_json ||
+        window.FOLEO_PAGE_CONFIG_JSON ||
+        window.FOLEO_PAGE_CONFIG ||
+        window.foleoPageConfig ||
+        window.__FOLEO_PAGE_CONFIG__;
+      if (!direct) return null;
+      if (typeof direct === "string") {
+        try {
+          const parsed = JSON.parse(direct);
+          return (parsed && typeof parsed === "object") ? parsed : null;
+        } catch (e) {
+          return null;
+        }
+      }
+      return (typeof direct === "object") ? direct : null;
+    };
+
+    const readConfigFlag = (config, key) => {
+      if (!config || typeof config !== "object") return false;
+      const raw =
+        (key in config) ? config[key] :
+        (config.flags && key in config.flags) ? config.flags[key] :
+        (config.modules && key in config.modules) ? config.modules[key] :
+        (config.modules && config.modules.cfStream && key === "cfStream_enabled")
+          ? config.modules.cfStream.enabled
+          : undefined;
+      return raw === true || raw === 1 || raw === "1" || raw === "true";
+    };
+
+    const readConfigString = (config, key) => {
+      if (!config || typeof config !== "object") return "";
+      const raw =
+        (key in config) ? config[key] :
+        (config.flags && key in config.flags) ? config.flags[key] :
+        (config.modules && key in config.modules) ? config.modules[key] :
+        (key === "cfStream_mode" && config.modules && config.modules.cfStream)
+          ? config.modules.cfStream.mode
+          : undefined;
+      return (raw === undefined || raw === null) ? "" : String(raw);
+    };
+
+    const pageConfig = readPageConfig();
+    const pageKey = (() => {
+      if (pageConfig && typeof pageConfig === "object") {
+        const key =
+          pageConfig.pageKey ||
+          pageConfig.page_key ||
+          pageConfig.key ||
+          pageConfig.page ||
+          "";
+        if (key) return String(key);
+      }
+      const fromDom =
+        document.documentElement?.getAttribute?.("data-foleo-page-key") ||
+        document.body?.getAttribute?.("data-foleo-page-key") ||
+        "";
+      if (fromDom) return fromDom;
+      const globalKey =
+        window.FOLEO_PAGE_KEY ||
+        window.foleo_page_key ||
+        window.__FOLEO_PAGE_KEY__ ||
+        "";
+      return globalKey ? String(globalKey) : "";
+    })();
+
+    const cfStreamEnabled = readConfigFlag(pageConfig, "cfStream_enabled");
+    const cfStreamMode = readConfigString(pageConfig, "cfStream_mode");
+    const isPlaceholderFirst = cfStreamMode === "placeholderFirst";
+    const isCxPlaceholderFirst =
+      pageKey === "cx" ||
+      isPlaceholderFirst ||
+      (cfStreamEnabled && isPlaceholderFirst);
+    const isCxPath = (() => {
       const path = (window.location && window.location.pathname) ? window.location.pathname : "";
       const clean = path.replace(/\/+$/, "");
       return clean === "" || clean === "/cx";
     })();
+    const isCxPage = isCxPlaceholderFirst || isCxPath;
 
     const legacyLog = (tag, extra) => {
       if (!FOLEO_DEBUG) return;
@@ -2414,7 +2499,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function replaceIframe(iframe) {
-      if (!iframe || iframe.dataset.vidstackDone === "1") return;
+      if (!iframe) return;
+      const data = parseCloudflareStreamSrc(iframe.src || "");
+      if (isCxPage || isCxPlaceholderFirst) {
+        if (FOLEO_DEBUG) {
+          legacyLog("cx_skip_legacy", { videoId: data ? data.videoId : "" });
+        }
+        return;
+      }
+      if (iframe.dataset.vidstackDone === "1") return;
       if (iframe.parentElement && iframe.parentElement.querySelector("media-player")) return;
       legacyLog("replaceIframe", {
         iframes: document.querySelectorAll('iframe[src*="cloudflarestream.com"]').length
@@ -2427,13 +2520,7 @@ document.addEventListener('DOMContentLoaded', () => {
         !!iframe.closest(".bde-popup") ||
         !!iframe.closest(".popup-topradius");
 
-      const data = parseCloudflareStreamSrc(iframe.src || "");
       if (!data) return;
-
-      if (isCxPage) {
-        legacyLog("cx_skip_legacy", { videoId: data.videoId });
-        return;
-      }
 
       const player = createPlayerFromData(data, isPopup);
 
@@ -2481,34 +2568,52 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const initial = document.querySelectorAll('iframe[src*="cloudflarestream.com"]');
-    legacyLog("initial_scan", { count: initial.length });
-    initial.forEach(replaceIframe);
+    let legacyInitRan = false;
+    const runLegacyInit = () => {
+      if (legacyInitRan) return;
+      legacyInitRan = true;
+      if (isCxPage || isCxPlaceholderFirst) {
+        if (FOLEO_DEBUG) {
+          legacyLog("cx_skip_legacy", {
+            pageKey,
+            cfStream_mode: cfStreamMode,
+            cfStream_enabled: cfStreamEnabled
+          });
+        }
+        return;
+      }
 
-    const existingPlayers = document.querySelectorAll("media-player");
-    existingPlayers.forEach(registerPlayer);
+      const initial = document.querySelectorAll('iframe[src*="cloudflarestream.com"]');
+      legacyLog("initial_scan", { count: initial.length });
+      initial.forEach(replaceIframe);
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType !== 1) return;
-          if (node.matches && node.matches('iframe[src*="cloudflarestream.com"]')) {
-            legacyLog("mutation_iframe", { nodeName: node.nodeName });
-            replaceIframe(node);
-            return;
-          }
-          if (node.querySelectorAll) {
-            const iframes = node.querySelectorAll('iframe[src*="cloudflarestream.com"]');
-            if (iframes.length) {
-              legacyLog("mutation_batch", { count: iframes.length });
+      const existingPlayers = document.querySelectorAll("media-player");
+      existingPlayers.forEach(registerPlayer);
+
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType !== 1) return;
+            if (node.matches && node.matches('iframe[src*="cloudflarestream.com"]')) {
+              legacyLog("mutation_iframe", { nodeName: node.nodeName });
+              replaceIframe(node);
+              return;
             }
-            iframes.forEach(replaceIframe);
-          }
+            if (node.querySelectorAll) {
+              const iframes = node.querySelectorAll('iframe[src*="cloudflarestream.com"]');
+              if (iframes.length) {
+                legacyLog("mutation_batch", { count: iframes.length });
+              }
+              iframes.forEach(replaceIframe);
+            }
+          });
         });
       });
-    });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, { childList: true, subtree: true });
+    };
+
+    runLegacyInit();
 
     let scrollTicking = false;
     window.addEventListener("scroll", () => {
