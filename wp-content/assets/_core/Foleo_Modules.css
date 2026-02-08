@@ -371,20 +371,30 @@
 
 /* Popup card: top corners only */
 .popup-topradius {
-  border-top-left-radius: 10px !important;
-  border-top-right-radius: 10px !important;
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   overflow: hidden;
   position: relative;
 }
 
+h1.popup-greeting {
+  font-size: 40px !important;
+  color: #fff!important;
+  margin-bottom: 10px!important;
+  
+}
+
+
+
+
 .popup-topradius .foleo-media-player,
 .popup-topradius [data-media-player],
 .popup-topradius media-provider,
 .popup-topradius video {
-  border-top-left-radius: 10px !important;
-  border-top-right-radius: 10px !important;
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
@@ -433,7 +443,10 @@
   border: 2px solid red!important; 
   }
 
-.no_x .breakdance-popup-close-button {display: none !important;}
+.x-white .breakdance-popup-close-icon path {
+  fill: #fff !important;
+}
+
 
 /* Card wrapper */
 .cf-card {
@@ -612,25 +625,12 @@ video {
   padding-right: 23px;
   position: relative;
   display: flex;
-  align-items: end;
+  align-items: flex-start;
   text-align: left;
   justify-self: start;
 }
 
-/* Row-specific vertical alignment (CX table request) */
-.foleo-dynamic-table .fdt-row.fdt-header-row + .fdt-row .fdt-cell,
-.foleo-dynamic-table .fdt-row.fdt-header-row + .fdt-row + .fdt-row .fdt-cell,
-.foleo-dynamic-table .fdt-row:not(.fdt-header-row):first-child .fdt-cell,
-.foleo-dynamic-table .fdt-row:not(.fdt-header-row):nth-child(2) .fdt-cell {
-  align-items: flex-start;
-}
-
-.foleo-dynamic-table .fdt-row.fdt-header-row + .fdt-row + .fdt-row + .fdt-row .fdt-cell,
-.foleo-dynamic-table .fdt-row.fdt-header-row + .fdt-row + .fdt-row + .fdt-row + .fdt-row .fdt-cell,
-.foleo-dynamic-table .fdt-row:not(.fdt-header-row):nth-child(3) .fdt-cell,
-.foleo-dynamic-table .fdt-row:not(.fdt-header-row):nth-child(4) .fdt-cell {
-  align-items: center;
-}
+/* Row-specific vertical alignment removed; keep all rows consistent */
 
 .foleo-dynamic-table .fdt-cell:not(:first-child)::before {
   content: "";
@@ -660,7 +660,7 @@ video {
 }
 
 .foleo-dynamic-table .fdt-row:not(.fdt-header-row) > .fdt-cell:nth-child(2) {
-  font-size: 14px;
+  font-size: 12px;
   
 }
 
@@ -672,7 +672,7 @@ video {
   justify-self: start;
   text-align: left;
   display: flex;
-  align-items: end;
+  align-items: flex-start;
 }
 
 

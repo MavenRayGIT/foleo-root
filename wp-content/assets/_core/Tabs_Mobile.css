@@ -33,7 +33,7 @@
 
     background: rgba(255,255,255,1) !important;
     border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 12px;
+    border-radius: 5px;
 
     padding: 24px 56px 24px 24px !important; /* right space for trigger zone */
     border-bottom: none !important;

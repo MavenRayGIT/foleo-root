@@ -200,6 +200,9 @@ body.logged-in .admin-only {
   html.foleo-canvas-story-stacked .canvas-story .canvas-story__panel img {
     height: auto !important;
   }
+}
+
+@media (max-width: 1023px) {
   html.foleo-tray-opened body {
     overflow: hidden;
     touch-action: none;
@@ -745,12 +748,12 @@ html.foleo-nav-reveal.foleo-binder .foleo-switch{
     max-width: 420px;
     min-width: 220px;
     height: 100vh;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.8);
     color: #fff;
-    padding: 64px 24px 24px;
+    padding: 64px 0px 24px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0px;
     transform: translateX(100%);
     opacity: 0;
     pointer-events: none;
@@ -798,27 +801,55 @@ html.foleo-nav-reveal.foleo-binder .foleo-switch{
 
   .foleo-switch__link{
     display: block;
-    padding: 8px 0;
+    padding: 18px 20px 6px 20px;
     color: #fff !important;
     text-decoration: none !important;
-    border-bottom: 1px dotted rgba(255,255,255,0.55);
+    border-bottom: 1px solid rgb(0, 0, 0);
     font-family: inherit;
   }
 
   .foleo-switch__panel .foleo-switch__link{
     color: #fff !important;
     text-decoration: none !important;
-    font-size: 21px;
+    font-size: 28px;
+    font-weight: 200;
   }
 
   .foleo-switch__link.is-active{
-    border-bottom: 2px solid rgba(255,255,255,0.9);
+    border-bottom: none;
     font-weight: 700;
+    background-color: rgba(0, 0, 0, 0.8)!important;
   }
 }
 
 /* FINAL OVERRIDES: nav layering must beat hero media */
-.foleo-switch{ z-index: 9000 !important; }
+.foleo-switch{
+  z-index: 1000000 !important;
+  pointer-events: auto !important;
+}
+.foleo-switch__btn,
+.foleo-switch__panel,
+.foleo-switch__close{
+  pointer-events: auto !important;
+}
+
+.foleo-switch__close{
+  position: fixed !important;
+  z-index: 1000001 !important;
+}
+
+/* Close button floats in body; tie visibility to html state */
+.foleo-switch__close{
+  display: none !important;
+}
+html.foleo-switch-open .foleo-switch__close{
+  display: grid !important;
+}
+
+/* Logo notch should never block nav interactions */
+.foleo-logo-notch {
+  pointer-events: none !important;
+}
 .foleo-vnav{
   position: fixed;
   z-index: 8999 !important;
@@ -829,7 +860,18 @@ html.foleo-nav-reveal.foleo-binder .foleo-switch{
 .breakdance-popup,
 .bde-popup.breakdance-popup-open{
   position: fixed !important;
-  z-index: 100000 !important;
+  z-index: 1000010 !important;
+}
+
+/* Popup scrims/backdrops should sit above binder nav */
+.bde-popup__backdrop,
+.breakdance-popup__backdrop,
+.bde-popup-overlay,
+.breakdance-popup-overlay,
+.bde-popup-backdrop,
+.breakdance-popup-backdrop{
+  position: fixed !important;
+  z-index: 1000009 !important;
 }
 
 div.no_pointer {pointer-events: none;}
@@ -841,20 +883,46 @@ div.no_pointer {pointer-events: none;}
 */
 
 /* Components */
-/* Accordion cards (mobile only, opt-in via .foleo-accordion-mobile on section) */
+/* Accordion cards (mobile only, opt-in via .foleo-accordion-block) */
 @media (max-width: 768px) {
-  .foleo-accordion-mobile .section-container {
+  .foleo-accordion-block {
+    width: calc(100% + (var(--bde-section-padding-left, 20px) + var(--bde-section-padding-right, 20px))) !important;
+    max-width: calc(100% + (var(--bde-section-padding-left, 20px) + var(--bde-section-padding-right, 20px))) !important;
+    margin-left: calc(-1 * var(--bde-section-padding-left, 20px)) !important;
+    margin-right: calc(-1 * var(--bde-section-padding-right, 20px)) !important;
+  }
+
+  /* When the block itself is the columns container */
+  .foleo-accordion-block.bde-columns {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: calc(50% - 50vw) !important;
+    gap: 0px !important;
+    column-gap: 0px !important;
+    row-gap: 0px !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    --bde-column-gap: 0px !important;
+    align-self: stretch !important;
+    justify-self: stretch !important;
+  }
+
+  .foleo-accordion-block .section-container {
     padding: 0 !important;
   }
 
-  .foleo-accordion-mobile .bde-columns {
-    gap: 0px;
+  .foleo-accordion-block .bde-columns {
+    gap: 0px !important;
+    column-gap: 0px !important;
+    row-gap: 0px !important;
     padding: 0 !important;
     margin: 0 !important;
-     --bde-column-gap: 0px!important;
+    --bde-column-gap: 0px !important;
   }
 
-  .foleo-accordion-mobile .bde-column {
+  .foleo-accordion-block .bde-column {
     border: 0;
     border-bottom: 1px solid var(--accordion-line-color, currentColor);
     border-radius: 0;
@@ -864,45 +932,37 @@ div.no_pointer {pointer-events: none;}
     margin: 0 !important;
     background-color: transparent !important;
     background-image: none !important;
-    gap: 0px!important
+    gap: 0px!important;
+    position: relative;
+    padding-right: 52px;
   }
 
-  .foleo-accordion-mobile .foleo-accordion-first {
+  .foleo-accordion-block .bde-column.is-open {
+    background-color: var(--accordion-open-bg, transparent) !important;
+  }
+
+  .foleo-accordion-block .foleo-accordion-first {
     border-top: 1px solid var(--accordion-line-color, currentColor);
   }
 
-  .foleo-accordion-mobile .foleo-accordion__header {
+  .foleo-accordion-block .foleo-accordion__header {
     position: relative;
     padding: 16px 44px 16px 20px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    color: var(--accordion-closed-text, inherit);
+    color: var(--accordion-closed-text, inherit) !important;
     transition: background-color 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
                 color 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    margin-bottom: 0 !important;
   }
 
-   .foleo-accordion-mobile h3.foleo-accordion__header {
+  .foleo-accordion-block h3.foleo-accordion__header {
     font-size: 22px!important;
   }
 
-  .foleo-accordion-mobile .foleo-accordion__header::after {
-    content: "";
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    width: 8px;
-    height: 8px;
-    border-right: 2px solid var(--bde-links-color);
-    border-bottom: 2px solid var(--bde-links-color);
-    transform: translateY(-60%) rotate(-45deg);
-    transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
+  .foleo-accordion-block .bde-column div {width: 100%!important}
 
-  .foleo-accordion-mobile .bde-column.is-open .foleo-accordion__header::after {
-    transform: translateY(-40%) rotate(45deg);
-  }
-
-  .foleo-accordion-mobile .foleo-accordion__content {
+  .foleo-accordion-block .foleo-accordion__content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -912,33 +972,67 @@ div.no_pointer {pointer-events: none;}
     color: var(--accordion-open-text, inherit);
   }
 
-  .foleo-accordion-mobile .bde-column.is-open .foleo-accordion__header {
+  .foleo-accordion-block .bde-column.is-open .foleo-accordion__header {
     background: var(--accordion-open-bg, #ffffff);
-    color: var(--accordion-open-text, #111111);
+    color: var(--accordion-open-text, #111111) !important;
   }
 
-  .foleo-accordion-mobile .bde-column.is-open .foleo-accordion__content {
+  .foleo-accordion-block .bde-column.is-open .foleo-accordion__content {
     background: var(--accordion-open-bg, #ffffff);
   }
 
-  .foleo-accordion-mobile .bde-column:not(.is-open) .foleo-accordion__content {
+  .foleo-accordion-block .bde-column:not(.is-open) .foleo-accordion__content {
     background: transparent;
     transition-delay: 520ms;
   }
 
-  /* Theme variants */
-  .foleo-accordion-mobile--light {
+  /* Theme variants (can be on section or block) */
+  .foleo-accordion-mobile--light .foleo-accordion-block,
+  .foleo-accordion-block.foleo-accordion-mobile--light {
     --accordion-line-color: rgba(0,0,0,0.65);
     --accordion-closed-text: #111111;
     --accordion-open-bg: #ffffff;
     --accordion-open-text: #111111;
   }
 
-  .foleo-accordion-mobile--dark {
+  .foleo-accordion-mobile--dark .foleo-accordion-block,
+  .foleo-accordion-block.foleo-accordion-mobile--dark {
     --accordion-line-color: rgba(255,255,255,0.65);
     --accordion-closed-text: #ffffff;
     --accordion-open-bg: #ffffff;
     --accordion-open-text: #111111;
+  }
+
+  .foleo-accordion-mobile--match .foleo-accordion-block,
+  .foleo-accordion-block.foleo-accordion-mobile--match {
+    --accordion-closed-bg: transparent;
+    --accordion-open-bg: transparent;
+    --accordion-closed-text: inherit;
+    --accordion-open-text: inherit;
+  }
+
+  /* Disable header chevron; render on the column instead */
+  .foleo-accordion-block .foleo-accordion__header::after {
+    content: none !important;
+  }
+
+  /* Chevron anchored to the column */
+  .foleo-accordion-block .bde-column::after {
+    content: "";
+    position: absolute;
+    right: 16px;
+    top: 22px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--foleo-acc-chevron, var(--bde-links-color));
+    border-bottom: 2px solid var(--foleo-acc-chevron, var(--bde-links-color));
+    transform: rotate(-45deg);
+    transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+  }
+
+  .foleo-accordion-block .bde-column.is-open::after {
+    transform: rotate(45deg);
   }
 }
 
@@ -1047,7 +1141,7 @@ body.foleo-video-overlay-open {
   --pan-duration: 48s;
   --pan-start: 15%;
   --pan-end: 85%;
-  animation: foleoFadePan var(--pan-duration) ease-in-out infinite;
+  animation: foleoFadePan var(--pan-duration) linear infinite alternate;
 }
 
 /* Wait until window.load to start animations */
@@ -1084,14 +1178,14 @@ html:not(.foleo-fade-swap-ready) .foleo-fade-swap::after {
 .foleo-fade-swap::before {
   background-image: var(--fade-img-2);
   animation: foleoFadeSwap var(--fade-duration) infinite,
-             foleoFadePan var(--pan-duration) ease-in-out infinite;
+             foleoFadePan var(--pan-duration) linear infinite alternate;
   animation-delay: var(--fade-delay-1);
 }
 
 .foleo-fade-swap::after {
   background-image: var(--fade-img-3);
   animation: foleoFadeSwap var(--fade-duration) infinite,
-             foleoFadePan var(--pan-duration) ease-in-out infinite;
+             foleoFadePan var(--pan-duration) linear infinite alternate;
   animation-delay: var(--fade-delay-2), 0s;
 }
 
@@ -1674,6 +1768,23 @@ html.foleo-edit .foleo-logo-notch {
   transition: opacity 220ms ease, transform 220ms ease, width 220ms ease, max-width 220ms ease, margin 220ms ease;
 }
 
+/* Fix inline SVG baseline gap in icon atoms */
+.bde-icon-icon {
+  line-height: 0;
+}
+.bde-icon-icon svg {
+  display: block;
+}
+.breakdance-icon-atom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+.breakdance-icon-atom > svg {
+  display: block;
+}
+
 /* scrolled state */
 body.foleo--logo-collapsed .foleo-logo-notch__icon{
   transform: scale(.88);
@@ -1693,4 +1804,13 @@ body.foleo--logo-collapsed .foleo-logo-notch{
   padding-bottom: 12px !important;
   padding-left: 12px !important;
   padding-right: 6px !important;
+}
+
+@supports selector(:has(*)) {
+  @media (max-width: 768px) {
+    html:has(.mobile-slide-panel.is-open) .foleo-switch {
+      display: none !important;
+      pointer-events: none !important;
+    }
+  }
 }

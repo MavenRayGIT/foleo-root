@@ -1,0 +1,23 @@
+foleo_page_config_json
+{
+  "pageKey": "cx",
+  "cfStream_enabled": true,
+  "cfStream_mode": "placeholderFirst",
+  "lottie_enabled": true,
+  "tabs_enabled": true,
+  "tabs_mobile_enabled": true,
+  "snapScroll_enabled": true
+}
+
+
+foleo_page_config_json
+{
+  "pageKey": "cx",
+  "cfStream_enabled": true,
+  "cfStream_mode": "placeholderFirst",
+  "lottie_enabled": true,
+  "tabs_enabled": true,
+  "tabs_mobile_enabled": true,
+  "snapScroll_enabled": true
+}
+

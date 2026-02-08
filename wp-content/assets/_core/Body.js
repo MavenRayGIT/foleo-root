@@ -56,6 +56,7 @@ function getQueryParam(name) {
 }
 
 const FOLEO_PROFILE_STORAGE_KEY = 'foleoProfile';
+const FOLEO_SWITCH_OPEN_KEY = 'foleoSwitchOpen';
 const FOLEO_DEBUG = window.FOLEO_DEBUG === true;
 const FOLEO_ASSETS_BASE_URL = (() => {
   let base = window.FOLEO_ASSETS_BASE_URL;
@@ -199,6 +200,23 @@ function resolveFoleoEditMode() {
   return isEdit;
 }
 
+function applyFoleoProfileLabels() {
+  try {
+    const params = new URLSearchParams(window.location.search || '');
+    const profileParam = params.get('profile') || readStoredProfile();
+    if (!profileParam) return;
+
+    const key = String(profileParam).toLowerCase();
+    const labelMap = { tim: 'Tim', alison: 'Alison' };
+    const label = labelMap[key];
+    if (!label) return;
+
+    document.querySelectorAll('[data-foleo-profile-name]').forEach((el) => {
+      el.textContent = label;
+    });
+  } catch (e) {}
+}
+
 function initFoleoVideoOverlay() {
   const hero = document.querySelector(".foleo-snap-hero");
   if (!hero) return;
@@ -333,14 +351,20 @@ resolveFoleoEditMode();
 
 function initFoleoAccordionMobile() {
   if (!window.matchMedia || !window.matchMedia("(max-width: 768px)").matches) return;
-  const sections = document.querySelectorAll(".foleo-accordion-mobile");
-  if (!sections.length) return;
+  const blocks = Array.from(document.querySelectorAll(".foleo-accordion-block"));
+  if (!blocks.length) return;
 
-  sections.forEach((section) => {
-    const columns = Array.from(section.querySelectorAll(".bde-column"));
+  blocks.forEach((block) => {
+    const columns = Array.from(block.querySelectorAll(".bde-column"));
     columns.forEach((col) => {
       if (col.dataset.foleoAccordionInit === "1") return;
-      const header = col.querySelector("h1, h2, h3, h4, h5, h6");
+      const headerCandidates = Array.from(
+        col.querySelectorAll("[data-foleo-accordion-title], h1, h2, h3, h4, h5, h6")
+      );
+      const header = headerCandidates.find((el) => {
+        const text = (el.textContent || "").trim();
+        return text.length > 0;
+      });
       if (!header) return;
       header.classList.add("foleo-accordion__header");
 
@@ -389,7 +413,16 @@ function initFoleoAccordionMobile() {
 
       setClosed();
 
-      header.addEventListener("click", () => {
+      header.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = col.classList.contains("is-open");
+        if (isOpen) setClosed();
+        else setOpen();
+      });
+
+      col.addEventListener("click", (e) => {
+        if (e.target.closest(".foleo-accordion__content")) return;
+        if (e.target.closest("a, button, input, textarea, select, label")) return;
         const isOpen = col.classList.contains("is-open");
         if (isOpen) setClosed();
         else setOpen();
@@ -788,7 +821,7 @@ function resolveFoleoNavState() {
 
   const profileId = profileParam && profileParam !== 'clear'
     ? profileParam
-    : readStoredProfile();
+    : null;
 
   if (profileId) {
     const registry = loadNavRegistrySync();
@@ -935,7 +968,7 @@ function resolveFoleoNavStateAsync() {
   const profileParam = params.get('profile');
   const profileId = profileParam && profileParam !== 'clear'
     ? profileParam
-    : readStoredProfile();
+    : null;
   if (!profileId) return Promise.resolve(null);
   return loadNavRegistryAsync().then((registry) => {
     if (!registry) return null;
@@ -1189,10 +1222,27 @@ function buildFoleoSwitcher() {
 
   const mount = document.querySelector('[data-foleo-switcher]');
   if (!mount) return;
+  const root = mount.closest('.foleo-switch') || mount;
+  const setFoleoSwitchOpen = (isOpen) => {
+    root.classList.toggle('is-open', !!isOpen);
+    document.documentElement.classList.toggle('foleo-switch-open', !!isOpen);
+    try {
+      window.localStorage.setItem(FOLEO_SWITCH_OPEN_KEY, isOpen ? '1' : '0');
+    } catch (e) {}
+  };
+  try {
+    if (window.localStorage.getItem(FOLEO_SWITCH_OPEN_KEY) === '1') {
+      setFoleoSwitchOpen(true);
+    }
+  } catch (e) {}
 
   const binderId = state.binderId || state.binder || getQueryParam('binder');
   const pages = Array.isArray(state.pages) ? state.pages : [];
   if (!binderId || !pages.length) return;
+  const profileId = state.profile || getQueryParam('profile') || readStoredProfile();
+  const queryString = profileId
+    ? `?profile=${encodeURIComponent(profileId)}`
+    : `?binder=${encodeURIComponent(binderId)}`;
 
   let panel = mount.querySelector('.foleo-switch__panel');
   if (!panel) {
@@ -1206,7 +1256,7 @@ function buildFoleoSwitcher() {
     closeBtn.type = 'button';
     closeBtn.setAttribute('aria-label', 'Close binder navigation');
     closeBtn.innerHTML = '&times;';
-    mount.appendChild(closeBtn);
+    document.body.appendChild(closeBtn);
   }
   if (mount.querySelector('.foleo-switch__link')) return;
   if (!panel.dataset.foleoSwitchBound) {
@@ -1220,7 +1270,7 @@ function buildFoleoSwitcher() {
   panel.innerHTML = pages
     .map((slug) => {
       const label = escapeFoleoHtml(formatFoleoLabel(slug));
-      const href = `${window.location.origin}/${slug}/?binder=${encodeURIComponent(binderId)}`;
+      const href = `${window.location.origin}/${slug}/${queryString}`;
       const isActive = slug === activeSlug || slug === pathSlug;
       return `<a class="foleo-switch__link${isActive ? ' is-active' : ''}" href="${href}">${label}</a>`;
     })
@@ -1540,6 +1590,86 @@ function initFoleoTrayBottom() {
   });
 }
 
+function foleoGetBodyJsSrc() {
+  const cs = document.currentScript && document.currentScript.src ? document.currentScript.src : '';
+  if (cs && cs.includes('Body.js')) return cs;
+
+  const scripts = Array.from(document.scripts || []);
+  const match = scripts.find((s) => (s.src || '').includes('/Body.js'));
+  return match ? match.src : '';
+}
+
+function foleoBuildCompileUrls() {
+  const bodySrc = foleoGetBodyJsSrc();
+  if (!bodySrc) return null;
+
+  const url = new URL(bodySrc, location.href);
+  const ver = url.search || '';
+
+  url.search = '';
+  const base = url.href.replace(/Body\.js$/, '');
+
+  return {
+    css: base + 'Compile.css' + ver,
+    js: base + 'Compile.js' + ver
+  };
+}
+
+function maybeLoadCompileAssets() {
+  let isCompile = false;
+  try {
+    isCompile = new URLSearchParams(location.search).get('compile') === '1';
+  } catch (e) {
+    return;
+  }
+  if (!isCompile) return;
+
+  const urls = foleoBuildCompileUrls();
+  if (!urls) return;
+  const compileBust = `compilev=${Date.now()}`;
+  const withCompileBust = (value) => {
+    if (!value) return value;
+    return value.includes('?') ? `${value}&${compileBust}` : `${value}?${compileBust}`;
+  };
+  urls.css = withCompileBust(urls.css);
+  urls.js = withCompileBust(urls.js);
+
+  let isFresh = false;
+  try {
+    isFresh = new URLSearchParams(location.search).get('fresh') === '1';
+  } catch (e) {}
+  if (isFresh) {
+    const cb = `cb=${Date.now()}`;
+    const withFresh = (value) => {
+      if (!value) return value;
+      return value.includes('?') ? `${value}&${cb}` : `${value}?${cb}`;
+    };
+    urls.css = withFresh(urls.css);
+    urls.js = withFresh(urls.js);
+  }
+
+  if (!document.getElementById('foleo-compile-css')) {
+    const link = document.createElement('link');
+    link.id = 'foleo-compile-css';
+    link.rel = 'stylesheet';
+    link.href = urls.css;
+    link.onload = () => console.log('[compile] css loaded', link.href);
+    link.onerror = () => console.warn('[compile] css failed', link.href);
+    (document.head || document.documentElement).appendChild(link);
+  }
+
+  if (!document.getElementById('foleo-compile-js')) {
+    const script = document.createElement('script');
+    script.id = 'foleo-compile-js';
+    script.src = urls.js;
+    script.defer = true;
+    script.onload = () => console.log('[compile] js loaded', script.src);
+    script.onerror = () => console.warn('[compile] js failed', script.src);
+    (document.head || document.body || document.documentElement).appendChild(script);
+  }
+}
+
+maybeLoadCompileAssets();
 
 document.addEventListener('DOMContentLoaded', () => {
   const isEditMode = resolveFoleoEditMode();
@@ -1556,7 +1686,7 @@ document.addEventListener('DOMContentLoaded', () => {
       forceCanvasStoryStackedOnMobile();
       ensureGsap(initCanvasStory);
     }
-    if (document.querySelector(".foleo-accordion-mobile")) {
+    if (document.querySelector(".foleo-accordion-block")) {
       initFoleoAccordionMobile();
     }
     if (document.querySelector("[data-parallax]")) {
@@ -1565,6 +1695,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector(".foleo-tray-bot")) {
       initFoleoTrayBottom();
     }
+    applyFoleoProfileLabels();
     initFoleoVideoOverlay();
     document
       .querySelectorAll(
@@ -1596,6 +1727,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const hamburger = document.querySelector('.hamburger');
         if (hamburger) hamburger.style.display = 'none';
       } else {
+        bindFoleoSwitcherDelegatedHandlers();
+        const hamburger = document.querySelector('.hamburger');
+        if (hamburger) hamburger.style.display = '';
+        if (switcher) switcher.style.display = '';
         if (switcher) buildFoleoSwitcher();
         setTimeout(buildFoleoSwitcher, 250);
         scheduleOnce(initFoleoVnavActiveTracking, [0, 500]);
@@ -1620,6 +1755,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const hamburger = document.querySelector('.hamburger');
         if (hamburger) hamburger.style.display = 'none';
       } else {
+        bindFoleoSwitcherDelegatedHandlers();
+        const hamburger = document.querySelector('.hamburger');
+        if (hamburger) hamburger.style.display = '';
+        if (switcherEl) switcherEl.style.display = '';
         if (switcherEl) buildFoleoSwitcher();
         setTimeout(buildFoleoSwitcher, 250);
         scheduleOnce(initFoleoVnavActiveTracking, [0, 500]);
@@ -1665,15 +1804,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const closeBtn = document.querySelector('.foleo-switch__close');
       if (!root || !btn) return;
 
-      const STORAGE_KEY = 'foleoSwitchOpen';
       const setPersistedOpen = (isOpen) => {
         try {
-          window.localStorage.setItem(STORAGE_KEY, isOpen ? '1' : '0');
+          window.localStorage.setItem(FOLEO_SWITCH_OPEN_KEY, isOpen ? '1' : '0');
         } catch (e) {}
       };
 
       try {
-        if (window.localStorage.getItem(STORAGE_KEY) === '1') {
+        if (window.localStorage.getItem(FOLEO_SWITCH_OPEN_KEY) === '1') {
           root.classList.add('is-open');
         }
       } catch (e) {}
@@ -2693,6 +2831,60 @@ function initFoleoDisablePinAfterReady() {
   } else {
     tryInit();
   }
+}
+
+function bindFoleoSwitcherDelegatedHandlers() {
+  if (window.__FOLEO_SWITCH_DELEGATED__) return;
+  window.__FOLEO_SWITCH_DELEGATED__ = true;
+
+  const setFoleoSwitchOpen = (isOpen) => {
+    try {
+      window.localStorage.setItem(FOLEO_SWITCH_OPEN_KEY, isOpen ? '1' : '0');
+    } catch (e) {}
+    const root = document.querySelector('.foleo-switch');
+    if (root) root.classList.toggle('is-open', !!isOpen);
+    document.documentElement.classList.toggle('foleo-switch-open', !!isOpen);
+  };
+
+  const getRoot = () => document.querySelector('.foleo-switch');
+
+  document.addEventListener('click', (e) => {
+    const root = getRoot();
+    if (!root) return;
+
+    const btn = e.target.closest('.foleo-switch__btn');
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      setFoleoSwitchOpen(!root.classList.contains('is-open'));
+      return;
+    }
+
+    const closeBtn = e.target.closest('.foleo-switch__close');
+    if (closeBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      setFoleoSwitchOpen(false);
+      return;
+    }
+
+    const popup = e.target.closest(
+      '.bde-popup, .breakdance-popup, .bde-popup__backdrop, .breakdance-popup__backdrop, ' +
+      '.bde-popup-overlay, .breakdance-popup-overlay, .bde-popup-backdrop, .breakdance-popup-backdrop'
+    );
+    if (popup) return;
+
+    if (root.classList.contains('is-open') && !root.contains(e.target)) {
+      setFoleoSwitchOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const root = getRoot();
+    if (!root) return;
+    setFoleoSwitchOpen(false);
+  });
 }
 
 initFoleoDisablePinAfterReady();

@@ -1,7 +1,24 @@
-/* Macklee: Accordion theme overrides */
+/* Macklee global colors (from Breakdance global-settings.css)
+ *
+ * --bde-brand-primary-color: #fd5108
+ * --bde-brand-primary-color-hover: #fd5108
+ * --bde-body-text-color: var(--bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653)
+ * --bde-headings-color: var(--bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653)
+ * --bde-background-color: var(--bde-palette-color-6-b4e62e38-1309-460d-883f-ef98052f0f6c)
+ * --bde-palette-color-1-9ad3b2d2-e17a-4976-bb72-2049b3715e62: #fff5ed
+ * --bde-palette-color-4-7923a542-82a9-49a7-ba8d-1d57f6bcf6fe: #ffe8d4
+ * --bde-palette-color-5-ac74613b-b7b1-4348-9807-b91507d34464: #c52b09
+ * --bde-palette-color-6-b4e62e38-1309-460d-883f-ef98052f0f6c: #fff
+ * --bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653: #000
+ * --bde-palette-color-8-b10d9036-d000-4a5f-9a44-3a095e61444a: #cbd1d6
+ * --bde-palette-color-9-52532485-fb06-4202-b130-0aedde6a23a9: #787e8a
+ * --bde-palette-color-2-03276616-91d1-4f5c-8620-c1820f7acc8b: #F3F6F7
+ */
+
+/* Macklee: Accordion theme overrides */     
 :root {
-  --foleo-acc-bg: var(--bde-palette-color-2-03276616-91d1-4f5c-8620-c1820f7acc8b);
-  --foleo-acc-open-bg: var(--bde-palette-color-1-9ad3b2d2-e17a-4976-bb72-2049b3715e62);
+  --foleo-acc-bg: var(--bde-palette-color-1-9ad3b2d2-e17a-4976-bb72-2049b3715e62);
+  --foleo-acc-open-bg: var(--bde-palette-color-2-03276616-91d1-4f5c-8620-c1820f7acc8b);
   --foleo-acc-line: var(--white);
   --foleo-acc-title-color: var(--bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653);
   --foleo-acc-body-color: var(--bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653);
@@ -11,42 +28,35 @@
   --foleo-acc-chevron: var(--bde-palette-color-7-ada10e55-cb0f-47d6-aab3-aa23fa539653);
 }
 
-@media (max-width: 768px) {
-  .foleo-accordion-mobile,
-  .foleo-accordion-mobile--light {
-    --accordion-line-color: var(--foleo-acc-line);
-    --accordion-closed-bg: var(--foleo-acc-bg);
-    --accordion-open-bg: var(--foleo-acc-open-bg);
+@media (max-width: 768px) {  
+
+  .foleo-accordion-mobile--light .foleo-accordion-block,
+  .foleo-accordion-block.foleo-accordion-mobile--light {
+    --accordion-line-color: var(--foleo-acc-line)!important;
+    --accordion-open-bg: var(--foleo-acc-open-bg)!important;
     --accordion-closed-text: var(--foleo-acc-title-color);
     --accordion-open-text: var(--foleo-acc-body-color);
   }
-.foleo-accordion-mobile .bde-column {
-    border-bottom: var(--foleo-acc-line-weight) solid var(--foleo-acc-line);
+
+  .foleo-accordion-block .bde-column { 
+    background-color: var(--foleo-acc-bg)!important;
+
   }
 
-  .foleo-accordion-mobile .foleo-accordion-first {
-    border-top: var(--foleo-acc-line-weight) solid var(--foleo-acc-line);
+  .foleo-accordion-mobile--dark .foleo-accordion-block,
+  .foleo-accordion-block.foleo-accordion-mobile--dark {
+    --accordion-line-color: var(--foleo-acc-open-bg)!important;
+    --accordion-closed-text: #ffffff;
+    --accordion-open-bg: #ffffff;
+    --accordion-open-text: var(--foleo-acc-body-color);
+    --foleo-acc-chevron: var(--bde-links-color);
   }
-  .foleo-accordion-mobile .bde-column {
-    background-color: var(--foleo-acc-bg) !important;
-  }
-
-  .foleo-accordion-mobile .bde-column.is-open .foleo-accordion__header,
-  .foleo-accordion-mobile .bde-column.is-open .foleo-accordion__content {
-    background-color: var(--foleo-acc-open-bg) !important;
-  }
-
-  .foleo-accordion-mobile .foleo-accordion__header {
+  .foleo-accordion-block .foleo-accordion__header {
     color: var(--foleo-acc-title-color);
     font-size: var(--foleo-acc-title-size);
   }
 
-  .foleo-accordion-mobile .foleo-accordion__header::after {
-    border-right-color: var(--foleo-acc-chevron);
-    border-bottom-color: var(--foleo-acc-chevron);
-  }
-
-  .foleo-accordion-mobile .foleo-accordion__content {
+  .foleo-accordion-block .foleo-accordion__content {
     color: var(--foleo-acc-body-color);
     font-size: var(--foleo-acc-body-size);
   }
