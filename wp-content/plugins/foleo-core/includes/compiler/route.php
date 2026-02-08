@@ -114,5 +114,5 @@ add_action('wp_footer', function () {
     return;
   }
 
-  echo '<script>(function(){try{var path="/compiler/' . $id . '";if(window.location.pathname!==path){window.history.replaceState({},"",path+window.location.search+window.location.hash);}}catch(e){}})();</script>';
+  echo '<script>(function(){try{var path="/compiler/' . $id . '";if(window.location.pathname!==path){window.history.replaceState({},"",path);}}catch(e){}})();</script>';
 }, 1000);

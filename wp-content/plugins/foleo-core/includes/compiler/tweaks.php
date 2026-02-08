@@ -4,46 +4,43 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-if (!function_exists('foleo_is_client_user')) {
-  function foleo_is_client_user() {
-    return current_user_can('edit_posts') && !current_user_can('manage_options');
-  }
-}
-
-function foleo_is_breakdance_builder_context() {
-  if (defined('BREAKDANCE_IS_EDITING') && BREAKDANCE_IS_EDITING) {
-    return true;
-  }
-
-  if (!empty($_GET['breakdance']) && $_GET['breakdance'] === 'builder') {
-    return true;
-  }
-
-  if (!empty($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'breakdance=builder') !== false) {
-    return true;
-  }
-
-  return false;
-}
-
 function foleo_enqueue_compiler_tweaks_assets() {
-  if (!foleo_is_breakdance_builder_context()) {
+  if (!foleo_is_compiler_request()) {
     return;
   }
 
-  if (!foleo_is_client_user()) {
+  if (!foleo_is_client_editor()) {
     return;
   }
 
-  $base_url = plugin_dir_url(__FILE__) . '../assets/js/';
   wp_enqueue_script(
-    'foleo-compiler',
-    $base_url . 'foleo-compiler.js',
+    'foleo-compiler-tweaks',
+    foleo_core_asset_url('assets/js/compiler-tweaks.js'),
     array(),
     FOLEO_CORE_VERSION,
     true
   );
+
+  wp_localize_script(
+    'foleo-compiler-tweaks',
+    'FOLEO_COMPILER_TWEAKS',
+    array(
+      'exitUrl' => admin_url('edit.php?post_type=page'),
+    )
+  );
+
+  wp_add_inline_script(
+    'foleo-compiler-tweaks',
+    'window.__FOLEO_TWEAKS_LOADED__=true;',
+    'after'
+  );
+
+  wp_enqueue_style(
+    'foleo-compiler-tweaks',
+    foleo_core_asset_url('assets/css/compiler-tweaks.css'),
+    array(),
+    FOLEO_CORE_VERSION
+  );
 }
 
-add_action('admin_enqueue_scripts', 'foleo_enqueue_compiler_tweaks_assets');
 add_action('wp_enqueue_scripts', 'foleo_enqueue_compiler_tweaks_assets');

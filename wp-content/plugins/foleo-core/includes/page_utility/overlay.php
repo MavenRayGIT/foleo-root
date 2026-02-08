@@ -44,18 +44,16 @@ add_action('wp_enqueue_scripts', function () {
     return;
   }
 
-  $base_url = plugin_dir_url(__FILE__) . '../assets/';
-
   wp_enqueue_style(
     'foleo-compiler-utility',
-    $base_url . 'css/foleo-compiler-utility.css',
+    foleo_core_asset_url('assets/css/compiler-utility.css'),
     array(),
     FOLEO_CORE_VERSION
   );
 
   wp_enqueue_script(
     'foleo-compiler-utility',
-    $base_url . 'js/foleo-compiler-utility.js',
+    foleo_core_asset_url('assets/js/compiler-utility.js'),
     array(),
     FOLEO_CORE_VERSION,
     true

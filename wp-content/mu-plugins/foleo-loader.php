@@ -7,11 +7,10 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-if (defined('FOLEO_CORE_LOADED')) {
+$plugin_main = WP_CONTENT_DIR . '/plugins/foleo-core/foleo-core.php';
+if (file_exists($plugin_main)) {
+  require_once $plugin_main;
   return;
 }
 
-$plugin_file = WP_CONTENT_DIR . '/plugins/foleo-core/foleo-core.php';
-if (file_exists($plugin_file)) {
-  require_once $plugin_file;
-}
+return;
