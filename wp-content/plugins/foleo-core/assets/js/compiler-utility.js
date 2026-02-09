@@ -134,24 +134,8 @@
     }
   };
 
-  const getToolbarOffset = () => {
-    const toolbar = document.querySelector('#app, .bd-builder, body');
-    const firstButton = document.querySelector('button, a');
-    let top = 0;
-    if (firstButton) {
-      const rect = firstButton.getBoundingClientRect();
-      if (rect && rect.top >= 0 && rect.top <= 40) {
-        top = Math.ceil(rect.top + rect.height + 8);
-      }
-    }
-    if (!top) {
-      top = 48;
-    }
-    return top;
-  };
-
   const applyToolbarOffset = () => {
-    const offset = getToolbarOffset();
+    const offset = 55;
     container.style.setProperty('--foleo-toolbar-offset', `${offset}px`);
     scrim.style.setProperty('--foleo-toolbar-offset', `${offset}px`);
   };
@@ -187,46 +171,71 @@
   const toolbarWrap = document.createElement('div');
   toolbarWrap.className = 'foleo-compiler-toolbar-wrap';
   toolbarWrap.appendChild(toolbarButton);
-  document.body.appendChild(toolbarWrap);
 
-  const positionToolbarButton = () => {
-    const candidates = Array.from(document.querySelectorAll('button, a'))
-      .map((el) => ({ el, rect: el.getBoundingClientRect() }))
-      .filter(({ rect }) =>
-        rect.width >= 20 &&
-        rect.width <= 48 &&
-        rect.height >= 20 &&
-        rect.height <= 48 &&
-        rect.top >= 0 &&
-        rect.top <= 80 &&
-        rect.left >= 0 &&
-        rect.left <= 160
-      )
-      .sort((a, b) => a.rect.left - b.rect.left);
+  const attachToToolbar = () => {
+    const toolbar = document.querySelector('.v-toolbar__content');
+    if (!toolbar) return false;
 
-    if (candidates.length >= 2) {
-      const anchor = candidates[1].rect;
-      toolbarWrap.style.left = `${Math.round(anchor.right + 8)}px`;
-      toolbarWrap.style.top = `${Math.round(anchor.top)}px`;
-      return;
+    toolbarWrap.classList.remove('is-floating');
+    toolbarWrap.classList.add('topbar-section', 'topbar-section-br');
+
+    const children = Array.from(toolbar.children);
+    if (children.length >= 5) {
+      const anchor = children[4];
+      if (anchor.parentNode) {
+        anchor.parentNode.insertBefore(toolbarWrap, anchor.nextSibling);
+        return true;
+      }
     }
 
-    // Fallback placement.
-    toolbarWrap.style.left = '84px';
-    toolbarWrap.style.top = '12px';
+    toolbar.appendChild(toolbarWrap);
+    return true;
+  };
+
+  const positionToolbarButton = () => {
+    toolbarWrap.classList.add('is-floating');
+    if (!document.body.contains(toolbarWrap)) {
+      document.body.appendChild(toolbarWrap);
+    }
   };
 
   const schedulePosition = () => {
     window.requestAnimationFrame(positionToolbarButton);
   };
 
+  let attached = false;
+  const tryAttach = () => {
+    if (attached) return true;
+    if (attachToToolbar()) {
+      attached = true;
+      return true;
+    }
+    return false;
+  };
+
   schedulePosition();
   applyToolbarOffset();
-  window.addEventListener('resize', schedulePosition);
-  window.addEventListener('scroll', schedulePosition, { passive: true });
+  if (!tryAttach()) {
+    positionToolbarButton();
+  }
 
-  const observer = new MutationObserver(schedulePosition);
-  observer.observe(document.body, { childList: true, subtree: true });
+  const attachInterval = window.setInterval(() => {
+    if (tryAttach()) {
+      window.clearInterval(attachInterval);
+    }
+  }, 100);
+
+  window.setTimeout(() => {
+    if (!tryAttach()) {
+      positionToolbarButton();
+    }
+  }, 600);
+
+  window.addEventListener('resize', () => {
+    if (!attached) {
+      positionToolbarButton();
+    }
+  });
 
   saveBtn.addEventListener('click', save);
 

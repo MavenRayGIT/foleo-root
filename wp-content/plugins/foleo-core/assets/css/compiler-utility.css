@@ -1,3 +1,9 @@
+.foleo-compiler-theme {
+  --blue600: #2563eb;
+  --blue50: #eff6ff;
+  --gray100: #f3f4f6;
+}
+
 .foleo-compiler-utility {
   position: fixed;
   left: 0;
@@ -124,40 +130,54 @@
 }
 
 .foleo-compiler-toolbar-wrap {
+  position: relative;
+  pointer-events: auto;
+}
+.foleo-compiler-toolbar-wrap.is-floating {
   position: fixed;
   z-index: 9999;
   pointer-events: none;
+  right: 12px;
+  top: 12px;
 }
 
 .foleo-compiler-toolbar-button {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: 1px solid var(--foleo-control-border, #e3e6ea);
+  position: relative;
+  width: 41px;
+  height: 41px;
+  border-radius: 3px;
+  border: 0px solid var(--foleo-control-border, #e3e6ea);
   background: var(--foleo-control-bg, #fff);
-  box-shadow: var(--foleo-control-shadow, 0 1px 2px rgba(0,0,0,0.06));
   cursor: pointer;
   pointer-events: auto;
-  background-image: url("https://foleo.co/wp-content/uploads/SVG/Foleo-Config-Icon1.svg");
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-size: 16px 16px;
+  background-image: none;
+}
+.foleo-compiler-toolbar-button::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  background-color: var(--black, #000);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cline x1='4' y1='6' x2='20' y2='6' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='9' cy='6' r='2' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Cline x1='4' y1='12' x2='20' y2='12' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='15' cy='12' r='2' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Cline x1='4' y1='18' x2='20' y2='18' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='11' cy='18' r='2' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat 50% 50% / 20px 20px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cline x1='4' y1='6' x2='20' y2='6' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='9' cy='6' r='2' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Cline x1='4' y1='12' x2='20' y2='12' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='15' cy='12' r='2' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Cline x1='4' y1='18' x2='20' y2='18' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='11' cy='18' r='2' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat 50% 50% / 20px 20px;
 }
 
 .foleo-compiler-toolbar-button:hover {
-  background-color: var(--foleo-control-bg-hover, #F0F6FF);
-  border-color: var(--foleo-accent, #2663EB);
+  background-color: var(--gray100);
+  border-color: none;
 }
 
 .foleo-compiler-toolbar-button:focus {
-  outline: 2px solid var(--foleo-accent, #2663EB);
-  outline-offset: 2px;
+  outline: none;
+  outline-offset: none;
 }
 
 .foleo-compiler-toolbar-button.is-active {
-  background-color: var(--foleo-control-bg-hover, #F0F6FF);
-  border-color: var(--foleo-accent, #2663EB);
-  box-shadow: 0 0 0 2px rgba(38, 99, 235, 0.15);
+  background-color: var(--blue50);
+  border-color: none;
+  box-shadow: none;
+}
+.foleo-compiler-toolbar-button.is-active::before {
+  background-color: var(--blue600);
 }
 
 @media (prefers-reduced-motion: reduce) {
