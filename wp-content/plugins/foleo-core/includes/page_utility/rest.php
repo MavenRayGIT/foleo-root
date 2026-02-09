@@ -10,7 +10,7 @@ function foleo_compiler_allowed_meta_keys() {
     'foleo_fade_img_2',
     'foleo_fade_img_3',
     'foleo_cf_stream_id',
-    'foleo_cf_poster'
+    'foleo_poster'
   );
   return apply_filters('foleo_compiler_allowed_meta_keys', $keys);
 }

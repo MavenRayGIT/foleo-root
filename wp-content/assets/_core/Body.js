@@ -39,6 +39,19 @@
   window.FOLEO_DEBUG = enabled;
 })();
 
+if (typeof window !== "undefined") {
+  const path = window.location?.pathname || "";
+  const search = window.location?.search || "";
+  const isCompiler = path.startsWith("/compiler/");
+  const isBuilder = search.includes("breakdance=builder");
+  const isIframe = search.includes("breakdance_iframe");
+  if (isCompiler || isBuilder || isIframe) {
+    console.log("[FOLEO] Body.js disabled on compiler/builder", { path, search });
+    window.FOLEO_SKIP_BODY_JS = true;
+  }
+}
+
+if (!window.FOLEO_SKIP_BODY_JS) {
 console.log("[FOLEO] Body.js boot", {
   host: location.hostname,
   path: location.pathname,
@@ -77,6 +90,7 @@ const FOLEO_ASSETS_BASE_URL = (() => {
   if (!base.endsWith('/')) base += '/';
   return base;
 })();
+}
 
 function loadNavRegistrySync() {
   return window.__FOLEO_NAV_REGISTRY__ || null;
@@ -1875,46 +1889,60 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })();
 
-    const iframes = document.querySelectorAll('iframe[class*="vid"]');
-    if (iframes.length) {
-      const script = document.createElement("script");
-      script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
-      script.async = true;
+    const shouldSkipCfStream = (() => {
+      try {
+        const path = window.location && window.location.pathname ? window.location.pathname : "";
+        const search = window.location && window.location.search ? window.location.search : "";
+        const isCompiler = path.indexOf("/compiler/") === 0;
+        const isBuilder = search.indexOf("breakdance=builder") !== -1;
+        const isIframe = search.indexOf("breakdance_iframe") !== -1 || search.indexOf("breakdance_open_document") !== -1;
+        return isCompiler || isBuilder || isIframe;
+      } catch (e) {
+        return false;
+      }
+    })();
 
-      script.addEventListener("load", () => {
-        if (typeof Stream !== "function") return;
+    if (!shouldSkipCfStream) {
+      const iframes = document.querySelectorAll('iframe[class*="vid"]');
+      if (iframes.length) {
+        const script = document.createElement("script");
+        script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
+        script.async = true;
 
-        const players = [];
+        script.addEventListener("load", () => {
+          if (typeof Stream !== "function") return;
 
-        iframes.forEach((iframe) => {
-          const card = iframe.closest(".cf-card");
-          if (!card) return;
+          const players = [];
 
-          const player = Stream(iframe);
-          if (!player || !player.addEventListener) return;
+          iframes.forEach((iframe) => {
+            const card = iframe.closest(".cf-card");
+            if (!card) return;
 
-          players.push({ player, card });
+            const player = Stream(iframe);
+            if (!player || !player.addEventListener) return;
 
-          player.addEventListener("play", () => {
-            // Pause all other videos
-            players.forEach(({ player: p, card: c }) => {
-              if (p !== player) {
-                try { p.pause(); } catch (e) {}
-                c.classList.remove("is-playing");
-              }
+            players.push({ player, card });
+
+            player.addEventListener("play", () => {
+              // Pause all other videos
+              players.forEach(({ player: p, card: c }) => {
+                if (p !== player) {
+                  try { p.pause(); } catch (e) {}
+                  c.classList.remove("is-playing");
+                }
+              });
+
+              card.classList.add("is-playing");
             });
 
-            card.classList.add("is-playing");
+            const clear = () => card.classList.remove("is-playing");
+            player.addEventListener("pause", clear);
+            player.addEventListener("ended", clear);
           });
-
-          const clear = () => card.classList.remove("is-playing");
-          player.addEventListener("pause", clear);
-          player.addEventListener("ended", clear);
         });
-      });
 
-      document.head.appendChild(script);
-    }
+        document.head.appendChild(script);
+      }
 
     function initCfStreamPlaceholders() {
       const placeholders = document.querySelectorAll(".cf-stream-placeholder");
@@ -2477,7 +2505,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    initCfStreamPlaceholders();
+      initCfStreamPlaceholders();
 
     // Vidstack Stream Replacement (legacy path for non-CX pages)
     const playingPlayers = new Set();
@@ -2751,27 +2779,28 @@ document.addEventListener('DOMContentLoaded', () => {
       observer.observe(document.body, { childList: true, subtree: true });
     };
 
-    runLegacyInit();
+      runLegacyInit();
 
-    let scrollTicking = false;
-    window.addEventListener("scroll", () => {
-      if (scrollTicking) return;
-      scrollTicking = true;
-      window.requestAnimationFrame(() => {
-        scrollTicking = false;
-        if (!playingPlayers.size) return;
+      let scrollTicking = false;
+      window.addEventListener("scroll", () => {
+        if (scrollTicking) return;
+        scrollTicking = true;
+        window.requestAnimationFrame(() => {
+          scrollTicking = false;
+          if (!playingPlayers.size) return;
 
-        playingPlayers.forEach((player) => {
-          const rect = player.getBoundingClientRect();
-          const height = rect.height || 0;
-          if (!height) return;
-          const threshold = height * 0.3;
-          if (rect.top < -threshold || rect.bottom > window.innerHeight + threshold) {
-            if (typeof player.pause === "function") player.pause();
-          }
+          playingPlayers.forEach((player) => {
+            const rect = player.getBoundingClientRect();
+            const height = rect.height || 0;
+            if (!height) return;
+            const threshold = height * 0.3;
+            if (rect.top < -threshold || rect.bottom > window.innerHeight + threshold) {
+              if (typeof player.pause === "function") player.pause();
+            }
+          });
         });
-      });
-    }, { passive: true });
+      }, { passive: true });
+    }
   }
 });
 

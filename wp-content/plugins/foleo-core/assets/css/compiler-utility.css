@@ -4,11 +4,12 @@
   bottom: 16px;
   width: 280px;
   max-width: 90vw;
-  background: #111;
-  color: #fff;
-  font: 13px/1.4 sans-serif;
+  background: var(--foleo-overlay-bg, #111);
+  color: var(--foleo-text, #fff);
+  font: var(--foleo-font-size-base, 13px)/var(--foleo-line-height, 1.4) var(--foleo-font-family, sans-serif);
   border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  border: 1px solid var(--foleo-overlay-border, rgba(255,255,255,0.08));
+  box-shadow: var(--foleo-shadow-panel, 0 10px 30px rgba(0,0,0,0.35));
   z-index: 2147483600;
 }
 
@@ -17,21 +18,29 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid var(--foleo-border-subtle, rgba(255,255,255,0.1));
 }
 
 .foleo-compiler-utility__title {
-  font-weight: 600;
+  font-weight: var(--foleo-font-weight-semibold, 600);
+  color: var(--foleo-heading, inherit);
 }
 
 .foleo-compiler-utility__toggle {
-  background: #222;
+  background: var(--foleo-control-bg, #222);
   border: 0;
-  color: #fff;
-  width: 26px;
-  height: 26px;
-  border-radius: 4px;
+  color: var(--foleo-text, #fff);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   cursor: pointer;
+  position: relative;
+}
+.foleo-compiler-utility__toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3.2'/%3E%3Cpath d='M19.4 15a1 1 0 0 0 .2-1.1l-1-1.8a7.8 7.8 0 0 0 .1-1.8l1-1.8a1 1 0 0 0-.2-1.1l-1.5-1.5a1 1 0 0 0-1.1-.2l-1.8 1a7.8 7.8 0 0 0-1.8-.1l-1.8-1a1 1 0 0 0-1.1.2l-1.5 1.5a1 1 0 0 0-.2 1.1l1 1.8a7.8 7.8 0 0 0-.1 1.8l-1 1.8a1 1 0 0 0 .2 1.1l1.5 1.5a1 1 0 0 0 1.1.2l1.8-1c.6.1 1.2.1 1.8.1l1.8 1a1 1 0 0 0 1.1-.2l1.5-1.5z'/%3E%3C/svg%3E") no-repeat 50% 50% / 16px 16px;
 }
 
 .foleo-compiler-utility__body {
@@ -50,16 +59,16 @@
 }
 
 .foleo-compiler-utility__row label {
-  font-size: 11px;
-  opacity: 0.7;
+  font-size: var(--foleo-font-size-sm, 11px);
+  color: var(--foleo-text-muted, rgba(255,255,255,0.7));
 }
 
 .foleo-compiler-utility__row input,
 .foleo-compiler-utility__row select {
-  background: #1c1c1c;
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #fff;
-  border-radius: 4px;
+  background: var(--foleo-control-bg, #1c1c1c);
+  border: 1px solid var(--foleo-control-border, rgba(255,255,255,0.1));
+  color: var(--foleo-control-text, #fff);
+  border-radius: var(--foleo-radius-sm, 4px);
   padding: 6px 8px;
 }
 
@@ -70,17 +79,17 @@
 }
 
 .foleo-compiler-utility__save {
-  background: #fff;
-  color: #111;
+  background: var(--foleo-accent, #fff);
+  color: var(--foleo-accent-contrast, #111);
   border: 0;
   padding: 6px 10px;
-  border-radius: 4px;
+  border-radius: var(--foleo-radius-sm, 4px);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--foleo-font-weight-semibold, 600);
 }
 
 .foleo-compiler-utility__status {
-  font-size: 11px;
+  font-size: var(--foleo-font-size-sm, 11px);
   opacity: 0.85;
 }
 
@@ -90,4 +99,41 @@
 
 .foleo-compiler-utility__status[data-type="success"] {
   color: #7cf59a;
+}
+
+.foleo-compiler-toolbar-wrap {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.foleo-compiler-toolbar-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--foleo-control-border, #e3e6ea);
+  background: var(--foleo-control-bg, #fff);
+  box-shadow: var(--foleo-control-shadow, 0 1px 2px rgba(0,0,0,0.06));
+  cursor: pointer;
+  pointer-events: auto;
+  background-image: url("https://foleo.co/wp-content/uploads/SVG/Foleo-Config-Icon1.svg");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 16px 16px;
+}
+
+.foleo-compiler-toolbar-button:hover {
+  background-color: var(--foleo-control-bg-hover, #F0F6FF);
+  border-color: var(--foleo-accent, #2663EB);
+}
+
+.foleo-compiler-toolbar-button:focus {
+  outline: 2px solid var(--foleo-accent, #2663EB);
+  outline-offset: 2px;
+}
+
+.foleo-compiler-toolbar-button.is-active {
+  background-color: var(--foleo-control-bg-hover, #F0F6FF);
+  border-color: var(--foleo-accent, #2663EB);
+  box-shadow: 0 0 0 2px rgba(38, 99, 235, 0.15);
 }

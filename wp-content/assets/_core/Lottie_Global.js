@@ -1,4 +1,14 @@
 (function () {
+  try {
+    var path = window.location && window.location.pathname ? window.location.pathname : "";
+    var search = window.location && window.location.search ? window.location.search : "";
+    var isCompiler = path.indexOf("/compiler/") === 0;
+    var isBuilder = search.indexOf("breakdance=builder") !== -1;
+    var isIframe = search.indexOf("breakdance_iframe") !== -1;
+    if (isCompiler || isBuilder || isIframe) {
+      return;
+    }
+  } catch (e) {}
   "use strict";
 
   function isEditMode() {

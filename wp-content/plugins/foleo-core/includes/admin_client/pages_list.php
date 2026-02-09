@@ -13,7 +13,7 @@ function foleo_get_compiler_url($post_id) {
 }
 
 function foleo_client_page_row_actions($actions, $post) {
-  if (!foleo_is_client_editor()) {
+  if (!foleo_is_client_shell_context()) {
     return $actions;
   }
 
@@ -31,7 +31,7 @@ add_filter('page_row_actions', 'foleo_client_page_row_actions', 999, 2);
 add_filter('post_row_actions', 'foleo_client_page_row_actions', 999, 2);
 
 add_filter('get_edit_post_link', function ($link, $post_id, $context) {
-  if (!foleo_is_client_editor()) {
+  if (!foleo_is_client_shell_context()) {
     return $link;
   }
 
@@ -43,7 +43,7 @@ add_filter('get_edit_post_link', function ($link, $post_id, $context) {
 }, 10, 3);
 
 add_filter('display_post_states', function ($post_states, $post) {
-  if (!foleo_is_client_editor()) {
+  if (!foleo_is_client_shell_context()) {
     return $post_states;
   }
 
@@ -59,3 +59,27 @@ add_filter('display_post_states', function ($post_states, $post) {
 
   return $post_states;
 }, 999, 2);
+
+add_action('admin_head', function () {
+  if (!foleo_is_client_shell_context()) {
+    return;
+  }
+
+  global $pagenow;
+  if ($pagenow !== 'edit.php') {
+    return;
+  }
+
+  if (empty($_GET['post_type']) || $_GET['post_type'] !== 'page') {
+    return;
+  }
+
+  echo '<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var heading = document.querySelector(".wrap .wp-heading-inline");
+      if (heading && heading.textContent) {
+        heading.textContent = "My Foleos";
+      }
+    });
+  </script>';
+});

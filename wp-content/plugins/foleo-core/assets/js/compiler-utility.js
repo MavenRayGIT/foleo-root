@@ -5,11 +5,11 @@
   const apiUrl = `${cfg.restBase}${cfg.postId}`;
 
   const container = document.createElement('div');
-  container.className = 'foleo-compiler-utility';
+  container.className = 'foleo-compiler-utility foleo-compiler-theme';
   container.innerHTML = `
     <div class="foleo-compiler-utility__header">
-      <div class="foleo-compiler-utility__title">FOLEO Utility</div>
-      <button type="button" class="foleo-compiler-utility__toggle">-</button>
+      <div class="foleo-compiler-utility__title">Properties</div>
+      <button type="button" class="foleo-compiler-utility__toggle" aria-label="Toggle Properties"></button>
     </div>
     <div class="foleo-compiler-utility__body">
       <div class="foleo-compiler-utility__row">
@@ -130,10 +130,65 @@
     }
   };
 
-  toggleBtn.addEventListener('click', () => {
+  const togglePanel = () => {
     const isHidden = bodyEl.classList.toggle('is-hidden');
-    toggleBtn.textContent = isHidden ? '+' : '-';
+    container.classList.toggle('is-collapsed', isHidden);
+    toolbarButton.classList.toggle('is-active', !isHidden);
+  };
+
+  toggleBtn.addEventListener('click', togglePanel);
+
+  const toolbarButton = document.createElement('button');
+  toolbarButton.type = 'button';
+  toolbarButton.className = 'foleo-compiler-toolbar-button';
+  toolbarButton.setAttribute('aria-label', 'FOLEO Properties');
+  toolbarButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    togglePanel();
   });
+
+  const toolbarWrap = document.createElement('div');
+  toolbarWrap.className = 'foleo-compiler-toolbar-wrap';
+  toolbarWrap.appendChild(toolbarButton);
+  document.body.appendChild(toolbarWrap);
+
+  const positionToolbarButton = () => {
+    const candidates = Array.from(document.querySelectorAll('button, a'))
+      .map((el) => ({ el, rect: el.getBoundingClientRect() }))
+      .filter(({ rect }) =>
+        rect.width >= 20 &&
+        rect.width <= 48 &&
+        rect.height >= 20 &&
+        rect.height <= 48 &&
+        rect.top >= 0 &&
+        rect.top <= 80 &&
+        rect.left >= 0 &&
+        rect.left <= 160
+      )
+      .sort((a, b) => a.rect.left - b.rect.left);
+
+    if (candidates.length >= 2) {
+      const anchor = candidates[1].rect;
+      toolbarWrap.style.left = `${Math.round(anchor.right + 8)}px`;
+      toolbarWrap.style.top = `${Math.round(anchor.top)}px`;
+      return;
+    }
+
+    // Fallback placement.
+    toolbarWrap.style.left = '84px';
+    toolbarWrap.style.top = '12px';
+  };
+
+  const schedulePosition = () => {
+    window.requestAnimationFrame(positionToolbarButton);
+  };
+
+  schedulePosition();
+  window.addEventListener('resize', schedulePosition);
+  window.addEventListener('scroll', schedulePosition, { passive: true });
+
+  const observer = new MutationObserver(schedulePosition);
+  observer.observe(document.body, { childList: true, subtree: true });
 
   saveBtn.addEventListener('click', save);
 

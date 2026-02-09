@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 }
 
 add_action('admin_init', function () {
-  if (!foleo_is_client_editor()) {
+  if (!foleo_is_client_shell_context()) {
     return;
   }
 

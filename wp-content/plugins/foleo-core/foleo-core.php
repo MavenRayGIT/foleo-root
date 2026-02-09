@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FOLEO Core
  * Description: Core FOLEO utilities and compiler/builder tooling.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Network: true
  */
 
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('FOLEO_CORE_VERSION')) {
-  define('FOLEO_CORE_VERSION', '0.1.0');
+  define('FOLEO_CORE_VERSION', '0.1.5');
 }
 
 if (!defined('FOLEO_CORE_FILE')) {
@@ -57,8 +57,11 @@ foleo_core_require($foleo_core_dir . 'includes/page_utility/overlay.php');
 
 foleo_core_require($foleo_core_dir . 'includes/admin_client/menus.php');
 foleo_core_require($foleo_core_dir . 'includes/admin_client/pages_list.php');
+foleo_core_require($foleo_core_dir . 'includes/admin_client/search_visibility.php');
 foleo_core_require($foleo_core_dir . 'includes/admin_client/editor_block.php');
 foleo_core_require($foleo_core_dir . 'includes/admin_client/profile.php');
+foleo_core_require($foleo_core_dir . 'includes/admin_client/settings.php');
+foleo_core_require($foleo_core_dir . 'includes/admin_client/theme.php');
 
 foleo_core_require($foleo_core_dir . 'includes/binder/schema.php');
 foleo_core_require($foleo_core_dir . 'includes/binder/rest.php');

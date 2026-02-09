@@ -46,3 +46,25 @@ if (!function_exists('foleo_is_builder_request')) {
     return false;
   }
 }
+
+if (!function_exists('foleo_client_shell_enabled')) {
+  function foleo_client_shell_enabled() {
+    $enabled = true;
+    if (defined('FOLEO_CLIENT_SHELL_ENABLED')) {
+      $enabled = (bool) FOLEO_CLIENT_SHELL_ENABLED;
+    }
+    return (bool) apply_filters('foleo_client_shell_enabled', $enabled);
+  }
+}
+
+if (!function_exists('foleo_is_client_shell_context')) {
+  function foleo_is_client_shell_context() {
+    if (!is_admin() || is_network_admin()) {
+      return false;
+    }
+    if (!foleo_is_client_editor()) {
+      return false;
+    }
+    return foleo_client_shell_enabled();
+  }
+}
