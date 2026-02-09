@@ -199,6 +199,7 @@ add_action('admin_enqueue_scripts', function ($hook_suffix) {
     array(),
     FOLEO_CORE_VERSION
   );
+
 }, 20);
 
 add_filter('manage_edit-page_columns', function ($columns) {

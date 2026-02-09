@@ -39,6 +39,10 @@
     </div>
   `;
 
+  const scrim = document.createElement('div');
+  scrim.className = 'foleo-compiler-utility__scrim';
+
+  document.body.appendChild(scrim);
   document.body.appendChild(container);
 
   const bodyEl = container.querySelector('.foleo-compiler-utility__body');
@@ -130,13 +134,46 @@
     }
   };
 
+  const getToolbarOffset = () => {
+    const toolbar = document.querySelector('#app, .bd-builder, body');
+    const firstButton = document.querySelector('button, a');
+    let top = 0;
+    if (firstButton) {
+      const rect = firstButton.getBoundingClientRect();
+      if (rect && rect.top >= 0 && rect.top <= 40) {
+        top = Math.ceil(rect.top + rect.height + 8);
+      }
+    }
+    if (!top) {
+      top = 48;
+    }
+    return top;
+  };
+
+  const applyToolbarOffset = () => {
+    const offset = getToolbarOffset();
+    container.style.setProperty('--foleo-toolbar-offset', `${offset}px`);
+    scrim.style.setProperty('--foleo-toolbar-offset', `${offset}px`);
+  };
+
+  const setOpen = (open) => {
+    applyToolbarOffset();
+    container.classList.toggle('is-open', open);
+    scrim.classList.toggle('is-open', open);
+    toolbarButton.classList.toggle('is-active', open);
+  };
+
   const togglePanel = () => {
-    const isHidden = bodyEl.classList.toggle('is-hidden');
-    container.classList.toggle('is-collapsed', isHidden);
-    toolbarButton.classList.toggle('is-active', !isHidden);
+    setOpen(!container.classList.contains('is-open'));
   };
 
   toggleBtn.addEventListener('click', togglePanel);
+  scrim.addEventListener('click', () => setOpen(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      setOpen(false);
+    }
+  });
 
   const toolbarButton = document.createElement('button');
   toolbarButton.type = 'button';
@@ -184,6 +221,7 @@
   };
 
   schedulePosition();
+  applyToolbarOffset();
   window.addEventListener('resize', schedulePosition);
   window.addEventListener('scroll', schedulePosition, { passive: true });
 
@@ -193,4 +231,6 @@
   saveBtn.addEventListener('click', save);
 
   load();
+
+  setOpen(false);
 })();

@@ -105,7 +105,11 @@ add_action('admin_head', function () {
     return;
   }
 
-  $vars = foleo_admin_theme_get_css_vars();
+  $tokens = foleo_admin_theme_get_tokens();
+  $tokens['foleo-bg'] = '#f2f4f7';
+  $tokens['foleo-text'] = '#0f172a';
+  $tokens['foleo-accent'] = 'rgb(37, 99, 235)';
+  $vars = foleo_admin_theme_compile_css_vars($tokens);
   if (!$vars) {
     return;
   }
@@ -119,6 +123,19 @@ add_action('admin_head', function () {
     }
   </style>';
 });
+
+add_action('admin_enqueue_scripts', function () {
+  if (!foleo_is_client_shell_context()) {
+    return;
+  }
+
+  wp_enqueue_style(
+    'foleo-admin-client',
+    foleo_core_asset_url('assets/css/admin-client.css'),
+    array(),
+    FOLEO_CORE_VERSION
+  );
+}, 20);
 
 add_filter('admin_body_class', function ($classes) {
   if (!foleo_is_client_shell_context()) {

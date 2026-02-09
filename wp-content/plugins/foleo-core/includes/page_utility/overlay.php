@@ -106,12 +106,24 @@ function foleo_output_compiler_utility_in_builder_shell() {
     'metaFields' => foleo_compiler_meta_field_labels()
   ));
 
-  $script_url = esc_url(foleo_core_asset_url('assets/js/compiler-utility.js'));
-  $style_url = esc_url(foleo_core_asset_url('assets/css/compiler-utility.css'));
+  $script_url = esc_url(foleo_compiler_versioned_asset_url('assets/js/compiler-utility.js'));
+  $style_url = esc_url(foleo_compiler_versioned_asset_url('assets/css/compiler-utility.css'));
 
   echo '<script>window.FOLEO_COMPILER_UTILITY=' . $config . ';</script>';
   echo '<link rel="stylesheet" href="' . $style_url . '" />';
   echo '<script src="' . $script_url . '"></script>';
+}
+
+function foleo_compiler_versioned_asset_url($path) {
+  $url = foleo_core_asset_url($path);
+  if (!$url) {
+    return $url;
+  }
+  $ver = defined('FOLEO_CORE_VERSION') ? FOLEO_CORE_VERSION : '';
+  if ($ver === '') {
+    return $url;
+  }
+  return add_query_arg('ver', $ver, $url);
 }
 
 add_action(

@@ -66,8 +66,8 @@ function foleo_output_compiler_tweaks_in_builder_shell() {
     )
   );
 
-  $script_url = esc_url(foleo_core_asset_url('assets/js/compiler-tweaks.js'));
-  $style_url = esc_url(foleo_core_asset_url('assets/css/compiler-tweaks.css'));
+  $script_url = esc_url(foleo_compiler_versioned_asset_url('assets/js/compiler-tweaks.js'));
+  $style_url = esc_url(foleo_compiler_versioned_asset_url('assets/css/compiler-tweaks.css'));
 
   echo '<script>window.FOLEO_COMPILER_TWEAKS=' . $config . ';</script>';
   echo '<link rel="stylesheet" href="' . $style_url . '" />';

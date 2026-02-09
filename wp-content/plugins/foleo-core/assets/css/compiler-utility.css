@@ -1,40 +1,54 @@
 .foleo-compiler-utility {
   position: fixed;
-  left: 16px;
-  bottom: 16px;
-  width: 280px;
+  left: 0;
+  top: var(--foleo-toolbar-offset, 48px);
+  height: calc(100vh - var(--foleo-toolbar-offset, 48px));
+  width: 420px;
   max-width: 90vw;
-  background: var(--foleo-overlay-bg, #111);
-  color: var(--foleo-text, #fff);
-  font: var(--foleo-font-size-base, 13px)/var(--foleo-line-height, 1.4) var(--foleo-font-family, sans-serif);
-  border-radius: 8px;
-  border: 1px solid var(--foleo-overlay-border, rgba(255,255,255,0.08));
-  box-shadow: var(--foleo-shadow-panel, 0 10px 30px rgba(0,0,0,0.35));
+  background: #ffffff;
+  color: #0f172a;
+  font: 14px/1.4 Avenir, "Avenir Next", Arial, system-ui, sans-serif;
+  border-right: 1px solid #e3e7ee;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.1);
   z-index: 2147483600;
+  transform: translateX(-100%);
+  transition: transform 220ms ease;
+}
+
+.foleo-compiler-utility.is-open {
+  transform: translateX(0);
+}
+
+.foleo-compiler-utility__scrim {
+  position: fixed;
+  inset: var(--foleo-toolbar-offset, 48px) 0 0 0;
+  background: rgba(15, 23, 42, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+  z-index: 2147483590;
+}
+
+.foleo-compiler-utility__scrim.is-open {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .foleo-compiler-utility__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--foleo-border-subtle, rgba(255,255,255,0.1));
+  padding: 16px 18px;
+  border-bottom: 1px solid #e3e7ee;
 }
 
 .foleo-compiler-utility__title {
-  font-weight: var(--foleo-font-weight-semibold, 600);
-  color: var(--foleo-heading, inherit);
+  font-weight: 600;
+  color: #0f172a;
 }
 
 .foleo-compiler-utility__toggle {
-  background: var(--foleo-control-bg, #222);
-  border: 0;
-  color: var(--foleo-text, #fff);
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
+  display: none;
 }
 .foleo-compiler-utility__toggle::before {
   content: "";
@@ -44,61 +58,69 @@
 }
 
 .foleo-compiler-utility__body {
-  padding: 10px 12px 12px;
-}
-
-.foleo-compiler-utility__body.is-hidden {
-  display: none;
+  padding: 14px 18px 18px;
 }
 
 .foleo-compiler-utility__row {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .foleo-compiler-utility__row label {
-  font-size: var(--foleo-font-size-sm, 11px);
-  color: var(--foleo-text-muted, rgba(255,255,255,0.7));
+  font-size: 12px;
+  color: #6b7280;
 }
 
 .foleo-compiler-utility__row input,
 .foleo-compiler-utility__row select {
-  background: var(--foleo-control-bg, #1c1c1c);
-  border: 1px solid var(--foleo-control-border, rgba(255,255,255,0.1));
-  color: var(--foleo-control-text, #fff);
-  border-radius: var(--foleo-radius-sm, 4px);
-  padding: 6px 8px;
+  background: #ffffff;
+  border: 1px solid #e3e7ee;
+  color: #0f172a;
+  border-radius: 4px;
+  padding: 8px 10px;
+  height: 37px;
+  font-size: 14px;
+  font-family: Avenir, "Avenir Next", Arial, system-ui, sans-serif;
+}
+
+.foleo-compiler-utility__row input:focus,
+.foleo-compiler-utility__row select:focus {
+  border-color: rgb(37, 99, 235);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  outline: none;
 }
 
 .foleo-compiler-utility__actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .foleo-compiler-utility__save {
-  background: var(--foleo-accent, #fff);
-  color: var(--foleo-accent-contrast, #111);
-  border: 0;
-  padding: 6px 10px;
-  border-radius: var(--foleo-radius-sm, 4px);
+  background: transparent;
+  color: rgb(37, 99, 235);
+  border: 1px solid rgb(37, 99, 235);
+  padding: 0 16px;
+  border-radius: 3px;
+  height: 37px;
+  line-height: 35px;
   cursor: pointer;
-  font-weight: var(--foleo-font-weight-semibold, 600);
+  font-weight: 500;
 }
 
 .foleo-compiler-utility__status {
-  font-size: var(--foleo-font-size-sm, 11px);
-  opacity: 0.85;
+  font-size: 12px;
+  color: #6b7280;
 }
 
 .foleo-compiler-utility__status[data-type="error"] {
-  color: #ff8484;
+  color: #c02626;
 }
 
 .foleo-compiler-utility__status[data-type="success"] {
-  color: #7cf59a;
+  color: #15803d;
 }
 
 .foleo-compiler-toolbar-wrap {
@@ -136,4 +158,11 @@
   background-color: var(--foleo-control-bg-hover, #F0F6FF);
   border-color: var(--foleo-accent, #2663EB);
   box-shadow: 0 0 0 2px rgba(38, 99, 235, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foleo-compiler-utility,
+  .foleo-compiler-utility__scrim {
+    transition: none;
+  }
 }
