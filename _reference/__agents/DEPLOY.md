@@ -15,8 +15,21 @@
 ## Rollback
 - How to revert safely and quickly.
 
+## Post-update checklist
+- Confirm `/compiler/{id}` loads builder and FOLEO tweaks and utility assets are injected.
+- Confirm Breakdance toolbar popovers and FOLEO overlay coexist (responsive menu should not be hidden, Properties auto-closes).
+- Builder iframe videos (edit poster mode):
+  - Confirm poster renders in builder iframe.
+  - Confirm no `embed.cloudflarestream.com` SDK or `*.m3u8` requests before click.
+  - Confirm click hydrates and attempts playback.
+  - Confirm scroll-away unload reverts to poster.
+  - Confirm public mode unchanged.
+- If `/compiler/{id}` 404s, flush rewrite rules, or bump `FOLEO_COMPILER_REWRITE_VERSION` and re-test.
+
 ## Known Gotchas
 - Environment-specific pitfalls.
+- Verify compiler toolbar popovers (responsive menu) work correctly with Properties panel integration.
+- Rewrite flush is triggered on admin visits after version bump, no admin visit can leave stale rules.
 
 ## Migrated content from _reference/workflow.md (2026-02-09)
 

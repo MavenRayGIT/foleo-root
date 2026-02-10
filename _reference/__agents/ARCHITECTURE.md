@@ -5,6 +5,9 @@
 
 ## System Context
 - Key actors, data flows, and integrations.
+- Canonical builder entry is `/compiler/{id}`, routed via rewrite rule to query vars `foleo_compiler=1` and `foleo_compiler_id={id}`.
+- Builder mode is enforced by setting `breakdance=builder` and `id={id}` (mirrored into WP query vars) after permission checks.
+- Breakdance builder shell bypasses normal WP enqueues, FOLEO injects its compiler tweaks and utility UI via the Breakdance shell hook `unofficial_i_am_kevin_geary_master_of_all_things_css_and_html`.
 
 ## Key Decisions
 - Rationale for major architectural choices.
@@ -19,6 +22,9 @@
 
 ## Risks / Brittle Areas
 - Places most likely to break or regress.
+- Unofficial Breakdance hook name is the primary injection point, Breakdance updates can break it.
+- Builder mode depends on Breakdance query parameters, changes can break `/compiler/{id}`.
+- Rewrite flush depends on an admin visit after version bump, upgrades without admin access can leave stale rules.
 
 ## Future Considerations
 - Scalability, security, compliance, long-term evolution.

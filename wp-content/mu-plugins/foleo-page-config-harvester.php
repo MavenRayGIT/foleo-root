@@ -79,6 +79,7 @@ function foleo_build_page_flags( array $config ) {
         'cfStream_enabled'      => foleo_read_flag( $config, 'cfStream_enabled' ),
         'cfStream_mode'         => foleo_read_string( $config, 'cfStream_mode' ),
         'lottie_enabled'        => foleo_read_flag( $config, 'lottie_enabled' ),
+        'charts_enabled'        => foleo_read_flag( $config, 'charts_enabled' ),
         'tabs_enabled'          => foleo_read_flag( $config, 'tabs_enabled' ),
         'tabs_mobile_enabled'   => foleo_read_flag( $config, 'tabs_mobile_enabled' ),
         'dynamicTable_enabled'  => foleo_read_flag( $config, 'dynamicTable_enabled' ),
@@ -94,11 +95,72 @@ function foleo_build_page_flags( array $config ) {
  * Config -> flags on save -> conditional enqueue on view.
  */
 add_action( 'save_post', function ( $post_id, $post, $update ) {
+    static $bootstrapping = false;
+    if ( $bootstrapping ) {
+        return;
+    }
     if ( ! $post ) {
         return;
     }
     if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
         return;
+    }
+    if ( $post->post_type !== 'page' ) {
+        return;
+    }
+    $host = isset( $_SERVER['HTTP_HOST'] ) ? strtolower( $_SERVER['HTTP_HOST'] ) : '';
+    if ( $host === 'huronperformance.foleo.co' ) {
+        return;
+    }
+
+    $existing_config = get_post_meta( $post_id, 'foleo_page_config_json', true );
+    $existing_flags = get_post_meta( $post_id, 'foleo_page_flags', true );
+    if ( ( ! is_string( $existing_config ) || trim( $existing_config ) === '' ) || empty( $existing_flags ) ) {
+        $bootstrapping = true;
+
+        $slug = is_string( $post->post_name ) ? $post->post_name : '';
+        $page_key = '';
+        if ( in_array( $slug, [ 'cx', 'tofu', 'pitch' ], true ) ) {
+            $page_key = $slug;
+        }
+
+        $config = [
+            'pageKey' => $page_key,
+            'flags' => [
+                'cfStream_enabled' => false,
+                'charts_enabled' => false,
+                'lottie_enabled' => false,
+                'tabs_enabled' => false,
+                'tabs_mobile_enabled' => false,
+                'dynamicTable_enabled' => false,
+                'videoBug_enabled' => false,
+                'snapScroll_enabled' => false,
+                'vidstack_enabled' => false,
+            ],
+            'modules' => [
+                'cfStream' => [ 'enabled' => false, 'mode' => '' ],
+                'lottie' => [ 'enabled' => false ],
+                'tabs' => [ 'enabled' => false ],
+                'tabs_mobile' => [ 'enabled' => false ],
+                'dynamicTable' => [ 'enabled' => false ],
+                'videoBug' => [ 'enabled' => false ],
+                'snapScroll' => [ 'enabled' => false ],
+                'vidstack' => [ 'enabled' => false ],
+            ],
+        ];
+
+        if ( ! is_string( $existing_config ) || trim( $existing_config ) === '' ) {
+            $json = wp_json_encode( $config );
+            update_post_meta( $post_id, 'foleo_page_config_json', $json );
+        }
+
+        if ( empty( $existing_flags ) ) {
+            $flags = foleo_build_page_flags( $config );
+            update_post_meta( $post_id, 'foleo_page_flags', $flags );
+        }
+
+        delete_post_meta( $post_id, 'foleo_page_config_error' );
+        $bootstrapping = false;
     }
 
     // Source of truth is the custom field `foleo_page_config_json`.

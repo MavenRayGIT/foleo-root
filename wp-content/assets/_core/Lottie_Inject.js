@@ -5,8 +5,14 @@
     var isCompiler = path.indexOf("/compiler/") === 0;
     var isBuilder = search.indexOf("breakdance=builder") !== -1;
     var isIframe = search.indexOf("breakdance_iframe") !== -1;
+    if (isIframe) {
+      window.FOLEO_BUILDER_IFRAME = true;
+      window.FOLEO_DISABLE_SCROLLTRIGGER = true;
+    }
     if (isCompiler || isBuilder || isIframe) {
-      return;
+      if (!isIframe && !window.FOLEO_EDIT_PREVIEW) {
+        return;
+      }
     }
   } catch (e) {}
   function isEditMode() {
@@ -43,7 +49,7 @@
     }
   }
 
-  if (isEditMode()) return;
+  if (isEditMode() && !window.FOLEO_EDIT_PREVIEW) return;
 
   function startIfNeeded() {
     var hasLottie = false;
@@ -59,9 +65,11 @@
         return window.lottie ? Promise.resolve() : inject("https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js");
       })
       .then(function () {
+        if (window.FOLEO_EDIT_PREVIEW) return Promise.resolve();
         return window.gsap ? Promise.resolve() : inject("https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js");
       })
       .then(function () {
+        if (window.FOLEO_EDIT_PREVIEW || window.FOLEO_DISABLE_SCROLLTRIGGER) return Promise.resolve();
         return window.ScrollTrigger ? Promise.resolve() : inject("https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js");
       })
       .catch(function (e) {

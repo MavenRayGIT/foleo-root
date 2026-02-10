@@ -39,15 +39,40 @@
   window.FOLEO_DEBUG = enabled;
 })();
 
+(() => {
+  if (typeof window === "undefined") return;
+  if (window.FOLEO_VIDEO_DEBUG === true) return;
+  let enabled = false;
+  try {
+    const params = new URLSearchParams(window.location.search || "");
+    const raw = params.get("video_debug");
+    enabled = raw === "1" || raw === "true";
+  } catch (e) {}
+  if (!enabled) {
+    try {
+      enabled = window.localStorage?.getItem("FOLEO_VIDEO_DEBUG") === "1";
+    } catch (e) {}
+  }
+  window.FOLEO_VIDEO_DEBUG = enabled;
+})();
+
 if (typeof window !== "undefined") {
   const path = window.location?.pathname || "";
   const search = window.location?.search || "";
   const isCompiler = path.startsWith("/compiler/");
   const isBuilder = search.includes("breakdance=builder");
   const isIframe = search.includes("breakdance_iframe");
-  if (isCompiler || isBuilder || isIframe) {
+  if (isIframe) {
+    window.FOLEO_BUILDER_IFRAME = true;
+    window.FOLEO_DISABLE_SCROLLTRIGGER = true;
+  }
+  if (isCompiler || isBuilder) {
     console.log("[FOLEO] Body.js disabled on compiler/builder", { path, search });
     window.FOLEO_SKIP_BODY_JS = true;
+    if (window.FOLEO_VIDEO_DEBUG && !window.__FOLEO_VIDEO_SUMMARY_LOGGED__) {
+      window.__FOLEO_VIDEO_SUMMARY_LOGGED__ = true;
+      console.log("[FOLEO][video] mode: shell skipped", { path, search });
+    }
   }
 }
 
@@ -71,6 +96,7 @@ function getQueryParam(name) {
 const FOLEO_PROFILE_STORAGE_KEY = 'foleoProfile';
 const FOLEO_SWITCH_OPEN_KEY = 'foleoSwitchOpen';
 const FOLEO_DEBUG = window.FOLEO_DEBUG === true;
+const FOLEO_VIDEO_DEBUG = window.FOLEO_VIDEO_DEBUG === true;
 const FOLEO_ASSETS_BASE_URL = (() => {
   let base = window.FOLEO_ASSETS_BASE_URL;
   if (typeof base !== 'string' || !base) {
@@ -605,6 +631,9 @@ function getFoleoTier() {
 }
 
 function ensureGsap(cb) {
+  if (window.FOLEO_DISABLE_SCROLLTRIGGER) {
+    return;
+  }
   if (window.gsap && window.ScrollTrigger) {
     cb();
     return;
@@ -1696,7 +1725,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (isEditMode) {
     document.documentElement.classList.add('foleo-edit');
   } else {
-    if (document.querySelector(".canvas-story")) {
+    if (!window.FOLEO_DISABLE_SCROLLTRIGGER && document.querySelector(".canvas-story")) {
       forceCanvasStoryStackedOnMobile();
       ensureGsap(initCanvasStory);
     }
@@ -1802,6 +1831,1168 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
   }
 
+  const videoMode = (() => {
+    try {
+      const path = window.location && window.location.pathname ? window.location.pathname : "";
+      const search = window.location && window.location.search ? window.location.search : "";
+      const isCompiler = path.indexOf("/compiler/") === 0;
+      const isBuilder = search.indexOf("breakdance=builder") !== -1;
+      const isIframe = search.indexOf("breakdance_iframe") !== -1 || search.indexOf("breakdance_open_document") !== -1;
+      const isEditIframe = window.FOLEO_BUILDER_IFRAME === true || isIframe;
+      return {
+        isCompiler,
+        isBuilder,
+        isIframe,
+        isEditIframe,
+        shouldSkipVideoHeavyBoot: (isCompiler || isBuilder || isIframe),
+        shouldEnableEditPosterMode: isEditIframe
+      };
+    } catch (e) {
+      return {
+        isCompiler: false,
+        isBuilder: false,
+        isIframe: false,
+        isEditIframe: false,
+        shouldSkipVideoHeavyBoot: false,
+        shouldEnableEditPosterMode: false
+      };
+    }
+  })();
+
+  if (FOLEO_DEBUG) {
+    console.log("[FOLEO] video mode", {
+      isCompiler: videoMode.isCompiler,
+      isBuilder: videoMode.isBuilder,
+      isIframe: videoMode.isIframe,
+      shouldSkipVideoHeavyBoot: videoMode.shouldSkipVideoHeavyBoot,
+      shouldEnableEditPosterMode: videoMode.shouldEnableEditPosterMode
+    });
+  }
+  if (FOLEO_VIDEO_DEBUG && !window.__FOLEO_VIDEO_SUMMARY_LOGGED__) {
+    window.__FOLEO_VIDEO_SUMMARY_LOGGED__ = true;
+    const branch = videoMode.shouldSkipVideoHeavyBoot
+      ? (videoMode.shouldEnableEditPosterMode ? "edit poster mode" : "shell skipped")
+      : "public heavy boot";
+    console.log("[FOLEO][video] mode:", branch, {
+      isCompiler: videoMode.isCompiler,
+      isBuilder: videoMode.isBuilder,
+      isIframe: videoMode.isIframe
+    });
+  }
+
+  if (!videoMode.shouldSkipVideoHeavyBoot) {
+    if (FOLEO_DEBUG) console.log("[FOLEO] public heavy boot: video init enabled");
+    const iframes = document.querySelectorAll('iframe[class*="vid"]');
+    if (iframes.length) {
+      const script = document.createElement("script");
+      script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
+      script.async = true;
+
+      script.addEventListener("load", () => {
+        if (typeof Stream !== "function") return;
+
+        const players = [];
+
+        iframes.forEach((iframe) => {
+          const card = iframe.closest(".cf-card");
+          if (!card) return;
+
+          const player = Stream(iframe);
+          if (!player || !player.addEventListener) return;
+
+          players.push({ player, card });
+
+          player.addEventListener("play", () => {
+            // Pause all other videos
+            players.forEach(({ player: p, card: c }) => {
+              if (p !== player) {
+                try { p.pause(); } catch (e) {}
+                c.classList.remove("is-playing");
+              }
+            });
+
+            card.classList.add("is-playing");
+          });
+
+          const clear = () => card.classList.remove("is-playing");
+          player.addEventListener("pause", clear);
+          player.addEventListener("ended", clear);
+        });
+      });
+
+      document.head.appendChild(script);
+    }
+  }
+
+  function initCfStreamPlaceholders() {
+    const placeholders = document.querySelectorAll(".cf-stream-placeholder");
+    const hasPlaceholders = !!placeholders.length;
+
+
+    const isCxPage = (() => {
+      const path = (window.location && window.location.pathname) ? window.location.pathname : "";
+      const clean = path.replace(/\/+$/, "");
+      return clean === "" || clean === "/cx";
+    })();
+
+    const idleRun = (fn) => {
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(fn, { timeout: 2000 });
+      } else {
+        setTimeout(fn, 400);
+      }
+    };
+
+    const iframeToPlaceholder = new WeakMap();
+    const iframeMeta = new WeakMap();
+    let sdkPromise = null;
+    let messageListenerBound = false;
+
+    const normalizeCustomer = (value) => {
+      if (!value) return null;
+      let raw = String(value).trim();
+      raw = raw.replace(/^https?:\/\//i, "");
+      raw = raw.replace(/\/.*$/, "");
+      const subdomain = raw.replace(/\.cloudflarestream\.com$/i, "");
+      if (!subdomain) return null;
+      return {
+        subdomain,
+        origin: `https://${subdomain}.cloudflarestream.com`
+      };
+    };
+
+    const isPlayingMessage = (data) => {
+      if (!data) return false;
+      if (typeof data === "string") {
+        return /playing|play/.test(data);
+      }
+      if (typeof data === "object") {
+        const evt = (data.event || data.type || data.state || "").toString().toLowerCase();
+        return evt === "playing" || evt === "play";
+      }
+      return false;
+    };
+
+    const bindMessageListener = () => {
+      if (messageListenerBound) return;
+      messageListenerBound = true;
+      window.addEventListener("message", (event) => {
+        try {
+          if (!event || !event.origin) return;
+          const placeholder = iframeToPlaceholder.get(event.source);
+          if (placeholder) {
+            const meta = iframeMeta.get(placeholder.__foleoIframe) || {};
+            if (meta.origin && event.origin !== meta.origin) return;
+            if (isPlayingMessage(event.data)) {
+              markPlaying(placeholder);
+            }
+            return;
+          }
+          const iframe = Array.from(document.querySelectorAll(".cf-stream-embed iframe"))
+            .find((node) => node.contentWindow === event.source);
+          if (!iframe) return;
+          if (isPlayingMessage(event.data)) {
+            pauseOtherStreams(iframe);
+          }
+        } catch (e) {}
+      });
+    };
+
+    const ensureCfSdk = () => {
+      if (typeof Stream === "function") return Promise.resolve();
+      if (sdkPromise) return sdkPromise;
+      sdkPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = reject;
+        document.head.appendChild(script);
+      }).catch(() => {});
+      return sdkPromise;
+    };
+
+    const addLinkHint = (rel, href) => {
+      if (!href) return;
+      const existing = document.querySelector(`link[rel="${rel}"][href="${href}"]`);
+      if (existing) return;
+      const link = document.createElement("link");
+      link.rel = rel;
+      link.href = href;
+      document.head.appendChild(link);
+    };
+
+    const preconnectForCustomer = (customerInfo) => {
+      if (!customerInfo || !customerInfo.origin) return;
+      addLinkHint("dns-prefetch", customerInfo.origin);
+      addLinkHint("preconnect", customerInfo.origin);
+      addLinkHint("dns-prefetch", "https://embed.cloudflarestream.com");
+      addLinkHint("preconnect", "https://embed.cloudflarestream.com");
+    };
+
+    let warmupBound = false;
+    const warmupSdkOnFirstInteraction = () => {
+      if (warmupBound || videoMode.shouldSkipVideoHeavyBoot) return;
+      warmupBound = true;
+      const handler = () => {
+        ensureCfSdk();
+        window.removeEventListener("pointerdown", handler, { passive: true });
+        window.removeEventListener("touchstart", handler, { passive: true });
+        window.removeEventListener("keydown", handler);
+      };
+      window.addEventListener("pointerdown", handler, { passive: true, once: true });
+      window.addEventListener("touchstart", handler, { passive: true, once: true });
+      window.addEventListener("keydown", handler, { once: true });
+    };
+
+    warmupSdkOnFirstInteraction();
+
+    const ensureHint = (placeholder, text) => {
+      if (!placeholder) return;
+      if (placeholder.querySelector(".cf-stream-hint")) return;
+      const spinner = placeholder.querySelector(".cf-stream-spinner");
+      if (spinner) spinner.remove();
+      const hint = document.createElement("div");
+      hint.className = "cf-stream-hint";
+      hint.textContent = text;
+      hint.style.position = "absolute";
+      hint.style.left = "50%";
+      hint.style.bottom = "14px";
+      hint.style.transform = "translateX(-50%)";
+      hint.style.padding = "6px 10px";
+      hint.style.borderRadius = "999px";
+      hint.style.background = "rgba(0,0,0,0.6)";
+      hint.style.color = "#fff";
+      hint.style.fontSize = "12px";
+      hint.style.lineHeight = "1";
+      hint.style.pointerEvents = "none";
+      hint.style.zIndex = "2";
+      placeholder.appendChild(hint);
+      // Let the iframe play button receive the next tap if autoplay fails.
+      placeholder.style.pointerEvents = "none";
+      placeholder.style.opacity = "0.35";
+    };
+
+    const applyPoster = (placeholder) => {
+      if (!placeholder) return;
+      if (placeholder.dataset.foleoPosterApplied === "1") return;
+      const poster = readDataAttr(placeholder, "data-poster");
+      if (!poster) return;
+      placeholder.style.backgroundImage = `url("${poster}")`;
+      placeholder.style.backgroundRepeat = "no-repeat";
+      placeholder.style.backgroundSize = "cover";
+      placeholder.dataset.foleoPosterApplied = "1";
+    };
+
+    const markPlaying = (placeholder) => {
+      if (!placeholder) return;
+      const iframe = placeholder.__foleoIframe;
+      if (!iframe || !iframe.isConnected) return;
+      const userInit = placeholder.dataset.foleoUserInit === "1";
+      pauseOtherStreams(iframe, { initial: !userInit });
+      if (placeholder.dataset.foleoState === "playing") return;
+      placeholder.dataset.foleoState = "playing";
+      iframe.style.opacity = "1";
+      iframe.style.visibility = "visible";
+      const spinner = placeholder.querySelector(".cf-stream-spinner");
+      if (spinner) spinner.remove();
+      placeholder.style.pointerEvents = "none";
+      placeholder.style.opacity = "0";
+      if (window.FoleoOpenVideoFullscreen) {
+        const wrap = placeholder.closest(".cf-video-wrap");
+        const isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+        const shouldFullscreen =
+          isMobile &&
+          !!placeholder.closest(".foleo-snap-hero, .foleo-fullscreen-on-play");
+        if (wrap && shouldFullscreen) {
+          window.FoleoOpenVideoFullscreen(wrap);
+          const tapBtn = document.querySelector(".foleo-video-overlay__tapplay");
+          if (tapBtn) tapBtn.hidden = true;
+        }
+      }
+      setTimeout(() => {
+        placeholder.remove();
+      }, 220);
+    };
+
+    const tryPostMessagePlay = (iframe, origin) => {
+      if (!iframe || !iframe.contentWindow) return;
+      const messages = [
+        { type: "play" },
+        { event: "play" },
+        { action: "play" },
+        "play"
+      ];
+      messages.forEach((msg) => {
+        try { iframe.contentWindow.postMessage(msg, origin); } catch (e) {}
+      });
+    };
+
+    const tryPostMessagePause = (iframe, origin) => {
+      if (!iframe || !iframe.contentWindow) return;
+      const messages = [
+        { __privateUnstableMessageType: "pauseCommand" },
+        { type: "pause" },
+        { event: "pause" },
+        { action: "pause" },
+        "pause"
+      ];
+      messages.forEach((msg) => {
+        try { iframe.contentWindow.postMessage(msg, origin); } catch (e) {}
+      });
+    };
+
+    let pauseOtherStreamsInitialDone = false;
+    const pauseOtherStreams = (currentIframe, options) => {
+      const initial = options && options.initial === true;
+      if (initial && pauseOtherStreamsInitialDone) return;
+      if (initial) pauseOtherStreamsInitialDone = true;
+      if (FOLEO_DEBUG) {
+        console.log("[CFStream] pauseOtherStreams", {
+          current: !!currentIframe,
+          iframes: document.querySelectorAll(".cf-stream-embed iframe").length
+        });
+      }
+      const currentEmbed = currentIframe?.closest?.(".cf-stream-embed") || null;
+      const iframes = document.querySelectorAll(".cf-stream-embed iframe");
+      iframes.forEach((iframe) => {
+        if (currentIframe && iframe === currentIframe) return;
+        const meta = iframeMeta.get(iframe) || {};
+        const origin = meta.origin || "*";
+        tryPostMessagePause(iframe, origin);
+        tryPostMessagePause(iframe, "*");
+        ensureCfSdk().then(() => {
+          try {
+            const player = Stream?.(iframe);
+            player?.pause?.();
+          } catch (e) {}
+        });
+      });
+      // Retry once shortly after to catch late-ready players (only when we know the current iframe).
+      if (currentIframe) {
+        setTimeout(() => {
+          document.querySelectorAll(".cf-stream-embed iframe").forEach((iframe) => {
+            if (iframe === currentIframe) return;
+            const meta = iframeMeta.get(iframe) || {};
+            const origin = meta.origin || "*";
+            tryPostMessagePause(iframe, origin);
+            tryPostMessagePause(iframe, "*");
+            try {
+              const player = Stream?.(iframe);
+              player?.pause?.();
+            } catch (e) {}
+          });
+          document.querySelectorAll(".cf-stream-embed video").forEach((video) => {
+            if (currentEmbed && video.closest(".cf-stream-embed") === currentEmbed) return;
+            try { video.pause(); } catch (e) {}
+          });
+        }, 120);
+      }
+      // Pause any direct video elements inside other CF embeds (vidstack/web component path).
+      document.querySelectorAll(".cf-stream-embed video").forEach((video) => {
+        if (currentEmbed && video.closest(".cf-stream-embed") === currentEmbed) return;
+        try { video.pause(); } catch (e) {}
+      });
+      // Pause any fullscreen overlay video if present.
+      document.querySelectorAll(".foleo-video-overlay__video").forEach((v) => {
+        try { v.pause(); } catch (e) {}
+      });
+    };
+
+    const bindDirectIframeControls = () => {
+      const iframes = document.querySelectorAll(".cf-stream-embed iframe");
+      iframes.forEach((iframe) => {
+        if (iframe.dataset.foleoStreamBound === "1") return;
+        iframe.dataset.foleoStreamBound = "1";
+        const origin = (() => {
+          try {
+            const url = new URL(iframe.src);
+            return `${url.protocol}//${url.host}`;
+          } catch (e) {
+            return "*";
+          }
+        })();
+        iframeMeta.set(iframe, { origin });
+        if (!videoMode.shouldSkipVideoHeavyBoot) {
+          ensureCfSdk().then(() => {
+            try {
+              const player = Stream?.(iframe);
+              if (player && player.addEventListener) {
+                player.addEventListener("play", () => pauseOtherStreams(iframe));
+                player.addEventListener("playing", () => pauseOtherStreams(iframe));
+              }
+            } catch (e) {}
+          });
+        }
+      });
+    };
+
+    const readDataAttr = (placeholder, name) => {
+      if (!placeholder) return "";
+      const direct = placeholder.getAttribute(name) || "";
+      if (direct) return direct;
+      const wrapper = placeholder.closest(".cf-stream-embed");
+      return wrapper ? (wrapper.getAttribute(name) || "") : "";
+    };
+
+    const hasRequiredData = (placeholder) => {
+      const customer = normalizeCustomer(readDataAttr(placeholder, "data-foleo-customer"));
+      const videoId = readDataAttr(placeholder, "data-foleo-video-id");
+      return !!(customer && videoId);
+    };
+
+    const isIframeLive = (iframe) => {
+      if (!iframe) return false;
+      return iframe.isConnected && iframe.tagName === "IFRAME";
+    };
+
+    const initFromPlaceholder = (placeholder, isUserIntent) => {
+      if (!placeholder) return;
+      if (placeholder.dataset.foleoOverlayOnly === "1") return false;
+      if (!hasRequiredData(placeholder)) return;
+      const userIntent = isUserIntent === true;
+      if (!userIntent && isCxPage) return false;
+      if (videoMode.shouldSkipVideoHeavyBoot && !userIntent) return false;
+
+      const state = placeholder.dataset.foleoState || "idle";
+      const existing = placeholder.__foleoIframe;
+      const existingLive = isIframeLive(existing);
+      if (existingLive && (state === "loading" || state === "ready")) {
+        pauseOtherStreams(existing, { initial: !userIntent });
+        const meta = iframeMeta.get(existing) || {};
+        tryPostMessagePlay(existing, meta.origin || "*");
+        if (!videoMode.shouldSkipVideoHeavyBoot) {
+          ensureCfSdk().then(() => {
+            try {
+              const p = Stream?.(existing);
+              p?.play?.().catch?.(() => {});
+            } catch (e) {}
+          });
+        }
+        return true;
+      }
+      if (state === "playing") {
+        pauseOtherStreams(existing || null, { initial: !userIntent });
+        return;
+      }
+      if (!existingLive) {
+        placeholder.dataset.foleoState = "idle";
+      }
+      const customerInfo = normalizeCustomer(readDataAttr(placeholder, "data-foleo-customer"));
+      const videoId = readDataAttr(placeholder, "data-foleo-video-id");
+      const poster = readDataAttr(placeholder, "data-poster");
+      if (!customerInfo || !videoId) return false;
+      if (placeholder.dataset.foleoLazyInit === "1" && existingLive) return false;
+      placeholder.dataset.foleoLazyInit = "1";
+      placeholder.dataset.foleoUserInit = userIntent ? "1" : "0";
+      placeholder.dataset.foleoState = "loading";
+      if (!placeholder.querySelector(".cf-stream-spinner")) {
+        const spinner = document.createElement("div");
+        spinner.className = "cf-stream-spinner";
+        placeholder.appendChild(spinner);
+      }
+      preconnectForCustomer(customerInfo);
+
+      const iframe = document.createElement("iframe");
+      const params = new URLSearchParams();
+      if (poster) params.set("poster", poster);
+      params.set("api", "1");
+      params.set("autoplay", videoMode.shouldSkipVideoHeavyBoot ? "false" : "true");
+      params.set("muted", videoMode.shouldSkipVideoHeavyBoot ? "false" : "true");
+      params.set("controls", "true");
+      params.set("playsinline", "true");
+      iframe.src = `${customerInfo.origin}/${videoId}/iframe?${params.toString()}`;
+      iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;";
+      iframe.allowFullscreen = true;
+      iframe.loading = "lazy";
+      iframe.style.border = "none";
+      iframe.style.position = "absolute";
+      iframe.style.top = "0";
+      iframe.style.left = "0";
+      iframe.style.height = "100%";
+      iframe.style.width = "100%";
+      iframe.style.zIndex = "0";
+      iframe.style.opacity = "0";
+      iframe.style.visibility = "hidden";
+
+      const parent = placeholder.parentElement;
+      if (parent) {
+        placeholder.style.zIndex = "1";
+        placeholder.style.transition = "opacity 240ms ease";
+        parent.insertBefore(iframe, placeholder);
+        placeholder.__foleoIframe = iframe;
+        iframeToPlaceholder.set(iframe.contentWindow, placeholder);
+        const origin = customerInfo.origin;
+        iframeMeta.set(iframe, { origin });
+        bindMessageListener();
+
+          iframe.addEventListener("load", () => {
+            placeholder.dataset.foleoState = "ready";
+            iframe.style.opacity = "1";
+            iframe.style.visibility = "visible";
+            if (videoMode.shouldSkipVideoHeavyBoot) {
+              placeholder.style.opacity = "0";
+              placeholder.style.pointerEvents = "none";
+              placeholder.style.zIndex = "0";
+              iframe.style.zIndex = "2";
+              const overlayBtn = placeholder.querySelector(".foleo-edit-video-play");
+              if (overlayBtn) overlayBtn.style.opacity = "0";
+            }
+            requestAnimationFrame(() => {
+              if (!videoMode.shouldSkipVideoHeavyBoot) return;
+              placeholder.style.opacity = "0";
+              const parentEl = placeholder.parentElement;
+              if (parentEl && parentEl.style) {
+                parentEl.style.backgroundImage = "none";
+                parentEl.style.backgroundColor = "transparent";
+              }
+            });
+            pauseOtherStreams(iframe, { initial: !userIntent });
+            const tryPlay = () => {
+              tryPostMessagePlay(iframe, origin);
+            if (!videoMode.shouldSkipVideoHeavyBoot) {
+              ensureCfSdk().then(() => {
+                try {
+                  const player = Stream?.(iframe);
+                  if (player && player.addEventListener) {
+                    const onPlay = () => {
+                      const userInit = placeholder.dataset.foleoUserInit === "1";
+                      pauseOtherStreams(iframe, { initial: !userInit });
+                      markPlaying(placeholder);
+                    };
+                    player.addEventListener("play", onPlay, { once: true });
+                    player.addEventListener("playing", onPlay, { once: true });
+                  }
+                  player?.play?.().catch?.(() => {});
+                } catch (e) {}
+              });
+            }
+          };
+          tryPlay();
+          setTimeout(tryPlay, 250);
+          setTimeout(tryPlay, 700);
+          setTimeout(tryPlay, 1200);
+          setTimeout(tryPlay, 1800);
+
+          setTimeout(() => {
+            if (placeholder.dataset.foleoState !== "playing") {
+              ensureHint(placeholder, "Tap to play");
+              placeholder.dataset.foleoState = "ready";
+            }
+          }, 1600);
+        }, { once: true });
+        return true;
+      } else {
+        placeholder.replaceWith(iframe);
+        return true;
+      }
+    };
+
+    const observer = ("IntersectionObserver" in window)
+      ? new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const target = entry.target;
+            observer.unobserve(target);
+            if (!videoMode.shouldSkipVideoHeavyBoot) {
+              idleRun(() => initFromPlaceholder(target, false));
+            }
+          });
+        }, { rootMargin: "200px 0px", threshold: 0.1 })
+      : null;
+
+    const posterObserver = ("IntersectionObserver" in window)
+      ? new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const target = entry.target;
+            posterObserver.unobserve(target);
+            applyPoster(target);
+          });
+        }, { rootMargin: "300px 0px", threshold: 0.01 })
+      : null;
+
+    const processEmbeds = () => {
+      const embeds = document.querySelectorAll(".cf-stream-embed");
+      embeds.forEach((embed) => {
+        const candidates = Array.from(embed.querySelectorAll(".cf-stream-placeholder"));
+        if (!candidates.length) return;
+        const valid = candidates.find(hasRequiredData);
+        if (!valid) return;
+        if (candidates.length > 1 && FOLEO_DEBUG) {
+          console.warn("[CFStream] Multiple placeholders found; using first valid only.", embed);
+        }
+        candidates.forEach((node) => {
+          if (node !== valid) node.remove();
+        });
+
+        valid.dataset.foleoState = "idle";
+        valid.dataset.foleoLazyInit = "0";
+        valid.style.pointerEvents = "auto";
+
+        // Remove inline poster styles so below-the-fold posters don't download early.
+        if (!videoMode.shouldEnableEditPosterMode && readDataAttr(valid, "data-poster")) {
+          valid.style.backgroundImage = "";
+          valid.style.backgroundRepeat = "";
+          valid.style.backgroundSize = "";
+          valid.dataset.foleoPosterApplied = "0";
+        }
+
+        if (valid.dataset.foleoBound !== "1") {
+          const onIntent = (e) => {
+            if (FOLEO_DEBUG) {
+              console.log("[CFStream] intent", {
+                target: e?.target,
+                placeholder: valid,
+                state: valid.dataset.foleoState
+              });
+            }
+            if (videoMode.shouldSkipVideoHeavyBoot && !videoMode.shouldEnableEditPosterMode) {
+              return;
+            }
+            const started = initFromPlaceholder(valid, true);
+            if (!started && FOLEO_DEBUG) {
+              const styles = window.getComputedStyle(valid);
+              console.warn("[CFStream] Click did not start init", {
+                target: e?.target,
+                placeholder: valid,
+                pointerEvents: styles.pointerEvents,
+                state: valid.dataset.foleoState
+              });
+            }
+          };
+          valid.addEventListener("click", onIntent);
+          valid.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onIntent(e);
+            }
+          });
+          valid.dataset.foleoBound = "1";
+        }
+
+        const isHero = !!valid.closest('[data-foleo-hero="1"]');
+        if (isHero) {
+          applyPoster(valid);
+        } else if (posterObserver) {
+          posterObserver.observe(valid);
+          valid.dataset.foleoLazyInit = "1";
+        } else {
+          applyPoster(valid);
+        }
+        if (!isCxPage && !isHero && !videoMode.shouldSkipVideoHeavyBoot) {
+          if (observer) {
+            observer.observe(valid);
+          } else {
+            idleRun(() => initFromPlaceholder(valid, false));
+          }
+        }
+      });
+    };
+
+    const ensureEditPlayOverlay = (placeholder) => {
+      if (!placeholder || placeholder.querySelector(".foleo-edit-video-play")) return;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "foleo-edit-video-play";
+      button.setAttribute("aria-label", "Play");
+      button.innerHTML = "▶";
+      button.style.position = "absolute";
+      button.style.left = "50%";
+      button.style.top = "50%";
+      button.style.transform = "translate(-50%, -50%)";
+      button.style.width = "56px";
+      button.style.height = "56px";
+      button.style.borderRadius = "999px";
+      button.style.border = "none";
+      button.style.background = "rgba(0,0,0,0.6)";
+      button.style.color = "#fff";
+      button.style.fontSize = "22px";
+      button.style.lineHeight = "1";
+      button.style.cursor = "pointer";
+      button.style.zIndex = "2";
+      placeholder.appendChild(button);
+    };
+
+    const buildEditPlaceholder = (placeholder) => {
+      if (!placeholder || placeholder.dataset.foleoEditPosterReady === "1") return;
+      applyPoster(placeholder);
+      ensureEditPlayOverlay(placeholder);
+      placeholder.dataset.foleoEditPosterReady = "1";
+      placeholder.style.pointerEvents = "auto";
+      placeholder.style.opacity = "1";
+      if (placeholder.dataset.foleoEditBound !== "1") {
+        const onIntent = (e) => {
+          if (videoMode.shouldSkipVideoHeavyBoot && !videoMode.shouldEnableEditPosterMode) return;
+          if (typeof window.FoleoInitCfStream === "function") {
+            window.FoleoInitCfStream(placeholder, true);
+          }
+        };
+        placeholder.addEventListener("click", onIntent);
+        placeholder.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onIntent(e);
+          }
+        });
+        placeholder.dataset.foleoEditBound = "1";
+      }
+    };
+
+    const teardownEditPlaceholder = (placeholder) => {
+      if (!placeholder) return;
+      const iframe = placeholder.__foleoIframe;
+      if (iframe && iframe.parentElement) {
+        try {
+          iframe.dataset.foleoStreamBound = "0";
+        } catch (e) {}
+        iframe.remove();
+      }
+      placeholder.__foleoIframe = null;
+      placeholder.dataset.foleoState = "idle";
+      placeholder.dataset.foleoLazyInit = "0";
+      placeholder.dataset.foleoUserInit = "0";
+      placeholder.style.opacity = "1";
+      placeholder.style.pointerEvents = "auto";
+      applyPoster(placeholder);
+      ensureEditPlayOverlay(placeholder);
+    };
+
+    const initEditVideoPosters = () => {
+      if (!videoMode.shouldEnableEditPosterMode) return;
+      let stopped = false;
+      let editObserver = ("IntersectionObserver" in window)
+        ? new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              const target = entry.target;
+              if (!target || target.dataset.foleoEditPosterReady !== "1") return;
+              if (entry.intersectionRatio >= 0.25) return;
+              teardownEditPlaceholder(target);
+            });
+          }, { threshold: [0, 0.25, 0.5] })
+        : null;
+      let editMutation = null;
+      let editAttrObserver = null;
+      let pending = false;
+      let queue = [];
+      let foundAny = false;
+      let stopTimer = null;
+
+      const stopObservers = () => {
+        if (stopped) return;
+        stopped = true;
+        if (editObserver) editObserver.disconnect();
+        if (editMutation) editMutation.disconnect();
+        if (editAttrObserver) editAttrObserver.disconnect();
+      };
+
+      const applyTo = (root) => {
+        if (!root) return;
+        const nodes = root.matches && root.matches(".cf-stream-placeholder")
+          ? [root]
+          : Array.from(root.querySelectorAll ? root.querySelectorAll(".cf-stream-placeholder") : []);
+        nodes.forEach((placeholder) => {
+          buildEditPlaceholder(placeholder);
+          if (editObserver) editObserver.observe(placeholder);
+        });
+        if (nodes.length) {
+          foundAny = true;
+          if (stopTimer) {
+            clearTimeout(stopTimer);
+            stopTimer = null;
+          }
+        }
+      };
+
+      const scheduleApply = (root) => {
+        if (!root || stopped) return;
+        queue.push(root);
+        if (pending) return;
+        pending = true;
+        window.requestAnimationFrame(() => {
+          pending = false;
+          const batch = queue.slice();
+          queue = [];
+          batch.forEach(applyTo);
+        });
+      };
+
+      applyTo(document);
+      if (typeof scheduleOnce === "function") {
+        scheduleOnce(() => applyTo(document), [200, 700, 1500]);
+      } else {
+        setTimeout(() => applyTo(document), 200);
+        setTimeout(() => applyTo(document), 700);
+        setTimeout(() => applyTo(document), 1500);
+      }
+
+      editMutation = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (!mutation.addedNodes || !mutation.addedNodes.length) continue;
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType !== 1) return;
+            scheduleApply(node);
+          });
+        }
+      });
+      editMutation.observe(document.body, { childList: true, subtree: true });
+
+      editAttrObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (!mutation.target || mutation.target.nodeType !== 1) continue;
+          if (mutation.target.classList && mutation.target.classList.contains("cf-stream-placeholder")) {
+            scheduleApply(mutation.target);
+          } else if (mutation.target.querySelector) {
+            const ph = mutation.target.querySelector(".cf-stream-placeholder");
+            if (ph) scheduleApply(ph);
+          }
+        }
+      });
+      editAttrObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["class", "style"],
+        subtree: true
+      });
+
+      if (!document.querySelector(".cf-stream-placeholder, .cf-stream-embed")) {
+        stopTimer = setTimeout(() => {
+          if (!foundAny && !document.querySelector(".cf-stream-placeholder")) {
+            stopObservers();
+          }
+        }, 8000);
+      }
+    };
+
+    window.FoleoInitCfStream = initFromPlaceholder;
+    window.FoleoPauseOtherStreams = pauseOtherStreams;
+
+    bindMessageListener();
+    if (!videoMode.shouldSkipVideoHeavyBoot) {
+      bindDirectIframeControls();
+    }
+    if (hasPlaceholders) {
+      processEmbeds();
+    }
+    if (videoMode.shouldEnableEditPosterMode) {
+      if (FOLEO_DEBUG) console.log("[FOLEO] edit poster mode: video placeholders only");
+      initEditVideoPosters();
+    }
+
+    const embedObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.addedNodes && mutation.addedNodes.length) {
+          if (!videoMode.shouldSkipVideoHeavyBoot) {
+            bindDirectIframeControls();
+          }
+          if (hasPlaceholders) {
+            processEmbeds();
+          }
+          break;
+        }
+      }
+    });
+    embedObserver.observe(document.body, { childList: true, subtree: true });
+
+  }
+
+  initCfStreamPlaceholders();
+
+  // Vidstack Stream Replacement (legacy path for non-CX pages)
+  const playingPlayers = new Set();
+  // CX uses the placeholder-first CF Stream flow above; keep legacy swap for non-CX pages.
+  const readPageConfig = () => {
+    const direct =
+      window.foleo_page_config_json ||
+      window.FOLEO_PAGE_CONFIG_JSON ||
+      window.FOLEO_PAGE_CONFIG ||
+      window.foleoPageConfig ||
+      window.__FOLEO_PAGE_CONFIG__;
+    if (!direct) return null;
+    if (typeof direct === "string") {
+      try {
+        const parsed = JSON.parse(direct);
+        return (parsed && typeof parsed === "object") ? parsed : null;
+      } catch (e) {
+        return null;
+      }
+    }
+    return (typeof direct === "object") ? direct : null;
+  };
+
+  const readConfigFlag = (config, key) => {
+    if (!config || typeof config !== "object") return false;
+    const raw =
+      (key in config) ? config[key] :
+      (config.flags && key in config.flags) ? config.flags[key] :
+      (config.modules && key in config.modules) ? config.modules[key] :
+      (config.modules && config.modules.cfStream && key === "cfStream_enabled")
+        ? config.modules.cfStream.enabled
+        : undefined;
+    return raw === true || raw === 1 || raw === "1" || raw === "true";
+  };
+
+  const readConfigString = (config, key) => {
+    if (!config || typeof config !== "object") return "";
+    const raw =
+      (key in config) ? config[key] :
+      (config.flags && key in config.flags) ? config.flags[key] :
+      (config.modules && key in config.modules) ? config.modules[key] :
+      (key === "cfStream_mode" && config.modules && config.modules.cfStream)
+        ? config.modules.cfStream.mode
+        : undefined;
+    return (raw === undefined || raw === null) ? "" : String(raw);
+  };
+
+  const pageConfig = readPageConfig();
+  const pageKey = (() => {
+    if (pageConfig && typeof pageConfig === "object") {
+      const key =
+        pageConfig.pageKey ||
+        pageConfig.page_key ||
+        pageConfig.key ||
+        pageConfig.page ||
+        "";
+      if (key) return String(key);
+    }
+    const fromDom =
+      document.documentElement?.getAttribute?.("data-foleo-page-key") ||
+      document.body?.getAttribute?.("data-foleo-page-key") ||
+      "";
+    if (fromDom) return fromDom;
+    const globalKey =
+      window.FOLEO_PAGE_KEY ||
+      window.foleo_page_key ||
+      window.__FOLEO_PAGE_KEY__ ||
+      "";
+    return globalKey ? String(globalKey) : "";
+  })();
+
+  const cfStreamEnabled = readConfigFlag(pageConfig, "cfStream_enabled");
+  const cfStreamMode = readConfigString(pageConfig, "cfStream_mode");
+  const isPlaceholderFirst = cfStreamMode === "placeholderFirst";
+  const isCxPlaceholderFirst =
+    pageKey === "cx" ||
+    isPlaceholderFirst ||
+    (cfStreamEnabled && isPlaceholderFirst);
+  const isCxPath = (() => {
+    const path = (window.location && window.location.pathname) ? window.location.pathname : "";
+    const clean = path.replace(/\/+$/, "");
+    return clean === "" || clean === "/cx";
+  })();
+  const isCxPage = isCxPlaceholderFirst || isCxPath;
+
+  const legacyLog = (tag, extra) => {
+    if (!FOLEO_DEBUG) return;
+    const payload = Object.assign(
+      { tag, ts: Math.round(performance.now()) },
+      extra || {}
+    );
+    console.log("[LEGACY_CF_INIT]", payload, new Error().stack);
+  };
+
+  function parseCloudflareStreamSrc(src) {
+    try {
+      const url = new URL(src);
+      if (!url.hostname.endsWith("cloudflarestream.com")) return null;
+      const customer = url.hostname.split(".cloudflarestream.com")[0];
+      const parts = url.pathname.split("/").filter(Boolean);
+      if (!customer || parts.length === 0) return null;
+      return { customer, videoId: parts[0] };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function registerPlayer(player) {
+    if (!player || player.dataset.foleoPlayerBound === "1") return;
+    player.dataset.foleoPlayerBound = "1";
+
+    player.addEventListener("play", () => {
+      playingPlayers.forEach((other) => {
+        if (other !== player && typeof other.pause === "function") {
+          try { other.pause(); } catch (e) {}
+        }
+      });
+      playingPlayers.add(player);
+    });
+
+    const handleStop = () => {
+      playingPlayers.delete(player);
+    };
+
+    player.addEventListener("pause", handleStop);
+    player.addEventListener("ended", handleStop);
+  }
+
+  function createPlayerFromData(data, isPopup) {
+    const hls = `https://${data.customer}.cloudflarestream.com/${data.videoId}/manifest/video.m3u8`;
+    const player = document.createElement("media-player");
+    player.className = "foleo-media-player";
+    if (isPopup) {
+      player.setAttribute("autoplay", "");
+      player.setAttribute("muted", "");
+      player.setAttribute("loop", "");
+      player.setAttribute("playsinline", "");
+      player.setAttribute("crossorigin", "anonymous");
+    } else {
+      player.setAttribute("playsinline", "");
+      player.setAttribute("crossorigin", "anonymous");
+    }
+    player.setAttribute("src", hls);
+
+    const provider = document.createElement("media-provider");
+    player.appendChild(provider);
+    if (!isPopup) {
+      const layout = document.createElement("media-video-layout");
+      const noCast = document.createElement("div");
+      noCast.setAttribute("slot", "googleCastButton");
+      noCast.style.display = "none";
+      layout.appendChild(noCast);
+      player.appendChild(layout);
+    }
+    registerPlayer(player);
+    return player;
+  }
+
+  function replaceIframe(iframe) {
+    if (!iframe) return;
+    const data = parseCloudflareStreamSrc(iframe.src || "");
+    if (isCxPage || isCxPlaceholderFirst) {
+      if (FOLEO_DEBUG) {
+        legacyLog("cx_skip_legacy", { videoId: data ? data.videoId : "" });
+      }
+      return;
+    }
+    if (iframe.dataset.vidstackDone === "1") return;
+    if (iframe.parentElement && iframe.parentElement.querySelector("media-player")) return;
+    legacyLog("replaceIframe", {
+      iframes: document.querySelectorAll('iframe[src*="cloudflarestream.com"]').length
+    });
+    iframe.dataset.vidstackDone = "1";
+    iframe.style.visibility = "hidden";
+
+    const isPopup =
+      !!iframe.closest(".breakdance-popup") ||
+      !!iframe.closest(".bde-popup") ||
+      !!iframe.closest(".popup-topradius");
+
+    if (!data) return;
+
+    const player = createPlayerFromData(data, isPopup);
+
+    if (FOLEO_DEBUG) {
+      const wrapperClass = iframe.parentElement ? iframe.parentElement.className : "";
+      console.log("Vidstack swap", {
+        customer: data.customer,
+        videoId: data.videoId,
+        hlsUrl: `https://${data.customer}.cloudflarestream.com/${data.videoId}/manifest/video.m3u8`,
+        wrapperClass
+      });
+    }
+
+    function applyNoCast(target) {
+      const v = target.querySelector("video");
+      if (!v) return false;
+      v.disableRemotePlayback = true;
+      v.setAttribute("controlslist", "noremoteplayback");
+      return true;
+    }
+
+    player.addEventListener("loadedmetadata", () => applyNoCast(player), { once: true });
+
+    iframe.replaceWith(player);
+    applyNoCast(player);
+    requestAnimationFrame(() => applyNoCast(player));
+    setTimeout(() => applyNoCast(player), 300);
+
+    if (isPopup) {
+      const tryPlay = () => {
+        const v = player.querySelector("video");
+        if (!v) return false;
+        v.muted = true;
+        v.loop = true;
+        v.playsInline = true;
+        v.removeAttribute("controls");
+        player.play?.().catch(() => {});
+        return true;
+      };
+
+      tryPlay();
+      requestAnimationFrame(tryPlay);
+      setTimeout(tryPlay, 200);
+      setTimeout(tryPlay, 800);
+    }
+  }
+
+  let legacyInitRan = false;
+  const runLegacyInit = () => {
+    if (legacyInitRan) return;
+    legacyInitRan = true;
+    if (isCxPage || isCxPlaceholderFirst) {
+      if (FOLEO_DEBUG) {
+        legacyLog("cx_skip_legacy", {
+          pageKey,
+          cfStream_mode: cfStreamMode,
+          cfStream_enabled: cfStreamEnabled
+        });
+      }
+      return;
+    }
+
+    const initial = document.querySelectorAll('iframe[src*="cloudflarestream.com"]');
+    legacyLog("initial_scan", { count: initial.length });
+    initial.forEach(replaceIframe);
+
+    const existingPlayers = document.querySelectorAll("media-player");
+    existingPlayers.forEach(registerPlayer);
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType !== 1) return;
+          if (node.matches && node.matches('iframe[src*="cloudflarestream.com"]')) {
+            legacyLog("mutation_iframe", { nodeName: node.nodeName });
+            replaceIframe(node);
+            return;
+          }
+          if (node.querySelectorAll) {
+            const iframes = node.querySelectorAll('iframe[src*="cloudflarestream.com"]');
+            if (iframes.length) {
+              legacyLog("mutation_batch", { count: iframes.length });
+            }
+            iframes.forEach(replaceIframe);
+          }
+        });
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  };
+
+  if (!videoMode.shouldSkipVideoHeavyBoot) {
+    runLegacyInit();
+  }
+
+  let scrollTicking = false;
+  window.addEventListener("scroll", () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    window.requestAnimationFrame(() => {
+      scrollTicking = false;
+      if (!playingPlayers.size) return;
+
+      playingPlayers.forEach((player) => {
+        const rect = player.getBoundingClientRect();
+        const height = rect.height || 0;
+        if (!height) return;
+        const threshold = height * 0.3;
+        if (rect.top < -threshold || rect.bottom > window.innerHeight + threshold) {
+          if (typeof player.pause === "function") player.pause();
+        }
+      });
+    });
+  }, { passive: true });
+
   if (!safeIsEditMode) {
     initFoleoCinemaModeAllVideos();
     if (window.FoleoModules && typeof window.FoleoModules.init === "function") {
@@ -1889,918 +3080,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })();
 
-    const shouldSkipCfStream = (() => {
-      try {
-        const path = window.location && window.location.pathname ? window.location.pathname : "";
-        const search = window.location && window.location.search ? window.location.search : "";
-        const isCompiler = path.indexOf("/compiler/") === 0;
-        const isBuilder = search.indexOf("breakdance=builder") !== -1;
-        const isIframe = search.indexOf("breakdance_iframe") !== -1 || search.indexOf("breakdance_open_document") !== -1;
-        return isCompiler || isBuilder || isIframe;
-      } catch (e) {
-        return false;
-      }
-    })();
-
-    if (!shouldSkipCfStream) {
-      const iframes = document.querySelectorAll('iframe[class*="vid"]');
-      if (iframes.length) {
-        const script = document.createElement("script");
-        script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
-        script.async = true;
-
-        script.addEventListener("load", () => {
-          if (typeof Stream !== "function") return;
-
-          const players = [];
-
-          iframes.forEach((iframe) => {
-            const card = iframe.closest(".cf-card");
-            if (!card) return;
-
-            const player = Stream(iframe);
-            if (!player || !player.addEventListener) return;
-
-            players.push({ player, card });
-
-            player.addEventListener("play", () => {
-              // Pause all other videos
-              players.forEach(({ player: p, card: c }) => {
-                if (p !== player) {
-                  try { p.pause(); } catch (e) {}
-                  c.classList.remove("is-playing");
-                }
-              });
-
-              card.classList.add("is-playing");
-            });
-
-            const clear = () => card.classList.remove("is-playing");
-            player.addEventListener("pause", clear);
-            player.addEventListener("ended", clear);
-          });
-        });
-
-        document.head.appendChild(script);
-      }
-
-    function initCfStreamPlaceholders() {
-      const placeholders = document.querySelectorAll(".cf-stream-placeholder");
-      const hasPlaceholders = !!placeholders.length;
-
-
-      const isCxPage = (() => {
-        const path = (window.location && window.location.pathname) ? window.location.pathname : "";
-        const clean = path.replace(/\/+$/, "");
-        return clean === "" || clean === "/cx";
-      })();
-
-      const idleRun = (fn) => {
-        if (typeof window.requestIdleCallback === "function") {
-          window.requestIdleCallback(fn, { timeout: 2000 });
-        } else {
-          setTimeout(fn, 400);
-        }
-      };
-
-      const iframeToPlaceholder = new WeakMap();
-      const iframeMeta = new WeakMap();
-      let sdkPromise = null;
-      let messageListenerBound = false;
-
-      const normalizeCustomer = (value) => {
-        if (!value) return null;
-        let raw = String(value).trim();
-        raw = raw.replace(/^https?:\/\//i, "");
-        raw = raw.replace(/\/.*$/, "");
-        const subdomain = raw.replace(/\.cloudflarestream\.com$/i, "");
-        if (!subdomain) return null;
-        return {
-          subdomain,
-          origin: `https://${subdomain}.cloudflarestream.com`
-        };
-      };
-
-      const isPlayingMessage = (data) => {
-        if (!data) return false;
-        if (typeof data === "string") {
-          return /playing|play/.test(data);
-        }
-        if (typeof data === "object") {
-          const evt = (data.event || data.type || data.state || "").toString().toLowerCase();
-          return evt === "playing" || evt === "play";
-        }
-        return false;
-      };
-
-      const bindMessageListener = () => {
-        if (messageListenerBound) return;
-        messageListenerBound = true;
-        window.addEventListener("message", (event) => {
-          try {
-            if (!event || !event.origin) return;
-            const placeholder = iframeToPlaceholder.get(event.source);
-            if (placeholder) {
-              const meta = iframeMeta.get(placeholder.__foleoIframe) || {};
-              if (meta.origin && event.origin !== meta.origin) return;
-              if (isPlayingMessage(event.data)) {
-                markPlaying(placeholder);
-              }
-              return;
-            }
-            const iframe = Array.from(document.querySelectorAll(".cf-stream-embed iframe"))
-              .find((node) => node.contentWindow === event.source);
-            if (!iframe) return;
-            if (isPlayingMessage(event.data)) {
-              pauseOtherStreams(iframe);
-            }
-          } catch (e) {}
-        });
-      };
-
-      const ensureCfSdk = () => {
-        if (typeof Stream === "function") return Promise.resolve();
-        if (sdkPromise) return sdkPromise;
-        sdkPromise = new Promise((resolve, reject) => {
-          const script = document.createElement("script");
-          script.src = "https://embed.cloudflarestream.com/embed/sdk.latest.js";
-          script.async = true;
-          script.onload = () => resolve();
-          script.onerror = reject;
-          document.head.appendChild(script);
-        }).catch(() => {});
-        return sdkPromise;
-      };
-
-      const addLinkHint = (rel, href) => {
-        if (!href) return;
-        const existing = document.querySelector(`link[rel="${rel}"][href="${href}"]`);
-        if (existing) return;
-        const link = document.createElement("link");
-        link.rel = rel;
-        link.href = href;
-        document.head.appendChild(link);
-      };
-
-      const preconnectForCustomer = (customerInfo) => {
-        if (!customerInfo || !customerInfo.origin) return;
-        addLinkHint("dns-prefetch", customerInfo.origin);
-        addLinkHint("preconnect", customerInfo.origin);
-        addLinkHint("dns-prefetch", "https://embed.cloudflarestream.com");
-        addLinkHint("preconnect", "https://embed.cloudflarestream.com");
-      };
-
-      let warmupBound = false;
-      const warmupSdkOnFirstInteraction = () => {
-        if (warmupBound) return;
-        warmupBound = true;
-        const handler = () => {
-          ensureCfSdk();
-          window.removeEventListener("pointerdown", handler, { passive: true });
-          window.removeEventListener("touchstart", handler, { passive: true });
-          window.removeEventListener("keydown", handler);
-        };
-        window.addEventListener("pointerdown", handler, { passive: true, once: true });
-        window.addEventListener("touchstart", handler, { passive: true, once: true });
-        window.addEventListener("keydown", handler, { once: true });
-      };
-
-      warmupSdkOnFirstInteraction();
-
-      const ensureHint = (placeholder, text) => {
-        if (!placeholder) return;
-        if (placeholder.querySelector(".cf-stream-hint")) return;
-        const spinner = placeholder.querySelector(".cf-stream-spinner");
-        if (spinner) spinner.remove();
-        const hint = document.createElement("div");
-        hint.className = "cf-stream-hint";
-        hint.textContent = text;
-        hint.style.position = "absolute";
-        hint.style.left = "50%";
-        hint.style.bottom = "14px";
-        hint.style.transform = "translateX(-50%)";
-        hint.style.padding = "6px 10px";
-        hint.style.borderRadius = "999px";
-        hint.style.background = "rgba(0,0,0,0.6)";
-        hint.style.color = "#fff";
-        hint.style.fontSize = "12px";
-        hint.style.lineHeight = "1";
-        hint.style.pointerEvents = "none";
-        hint.style.zIndex = "2";
-        placeholder.appendChild(hint);
-        // Let the iframe play button receive the next tap if autoplay fails.
-        placeholder.style.pointerEvents = "none";
-        placeholder.style.opacity = "0.35";
-      };
-
-      const applyPoster = (placeholder) => {
-        if (!placeholder) return;
-        if (placeholder.dataset.foleoPosterApplied === "1") return;
-        const poster = readDataAttr(placeholder, "data-poster");
-        if (!poster) return;
-        placeholder.style.backgroundImage = `url("${poster}")`;
-        placeholder.style.backgroundRepeat = "no-repeat";
-        placeholder.style.backgroundSize = "cover";
-        placeholder.dataset.foleoPosterApplied = "1";
-      };
-
-      const markPlaying = (placeholder) => {
-        if (!placeholder) return;
-        const iframe = placeholder.__foleoIframe;
-        if (!iframe || !iframe.isConnected) return;
-        const userInit = placeholder.dataset.foleoUserInit === "1";
-        pauseOtherStreams(iframe, { initial: !userInit });
-        if (placeholder.dataset.foleoState === "playing") return;
-        placeholder.dataset.foleoState = "playing";
-        iframe.style.opacity = "1";
-        iframe.style.visibility = "visible";
-        const spinner = placeholder.querySelector(".cf-stream-spinner");
-        if (spinner) spinner.remove();
-        placeholder.style.pointerEvents = "none";
-        placeholder.style.opacity = "0";
-        if (window.FoleoOpenVideoFullscreen) {
-          const wrap = placeholder.closest(".cf-video-wrap");
-          const isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-          const shouldFullscreen =
-            isMobile &&
-            !!placeholder.closest(".foleo-snap-hero, .foleo-fullscreen-on-play");
-          if (wrap && shouldFullscreen) {
-            window.FoleoOpenVideoFullscreen(wrap);
-            const tapBtn = document.querySelector(".foleo-video-overlay__tapplay");
-            if (tapBtn) tapBtn.hidden = true;
-          }
-        }
-        setTimeout(() => {
-          placeholder.remove();
-        }, 220);
-      };
-
-      const tryPostMessagePlay = (iframe, origin) => {
-        if (!iframe || !iframe.contentWindow) return;
-        const messages = [
-          { type: "play" },
-          { event: "play" },
-          { action: "play" },
-          "play"
-        ];
-        messages.forEach((msg) => {
-          try { iframe.contentWindow.postMessage(msg, origin); } catch (e) {}
-        });
-      };
-
-      const tryPostMessagePause = (iframe, origin) => {
-        if (!iframe || !iframe.contentWindow) return;
-        const messages = [
-          { __privateUnstableMessageType: "pauseCommand" },
-          { type: "pause" },
-          { event: "pause" },
-          { action: "pause" },
-          "pause"
-        ];
-        messages.forEach((msg) => {
-          try { iframe.contentWindow.postMessage(msg, origin); } catch (e) {}
-        });
-      };
-
-      let pauseOtherStreamsInitialDone = false;
-      const pauseOtherStreams = (currentIframe, options) => {
-        const initial = options && options.initial === true;
-        if (initial && pauseOtherStreamsInitialDone) return;
-        if (initial) pauseOtherStreamsInitialDone = true;
-        if (FOLEO_DEBUG) {
-          console.log("[CFStream] pauseOtherStreams", {
-            current: !!currentIframe,
-            iframes: document.querySelectorAll(".cf-stream-embed iframe").length
-          });
-        }
-        const currentEmbed = currentIframe?.closest?.(".cf-stream-embed") || null;
-        const iframes = document.querySelectorAll(".cf-stream-embed iframe");
-        iframes.forEach((iframe) => {
-          if (currentIframe && iframe === currentIframe) return;
-          const meta = iframeMeta.get(iframe) || {};
-          const origin = meta.origin || "*";
-          tryPostMessagePause(iframe, origin);
-          tryPostMessagePause(iframe, "*");
-          ensureCfSdk().then(() => {
-            try {
-              const player = Stream?.(iframe);
-              player?.pause?.();
-            } catch (e) {}
-          });
-        });
-        // Retry once shortly after to catch late-ready players (only when we know the current iframe).
-        if (currentIframe) {
-          setTimeout(() => {
-            document.querySelectorAll(".cf-stream-embed iframe").forEach((iframe) => {
-              if (iframe === currentIframe) return;
-              const meta = iframeMeta.get(iframe) || {};
-              const origin = meta.origin || "*";
-              tryPostMessagePause(iframe, origin);
-              tryPostMessagePause(iframe, "*");
-              try {
-                const player = Stream?.(iframe);
-                player?.pause?.();
-              } catch (e) {}
-            });
-            document.querySelectorAll(".cf-stream-embed video").forEach((video) => {
-              if (currentEmbed && video.closest(".cf-stream-embed") === currentEmbed) return;
-              try { video.pause(); } catch (e) {}
-            });
-          }, 120);
-        }
-        // Pause any direct video elements inside other CF embeds (vidstack/web component path).
-        document.querySelectorAll(".cf-stream-embed video").forEach((video) => {
-          if (currentEmbed && video.closest(".cf-stream-embed") === currentEmbed) return;
-          try { video.pause(); } catch (e) {}
-        });
-        // Pause any fullscreen overlay video if present.
-        document.querySelectorAll(".foleo-video-overlay__video").forEach((v) => {
-          try { v.pause(); } catch (e) {}
-        });
-      };
-
-      const bindDirectIframeControls = () => {
-        const iframes = document.querySelectorAll(".cf-stream-embed iframe");
-        iframes.forEach((iframe) => {
-          if (iframe.dataset.foleoStreamBound === "1") return;
-          iframe.dataset.foleoStreamBound = "1";
-          const origin = (() => {
-            try {
-              const url = new URL(iframe.src);
-              return `${url.protocol}//${url.host}`;
-            } catch (e) {
-              return "*";
-            }
-          })();
-          iframeMeta.set(iframe, { origin });
-          ensureCfSdk().then(() => {
-            try {
-              const player = Stream?.(iframe);
-              if (player && player.addEventListener) {
-                player.addEventListener("play", () => pauseOtherStreams(iframe));
-                player.addEventListener("playing", () => pauseOtherStreams(iframe));
-              }
-            } catch (e) {}
-          });
-        });
-      };
-
-      const readDataAttr = (placeholder, name) => {
-        if (!placeholder) return "";
-        const direct = placeholder.getAttribute(name) || "";
-        if (direct) return direct;
-        const wrapper = placeholder.closest(".cf-stream-embed");
-        return wrapper ? (wrapper.getAttribute(name) || "") : "";
-      };
-
-      const hasRequiredData = (placeholder) => {
-        const customer = normalizeCustomer(readDataAttr(placeholder, "data-foleo-customer"));
-        const videoId = readDataAttr(placeholder, "data-foleo-video-id");
-        return !!(customer && videoId);
-      };
-
-      const isIframeLive = (iframe) => {
-        if (!iframe) return false;
-        return iframe.isConnected && iframe.tagName === "IFRAME";
-      };
-
-      const initFromPlaceholder = (placeholder, isUserIntent) => {
-        if (!placeholder) return;
-        if (placeholder.dataset.foleoOverlayOnly === "1") return false;
-        if (!hasRequiredData(placeholder)) return;
-        const userIntent = isUserIntent === true;
-        if (!userIntent && isCxPage) return false;
-
-        const state = placeholder.dataset.foleoState || "idle";
-        const existing = placeholder.__foleoIframe;
-        const existingLive = isIframeLive(existing);
-        if (existingLive && (state === "loading" || state === "ready")) {
-          pauseOtherStreams(existing, { initial: !userIntent });
-          const meta = iframeMeta.get(existing) || {};
-          tryPostMessagePlay(existing, meta.origin || "*");
-          ensureCfSdk().then(() => {
-            try {
-              const p = Stream?.(existing);
-              p?.play?.().catch?.(() => {});
-            } catch (e) {}
-          });
-          return true;
-        }
-        if (state === "playing") {
-          pauseOtherStreams(existing || null, { initial: !userIntent });
-          return;
-        }
-        if (!existingLive) {
-          placeholder.dataset.foleoState = "idle";
-        }
-        const customerInfo = normalizeCustomer(readDataAttr(placeholder, "data-foleo-customer"));
-        const videoId = readDataAttr(placeholder, "data-foleo-video-id");
-        const poster = readDataAttr(placeholder, "data-poster");
-        if (!customerInfo || !videoId) return false;
-        if (placeholder.dataset.foleoLazyInit === "1" && existingLive) return false;
-        placeholder.dataset.foleoLazyInit = "1";
-        placeholder.dataset.foleoUserInit = userIntent ? "1" : "0";
-        placeholder.dataset.foleoState = "loading";
-        if (!placeholder.querySelector(".cf-stream-spinner")) {
-          const spinner = document.createElement("div");
-          spinner.className = "cf-stream-spinner";
-          placeholder.appendChild(spinner);
-        }
-        preconnectForCustomer(customerInfo);
-
-        const iframe = document.createElement("iframe");
-        const params = new URLSearchParams();
-        if (poster) params.set("poster", poster);
-        params.set("api", "1");
-        params.set("autoplay", "true");
-        params.set("muted", "true");
-        params.set("controls", "true");
-        params.set("playsinline", "true");
-        iframe.src = `${customerInfo.origin}/${videoId}/iframe?${params.toString()}`;
-        iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;";
-        iframe.allowFullscreen = true;
-        iframe.loading = "lazy";
-        iframe.style.border = "none";
-        iframe.style.position = "absolute";
-        iframe.style.top = "0";
-        iframe.style.left = "0";
-        iframe.style.height = "100%";
-        iframe.style.width = "100%";
-        iframe.style.zIndex = "0";
-        iframe.style.opacity = "0";
-        iframe.style.visibility = "hidden";
-
-        const parent = placeholder.parentElement;
-        if (parent) {
-          placeholder.style.zIndex = "1";
-          placeholder.style.transition = "opacity 240ms ease";
-          parent.insertBefore(iframe, placeholder);
-          placeholder.__foleoIframe = iframe;
-          iframeToPlaceholder.set(iframe.contentWindow, placeholder);
-          const origin = customerInfo.origin;
-          iframeMeta.set(iframe, { origin });
-          bindMessageListener();
-
-          iframe.addEventListener("load", () => {
-            placeholder.dataset.foleoState = "ready";
-            iframe.style.opacity = "1";
-            iframe.style.visibility = "visible";
-            pauseOtherStreams(iframe, { initial: !userIntent });
-            const tryPlay = () => {
-              tryPostMessagePlay(iframe, origin);
-              ensureCfSdk().then(() => {
-                try {
-                  const player = Stream?.(iframe);
-                  if (player && player.addEventListener) {
-                    const onPlay = () => {
-                      const userInit = placeholder.dataset.foleoUserInit === "1";
-                      pauseOtherStreams(iframe, { initial: !userInit });
-                      markPlaying(placeholder);
-                    };
-                    player.addEventListener("play", onPlay, { once: true });
-                    player.addEventListener("playing", onPlay, { once: true });
-                  }
-                  player?.play?.().catch?.(() => {});
-                } catch (e) {}
-              });
-            };
-            tryPlay();
-            setTimeout(tryPlay, 250);
-            setTimeout(tryPlay, 700);
-            setTimeout(tryPlay, 1200);
-            setTimeout(tryPlay, 1800);
-
-            setTimeout(() => {
-              if (placeholder.dataset.foleoState !== "playing") {
-                ensureHint(placeholder, "Tap to play");
-                placeholder.dataset.foleoState = "ready";
-              }
-            }, 1600);
-          }, { once: true });
-          return true;
-        } else {
-          placeholder.replaceWith(iframe);
-          return true;
-        }
-      };
-
-      const observer = ("IntersectionObserver" in window)
-        ? new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              const target = entry.target;
-              observer.unobserve(target);
-              idleRun(() => initFromPlaceholder(target, false));
-            });
-          }, { rootMargin: "200px 0px", threshold: 0.1 })
-        : null;
-
-      const posterObserver = ("IntersectionObserver" in window)
-        ? new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              const target = entry.target;
-              posterObserver.unobserve(target);
-              applyPoster(target);
-            });
-          }, { rootMargin: "300px 0px", threshold: 0.01 })
-        : null;
-
-      const processEmbeds = () => {
-        const embeds = document.querySelectorAll(".cf-stream-embed");
-        embeds.forEach((embed) => {
-          const candidates = Array.from(embed.querySelectorAll(".cf-stream-placeholder"));
-          if (!candidates.length) return;
-          const valid = candidates.find(hasRequiredData);
-          if (!valid) return;
-          if (candidates.length > 1 && FOLEO_DEBUG) {
-            console.warn("[CFStream] Multiple placeholders found; using first valid only.", embed);
-          }
-          candidates.forEach((node) => {
-            if (node !== valid) node.remove();
-          });
-
-          valid.dataset.foleoState = "idle";
-          valid.dataset.foleoLazyInit = "0";
-          valid.style.pointerEvents = "auto";
-
-          // Remove inline poster styles so below-the-fold posters don't download early.
-          if (readDataAttr(valid, "data-poster")) {
-            valid.style.backgroundImage = "";
-            valid.style.backgroundRepeat = "";
-            valid.style.backgroundSize = "";
-            valid.dataset.foleoPosterApplied = "0";
-          }
-
-          if (valid.dataset.foleoBound !== "1") {
-            const onIntent = (e) => {
-              if (FOLEO_DEBUG) {
-                console.log("[CFStream] intent", {
-                  target: e?.target,
-                  placeholder: valid,
-                  state: valid.dataset.foleoState
-                });
-              }
-              const started = initFromPlaceholder(valid, true);
-              if (!started && FOLEO_DEBUG) {
-                const styles = window.getComputedStyle(valid);
-                console.warn("[CFStream] Click did not start init", {
-                  target: e?.target,
-                  placeholder: valid,
-                  pointerEvents: styles.pointerEvents,
-                  state: valid.dataset.foleoState
-                });
-              }
-            };
-            valid.addEventListener("click", onIntent);
-            valid.addEventListener("keydown", (e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onIntent(e);
-              }
-            });
-            valid.dataset.foleoBound = "1";
-          }
-
-          const isHero = !!valid.closest('[data-foleo-hero="1"]');
-          if (isHero) {
-            applyPoster(valid);
-          } else if (posterObserver) {
-            posterObserver.observe(valid);
-            valid.dataset.foleoLazyInit = "1";
-          } else {
-            applyPoster(valid);
-          }
-          if (!isCxPage && !isHero) {
-        if (observer) {
-              observer.observe(valid);
-            } else {
-              idleRun(() => initFromPlaceholder(valid, false));
-            }
-          }
-        });
-      };
-
-      window.FoleoInitCfStream = initFromPlaceholder;
-      window.FoleoPauseOtherStreams = pauseOtherStreams;
-
-      bindMessageListener();
-      bindDirectIframeControls();
-      if (hasPlaceholders) {
-        processEmbeds();
-      }
-
-      const embedObserver = new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-          if (mutation.addedNodes && mutation.addedNodes.length) {
-            bindDirectIframeControls();
-            if (hasPlaceholders) {
-              processEmbeds();
-            }
-            break;
-          }
-        }
-      });
-      embedObserver.observe(document.body, { childList: true, subtree: true });
-
-    }
-
-      initCfStreamPlaceholders();
-
-    // Vidstack Stream Replacement (legacy path for non-CX pages)
-    const playingPlayers = new Set();
-    // CX uses the placeholder-first CF Stream flow above; keep legacy swap for non-CX pages.
-    const readPageConfig = () => {
-      const direct =
-        window.foleo_page_config_json ||
-        window.FOLEO_PAGE_CONFIG_JSON ||
-        window.FOLEO_PAGE_CONFIG ||
-        window.foleoPageConfig ||
-        window.__FOLEO_PAGE_CONFIG__;
-      if (!direct) return null;
-      if (typeof direct === "string") {
-        try {
-          const parsed = JSON.parse(direct);
-          return (parsed && typeof parsed === "object") ? parsed : null;
-        } catch (e) {
-          return null;
-        }
-      }
-      return (typeof direct === "object") ? direct : null;
-    };
-
-    const readConfigFlag = (config, key) => {
-      if (!config || typeof config !== "object") return false;
-      const raw =
-        (key in config) ? config[key] :
-        (config.flags && key in config.flags) ? config.flags[key] :
-        (config.modules && key in config.modules) ? config.modules[key] :
-        (config.modules && config.modules.cfStream && key === "cfStream_enabled")
-          ? config.modules.cfStream.enabled
-          : undefined;
-      return raw === true || raw === 1 || raw === "1" || raw === "true";
-    };
-
-    const readConfigString = (config, key) => {
-      if (!config || typeof config !== "object") return "";
-      const raw =
-        (key in config) ? config[key] :
-        (config.flags && key in config.flags) ? config.flags[key] :
-        (config.modules && key in config.modules) ? config.modules[key] :
-        (key === "cfStream_mode" && config.modules && config.modules.cfStream)
-          ? config.modules.cfStream.mode
-          : undefined;
-      return (raw === undefined || raw === null) ? "" : String(raw);
-    };
-
-    const pageConfig = readPageConfig();
-    const pageKey = (() => {
-      if (pageConfig && typeof pageConfig === "object") {
-        const key =
-          pageConfig.pageKey ||
-          pageConfig.page_key ||
-          pageConfig.key ||
-          pageConfig.page ||
-          "";
-        if (key) return String(key);
-      }
-      const fromDom =
-        document.documentElement?.getAttribute?.("data-foleo-page-key") ||
-        document.body?.getAttribute?.("data-foleo-page-key") ||
-        "";
-      if (fromDom) return fromDom;
-      const globalKey =
-        window.FOLEO_PAGE_KEY ||
-        window.foleo_page_key ||
-        window.__FOLEO_PAGE_KEY__ ||
-        "";
-      return globalKey ? String(globalKey) : "";
-    })();
-
-    const cfStreamEnabled = readConfigFlag(pageConfig, "cfStream_enabled");
-    const cfStreamMode = readConfigString(pageConfig, "cfStream_mode");
-    const isPlaceholderFirst = cfStreamMode === "placeholderFirst";
-    const isCxPlaceholderFirst =
-      pageKey === "cx" ||
-      isPlaceholderFirst ||
-      (cfStreamEnabled && isPlaceholderFirst);
-    const isCxPath = (() => {
-      const path = (window.location && window.location.pathname) ? window.location.pathname : "";
-      const clean = path.replace(/\/+$/, "");
-      return clean === "" || clean === "/cx";
-    })();
-    const isCxPage = isCxPlaceholderFirst || isCxPath;
-
-    const legacyLog = (tag, extra) => {
-      if (!FOLEO_DEBUG) return;
-      const payload = Object.assign(
-        { tag, ts: Math.round(performance.now()) },
-        extra || {}
-      );
-      console.log("[LEGACY_CF_INIT]", payload, new Error().stack);
-    };
-
-    function parseCloudflareStreamSrc(src) {
-      try {
-        const url = new URL(src);
-        if (!url.hostname.endsWith("cloudflarestream.com")) return null;
-        const customer = url.hostname.split(".cloudflarestream.com")[0];
-        const parts = url.pathname.split("/").filter(Boolean);
-        if (!customer || parts.length === 0) return null;
-        return { customer, videoId: parts[0] };
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function registerPlayer(player) {
-      if (!player || player.dataset.foleoPlayerBound === "1") return;
-      player.dataset.foleoPlayerBound = "1";
-
-      player.addEventListener("play", () => {
-        playingPlayers.forEach((other) => {
-          if (other !== player && typeof other.pause === "function") {
-            try { other.pause(); } catch (e) {}
-          }
-        });
-        playingPlayers.add(player);
-      });
-
-      const handleStop = () => {
-        playingPlayers.delete(player);
-      };
-
-      player.addEventListener("pause", handleStop);
-      player.addEventListener("ended", handleStop);
-    }
-
-    function createPlayerFromData(data, isPopup) {
-      const hls = `https://${data.customer}.cloudflarestream.com/${data.videoId}/manifest/video.m3u8`;
-      const player = document.createElement("media-player");
-      player.className = "foleo-media-player";
-      if (isPopup) {
-        player.setAttribute("autoplay", "");
-        player.setAttribute("muted", "");
-        player.setAttribute("loop", "");
-        player.setAttribute("playsinline", "");
-        player.setAttribute("crossorigin", "anonymous");
-      } else {
-        player.setAttribute("playsinline", "");
-        player.setAttribute("crossorigin", "anonymous");
-      }
-      player.setAttribute("src", hls);
-
-      const provider = document.createElement("media-provider");
-      player.appendChild(provider);
-      if (!isPopup) {
-        const layout = document.createElement("media-video-layout");
-        const noCast = document.createElement("div");
-        noCast.setAttribute("slot", "googleCastButton");
-        noCast.style.display = "none";
-        layout.appendChild(noCast);
-        player.appendChild(layout);
-      }
-      registerPlayer(player);
-      return player;
-    }
-
-    function replaceIframe(iframe) {
-      if (!iframe) return;
-      const data = parseCloudflareStreamSrc(iframe.src || "");
-      if (isCxPage || isCxPlaceholderFirst) {
-        if (FOLEO_DEBUG) {
-          legacyLog("cx_skip_legacy", { videoId: data ? data.videoId : "" });
-        }
-        return;
-      }
-      if (iframe.dataset.vidstackDone === "1") return;
-      if (iframe.parentElement && iframe.parentElement.querySelector("media-player")) return;
-      legacyLog("replaceIframe", {
-        iframes: document.querySelectorAll('iframe[src*="cloudflarestream.com"]').length
-      });
-      iframe.dataset.vidstackDone = "1";
-      iframe.style.visibility = "hidden";
-
-      const isPopup =
-        !!iframe.closest(".breakdance-popup") ||
-        !!iframe.closest(".bde-popup") ||
-        !!iframe.closest(".popup-topradius");
-
-      if (!data) return;
-
-      const player = createPlayerFromData(data, isPopup);
-
-      if (FOLEO_DEBUG) {
-        const wrapperClass = iframe.parentElement ? iframe.parentElement.className : "";
-        console.log("Vidstack swap", {
-          customer: data.customer,
-          videoId: data.videoId,
-          hlsUrl: `https://${data.customer}.cloudflarestream.com/${data.videoId}/manifest/video.m3u8`,
-          wrapperClass
-        });
-      }
-
-      function applyNoCast(target) {
-        const v = target.querySelector("video");
-        if (!v) return false;
-        v.disableRemotePlayback = true;
-        v.setAttribute("controlslist", "noremoteplayback");
-        return true;
-      }
-
-      player.addEventListener("loadedmetadata", () => applyNoCast(player), { once: true });
-
-      iframe.replaceWith(player);
-      applyNoCast(player);
-      requestAnimationFrame(() => applyNoCast(player));
-      setTimeout(() => applyNoCast(player), 300);
-
-      if (isPopup) {
-        const tryPlay = () => {
-          const v = player.querySelector("video");
-          if (!v) return false;
-          v.muted = true;
-          v.loop = true;
-          v.playsInline = true;
-          v.removeAttribute("controls");
-          player.play?.().catch(() => {});
-          return true;
-        };
-
-        tryPlay();
-        requestAnimationFrame(tryPlay);
-        setTimeout(tryPlay, 200);
-        setTimeout(tryPlay, 800);
-      }
-    }
-
-    let legacyInitRan = false;
-    const runLegacyInit = () => {
-      if (legacyInitRan) return;
-      legacyInitRan = true;
-      if (isCxPage || isCxPlaceholderFirst) {
-        if (FOLEO_DEBUG) {
-          legacyLog("cx_skip_legacy", {
-            pageKey,
-            cfStream_mode: cfStreamMode,
-            cfStream_enabled: cfStreamEnabled
-          });
-        }
-        return;
-      }
-
-      const initial = document.querySelectorAll('iframe[src*="cloudflarestream.com"]');
-      legacyLog("initial_scan", { count: initial.length });
-      initial.forEach(replaceIframe);
-
-      const existingPlayers = document.querySelectorAll("media-player");
-      existingPlayers.forEach(registerPlayer);
-
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeType !== 1) return;
-            if (node.matches && node.matches('iframe[src*="cloudflarestream.com"]')) {
-              legacyLog("mutation_iframe", { nodeName: node.nodeName });
-              replaceIframe(node);
-              return;
-            }
-            if (node.querySelectorAll) {
-              const iframes = node.querySelectorAll('iframe[src*="cloudflarestream.com"]');
-              if (iframes.length) {
-                legacyLog("mutation_batch", { count: iframes.length });
-              }
-              iframes.forEach(replaceIframe);
-            }
-          });
-        });
-      });
-
-      observer.observe(document.body, { childList: true, subtree: true });
-    };
-
-      runLegacyInit();
-
-      let scrollTicking = false;
-      window.addEventListener("scroll", () => {
-        if (scrollTicking) return;
-        scrollTicking = true;
-        window.requestAnimationFrame(() => {
-          scrollTicking = false;
-          if (!playingPlayers.size) return;
-
-          playingPlayers.forEach((player) => {
-            const rect = player.getBoundingClientRect();
-            const height = rect.height || 0;
-            if (!height) return;
-            const threshold = height * 0.3;
-            if (rect.top < -threshold || rect.bottom > window.innerHeight + threshold) {
-              if (typeof player.pause === "function") player.pause();
-            }
-          });
-        });
-      }, { passive: true });
-    }
   }
 });
 

@@ -172,6 +172,27 @@
   toolbarWrap.className = 'foleo-compiler-toolbar-wrap';
   toolbarWrap.appendChild(toolbarButton);
 
+  let toolbarClickBound = false;
+  const bindToolbarAutoClose = () => {
+    if (toolbarClickBound) return;
+    const toolbar = document.querySelector('.v-toolbar__content');
+    if (!toolbar) return;
+    toolbarClickBound = true;
+    const handler = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (toolbarWrap.contains(target)) return;
+      if (!target.closest('.v-toolbar__content')) return;
+      if (target.closest('.breakdance-toolbar-icon-button')) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handler, true);
+    document.addEventListener('mousedown', handler, true);
+    document.addEventListener('click', handler, true);
+    document.addEventListener('pointerup', handler, true);
+  };
+
   const attachToToolbar = () => {
     const toolbar = document.querySelector('.v-toolbar__content');
     if (!toolbar) return false;
@@ -184,11 +205,13 @@
       const anchor = children[4];
       if (anchor.parentNode) {
         anchor.parentNode.insertBefore(toolbarWrap, anchor.nextSibling);
+        bindToolbarAutoClose();
         return true;
       }
     }
 
     toolbar.appendChild(toolbarWrap);
+    bindToolbarAutoClose();
     return true;
   };
 

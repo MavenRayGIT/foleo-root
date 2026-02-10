@@ -1,0 +1,95 @@
+/* ==========================
+   Chart sections
+   ========================== */
+
+/* Base */
+.foleo-chart { width: 100%; max-width: 800px; margin: 0 auto; position: relative; }
+.foleo-chart canvas { width: 100% !important; height: 100% !important; display: block; }
+
+/* Square */
+.chart-square { padding: 0px !important;  }
+.chart-square.foleo-chart { aspect-ratio: 1 / 1; }
+
+
+
+/* Wide + short */
+.chart-wide-short { padding: 20px 0px !important; }
+.chart-wide-short.foleo-chart { max-width: none !important; height: 360px; }
+
+/* Wide + tall */
+.chart-wide-tall { padding: 20px 0px !important; }
+.chart-wide-tall.foleo-chart { max-width: none !important; height: 560px; }
+
+/* Big 80 */
+.chart-big-80 { padding: 20px 0px !important; }
+.chart-big-80.foleo-chart { width: 85% !important; max-width: none !important; }
+
+/* Tooltip */
+.foleo-chart-tooltip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2147483600;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 15px;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+  font: 600 12px/1 inherit;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 120ms ease;
+  will-change: transform;
+}
+.foleo-chart-tooltip.is-visible { opacity: 1; }
+.foleo-chart-tooltip__single {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.foleo-chart-tooltip__multi {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+.foleo-chart-tooltip__title {
+  font-size: 10px;
+  font-weight: 700;
+}
+.foleo-chart-tooltip__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.foleo-chart-tooltip__row {
+  display: grid;
+  grid-template-columns: 16px 48px 1fr;
+  align-items: center;
+  gap: 10px;
+  text-decoration: uppercase;
+}
+.foleo-chart-tooltip__row .foleo-chart-tooltip__value {
+  text-align: right;
+}
+.foleo-chart-tooltip__row .foleo-chart-tooltip__label {
+  text-align: left;
+}
+.foleo-chart-tooltip__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #2563eb;
+  flex: 0 0 auto;
+}
+.foleo-chart-tooltip__value {
+  font-size: 14px;
+  font-weight: 400;
+}
+.foleo-chart-tooltip__label {
+  font-size: 14px;
+  font-weight: 700;
+
+}

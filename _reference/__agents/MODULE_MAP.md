@@ -11,3 +11,6 @@
 
 ## Integration Points
 - Where modules connect, data contracts, APIs.
+- Compiler routing and builder enforcement: `includes/compiler/route.php`.
+- Shell injection: `includes/compiler/tweaks.php` and `includes/page_utility/overlay.php` via unofficial Breakdance hook.
+- Context gating helpers: `includes/*/context.php` and capabilities helpers, used to detect compiler requests and client editor roles.

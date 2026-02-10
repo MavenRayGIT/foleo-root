@@ -1,14 +1,21 @@
 (function () {
+  var isEditPreview = false;
   try {
     var path = window.location && window.location.pathname ? window.location.pathname : "";
     var search = window.location && window.location.search ? window.location.search : "";
     var isCompiler = path.indexOf("/compiler/") === 0;
     var isBuilder = search.indexOf("breakdance=builder") !== -1;
     var isIframe = search.indexOf("breakdance_iframe") !== -1;
+    isEditPreview = typeof window !== "undefined" && window.FOLEO_EDIT_PREVIEW === true;
     if (isCompiler || isBuilder || isIframe) {
-      return;
+      if (!isEditPreview) {
+        return;
+      }
     }
   } catch (e) {}
+  if (typeof window !== "undefined" && window.FOLEO_DISABLE_SCROLLTRIGGER && !isEditPreview) {
+    return;
+  }
   "use strict";
 
   function isEditMode() {
@@ -97,6 +104,79 @@
     refreshDelay: 150
   };
 
+  function ensurePreviewStyles() {
+    if (document.getElementById("foleo-lottie-preview-style")) return;
+    var style = document.createElement("style");
+    style.id = "foleo-lottie-preview-style";
+    style.textContent =
+      ".foleo-lottie-preview{position:absolute;top:8px;right:8px;display:flex;gap:6px;z-index:2;pointer-events:none}" +
+      ".foleo-lottie-preview button{pointer-events:auto;background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:4px 8px;font-size:11px;line-height:1;color:#111827;box-shadow:0 1px 2px rgba(0,0,0,.06);cursor:pointer}";
+    document.head.appendChild(style);
+  }
+
+  function addPreviewOverlay(section, anim) {
+    if (!window.FOLEO_EDIT_PREVIEW_CONTROLS) return;
+    if (section.querySelector(".foleo-lottie-preview")) return;
+    ensurePreviewStyles();
+    var wrap = document.createElement("div");
+    wrap.className = "foleo-lottie-preview";
+    var btnPlaceholder = document.createElement("button");
+    btnPlaceholder.type = "button";
+    btnPlaceholder.textContent = "Placeholder only";
+    var btnPreview = document.createElement("button");
+    btnPreview.type = "button";
+    btnPreview.textContent = "Preview animation";
+    wrap.appendChild(btnPlaceholder);
+    wrap.appendChild(btnPreview);
+    section.style.position = section.style.position || "relative";
+    section.appendChild(wrap);
+
+    var lastFrame = Math.max(0, (anim && anim.totalFrames ? anim.totalFrames - 1 : 0));
+
+    var toLastFrame = function () {
+      try {
+        anim.stop();
+        anim.goToAndStop(lastFrame, true);
+      } catch (e) {}
+    };
+
+    btnPlaceholder.addEventListener("click", function (e) {
+      e.preventDefault();
+      toLastFrame();
+    });
+
+    btnPreview.addEventListener("click", function (e) {
+      e.preventDefault();
+      try {
+        anim.stop();
+        anim.loop = false;
+        anim.play();
+      } catch (e) {}
+    });
+
+    anim.addEventListener("complete", function () {
+      toLastFrame();
+    });
+  }
+
+  function initEditPreview() {
+    var sections = document.querySelectorAll(".lottie-scroll-section");
+    if (!sections || !sections.length) return;
+    sections.forEach(function (section) {
+      loadLottieForSection(section).then(function (data) {
+        if (!data || !data.anim) return;
+        applySizing(data);
+        var anim = data.anim;
+        var lastFrame = Math.max(0, (anim.totalFrames ? anim.totalFrames - 1 : 0));
+        try {
+          anim.stop();
+          anim.goToAndStop(lastFrame, true);
+        } catch (e) {}
+        addPreviewOverlay(section, anim);
+      });
+    });
+  }
+
   function toBool(val, fallback) {
     if (val === null || val === undefined || val === "") return fallback;
     if (typeof val === "boolean") return val;
@@ -159,6 +239,15 @@
         resolve(null);
       });
     });
+  }
+
+  if (isEditPreview) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initEditPreview, { once: true });
+    } else {
+      initEditPreview();
+    }
+    return;
   }
 
   function applySizing(data) {
