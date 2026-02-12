@@ -924,13 +924,13 @@ div.no_pointer {pointer-events: none;}
 
   .foleo-accordion-block .bde-column {
     border: 0;
-    border-bottom: 1px solid var(--accordion-line-color, currentColor);
+    border-bottom: var(--accordion-line-weight, var(--foleo-acc-line-weight, 1px)) solid var(--accordion-line-color, currentColor);
     border-radius: 0;
     background: var(--accordion-closed-bg, transparent);
     overflow: hidden;
     padding: 0 !important;
     margin: 0 !important;
-    background-color: transparent !important;
+    background-color: var(--accordion-closed-bg, transparent) !important;
     background-image: none !important;
     gap: 0px!important;
     position: relative;
@@ -942,7 +942,7 @@ div.no_pointer {pointer-events: none;}
   }
 
   .foleo-accordion-block .foleo-accordion-first {
-    border-top: 1px solid var(--accordion-line-color, currentColor);
+    border-top: var(--accordion-line-weight, var(--foleo-acc-line-weight, 1px)) solid var(--accordion-line-color, currentColor);
   }
 
   .foleo-accordion-block .foleo-accordion__header {

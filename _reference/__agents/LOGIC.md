@@ -16,6 +16,7 @@
 - Breakdance iframe renders CF Stream placeholders after initial DOMContentLoaded; edit-mode poster overlays must rescan and watch for mutations to attach posters and play buttons.
 - Edit-mode video behavior is poster-first: no SDK/HLS preloading in builder iframe, click-to-hydrate only, and unload-on-exit returns to poster.
 - Edit-mode video ghosting: keep iframe above placeholder via z-index after hydrate to avoid poster bleed-through.
+- Legacy compile HUD for copy fields was tied to `?compile=1` and `.compile-type` selectors. It will not appear in normal builder/property editing flows, and copy edits should use native Breakdance custom-field bindings. Compile overlays now target media/table/lottie only.
 
 ## Regressions to Watch
 - Known pitfalls and tests that must not fail.

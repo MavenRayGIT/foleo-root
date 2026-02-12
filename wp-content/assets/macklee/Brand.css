@@ -33,19 +33,24 @@
   .foleo-accordion-mobile--light .foleo-accordion-block,
   .foleo-accordion-block.foleo-accordion-mobile--light {
     --accordion-line-color: var(--foleo-acc-line)!important;
+    --accordion-closed-bg: var(--foleo-acc-bg)!important;
     --accordion-open-bg: var(--foleo-acc-open-bg)!important;
     --accordion-closed-text: var(--foleo-acc-title-color);
     --accordion-open-text: var(--foleo-acc-body-color);
   }
 
-  .foleo-accordion-block .bde-column { 
-    background-color: var(--foleo-acc-bg)!important;
+  .foleo-accordion-block .bde-column {
+    border-bottom-width: var(--foleo-acc-line-weight) !important;
+  }
 
+  .foleo-accordion-block .foleo-accordion-first {
+    border-top-width: var(--foleo-acc-line-weight) !important;
   }
 
   .foleo-accordion-mobile--dark .foleo-accordion-block,
   .foleo-accordion-block.foleo-accordion-mobile--dark {
-    --accordion-line-color: var(--foleo-acc-open-bg)!important;
+    --accordion-line-color: color-mix(in srgb, var(--foleo-acc-bg) 50%, transparent) !important;
+    --accordion-closed-bg: transparent!important;
     --accordion-closed-text: #ffffff;
     --accordion-open-bg: #ffffff;
     --accordion-open-text: var(--foleo-acc-body-color);

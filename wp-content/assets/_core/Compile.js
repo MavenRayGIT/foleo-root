@@ -91,7 +91,7 @@ function initFoleoCompileMode() {
 
     const linearizeRoots = new Set();
     const compileTargetSelector =
-      '[data-compile-linearize="1"], .compile-type, .compile-video, .compile-image, .compile-table, .compile-lottie';
+      '[data-compile-linearize="1"], .compile-video, .compile-image, .compile-table, .compile-lottie';
 
     document.querySelectorAll(compileTargetSelector).forEach((el) => {
       if (!(el instanceof Element)) return;
@@ -190,7 +190,7 @@ function initFoleoCompileMode() {
 
   const targets = Array.from(
     document.querySelectorAll(
-      '.compile-type, .compile-video, .compile-image, .compile-table, .compile-lottie'
+      '.compile-video, .compile-image, .compile-table, .compile-lottie'
     )
   );
   console.log('[compile] enabled', { targets: targets.length });
@@ -635,7 +635,7 @@ function initFoleoCompileMode() {
   updateHitboxes();
 
   const compileTargetSelector =
-    '.compile-type, .compile-video, .compile-image, .compile-table, .compile-lottie';
+    '.compile-video, .compile-image, .compile-table, .compile-lottie';
   const popupTriggerSelector = [
     '[data-popup-id]',
     '[data-popup-open]',

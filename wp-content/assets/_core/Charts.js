@@ -87,35 +87,100 @@
   let tooltipValueEl = null;
   let tooltipDotEl = null;
   let tooltipVisible = false;
-  const ensureTooltip = () => {
-    if (tooltipEl) return;
-    tooltipEl = document.createElement('div');
-    tooltipEl.className = 'foleo-chart-tooltip';
-    tooltipEl.innerHTML = `
-      <div class="foleo-chart-tooltip__single">
-        <span class="foleo-chart-tooltip__dot"></span>
-        <span class="foleo-chart-tooltip__value"></span>
-        <span class="foleo-chart-tooltip__label"></span>
-      </div>
-      <div class="foleo-chart-tooltip__multi">
-        <div class="foleo-chart-tooltip__title"></div>
-        <div class="foleo-chart-tooltip__rows"></div>
-      </div>
-    `;
-    document.body.appendChild(tooltipEl);
-    tooltipDotEl = tooltipEl.querySelector('.foleo-chart-tooltip__dot');
-    tooltipValueEl = tooltipEl.querySelector('.foleo-chart-tooltip__value');
-    tooltipLabelEl = tooltipEl.querySelector('.foleo-chart-tooltip__label');
+  let tooltipRoot = null;
+  let tooltipChart = null;
+  const isCoarsePointer = () =>
+    !!(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
+  let tooltipRaf = 0;
+  let pendingTooltipPos = null;
+  const flushTooltipPosition = () => {
+    tooltipRaf = 0;
+    if (!pendingTooltipPos || !tooltipEl) return;
+    const { x, y } = pendingTooltipPos;
+    pendingTooltipPos = null;
+    tooltipEl.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
+  };
+  const hideTooltip = () => {
+    if (tooltipRaf) {
+      cancelAnimationFrame(tooltipRaf);
+      tooltipRaf = 0;
+    }
+    pendingTooltipPos = null;
+    if (tooltipEl) tooltipEl.classList.remove('is-visible');
+    tooltipVisible = false;
+    tooltipChart = null;
+  };
+  const ensureTooltip = (root) => {
+    const targetRoot = root || document.body;
+    if (!tooltipEl) {
+      tooltipEl = document.createElement('div');
+      tooltipEl.className = 'foleo-chart-tooltip';
+      tooltipEl.innerHTML = `
+        <div class="foleo-chart-tooltip__single">
+          <span class="foleo-chart-tooltip__dot"></span>
+          <span class="foleo-chart-tooltip__value"></span>
+          <span class="foleo-chart-tooltip__label"></span>
+        </div>
+        <div class="foleo-chart-tooltip__multi">
+          <div class="foleo-chart-tooltip__title"></div>
+          <div class="foleo-chart-tooltip__rows"></div>
+        </div>
+      `;
+      tooltipDotEl = tooltipEl.querySelector('.foleo-chart-tooltip__dot');
+      tooltipValueEl = tooltipEl.querySelector('.foleo-chart-tooltip__value');
+      tooltipLabelEl = tooltipEl.querySelector('.foleo-chart-tooltip__label');
+    }
+    if (tooltipRoot !== targetRoot || tooltipEl.parentElement !== targetRoot) {
+      tooltipRoot = targetRoot;
+      tooltipRoot.appendChild(tooltipEl);
+    }
+  };
+  const positionTooltip = (chart, tooltip, pointer) => {
+    if (!tooltipEl || !chart || !chart.canvas) return;
+    const root = chart.canvas.closest('.foleo-chart') || chart.canvas.parentElement || document.body;
+    ensureTooltip(root);
+
+    const rootRect = root.getBoundingClientRect();
+    const canvasRect = chart.canvas.getBoundingClientRect();
+    const localX =
+      Number.isFinite(pointer?.x)
+        ? pointer.x
+        : Number.isFinite(tooltip?.caretX)
+          ? tooltip.caretX
+          : 0;
+    const localY =
+      Number.isFinite(pointer?.y)
+        ? pointer.y
+        : Number.isFinite(tooltip?.caretY)
+          ? tooltip.caretY
+          : 0;
+    const anchorX = (canvasRect.left - rootRect.left) + localX;
+    const anchorY = (canvasRect.top - rootRect.top) + localY;
+    const pad = 12;
+    const tipRect = tooltipEl.getBoundingClientRect();
+    const rootW = root.clientWidth || Math.round(rootRect.width) || 0;
+
+    let x = anchorX + pad;
+    if (rootW && tipRect.width && x + tipRect.width > rootW - 8) {
+      x = anchorX - tipRect.width - pad;
+    }
+    if (x < 8) x = 8;
+
+    pendingTooltipPos = { x, y: anchorY + 12 };
+    if (!tooltipRaf) {
+      tooltipRaf = requestAnimationFrame(flushTooltipPosition);
+    }
   };
 
   const externalTooltipHandler = (context) => {
     const { chart, tooltip } = context;
     if (!chart || !chart.canvas) return;
-    ensureTooltip();
+    const root = chart.canvas.closest('.foleo-chart') || chart.canvas.parentElement || document.body;
+    ensureTooltip(root);
+    tooltipChart = chart;
 
     if (!tooltip || !tooltip.opacity || !tooltip.dataPoints || !tooltip.dataPoints.length) {
-      if (tooltipEl) tooltipEl.classList.remove('is-visible');
-      tooltipVisible = false;
+      hideTooltip();
       return;
     }
 
@@ -189,10 +254,12 @@
     if (fontFamily) {
       tooltipEl.style.fontFamily = fontFamily;
     }
-    const pos = chart._foleoCursor || { x: tooltip.caretX, y: tooltip.caretY };
-    const vw = window.innerWidth || 0;
+    const pos = isCoarsePointer()
+      ? { x: tooltip.caretX, y: tooltip.caretY }
+      : (chart._foleoCursor || { x: tooltip.caretX, y: tooltip.caretY });
+    const chartW = chart.width || 0;
     if (tooltipEl) {
-      if (pos.x > vw * 0.6) {
+      if (pos.x > chartW * 0.6) {
         tooltipEl.classList.add('is-right');
       } else {
         tooltipEl.classList.remove('is-right');
@@ -200,6 +267,7 @@
     }
     tooltipVisible = true;
     tooltipEl.classList.add('is-visible');
+    positionTooltip(chart, tooltip, pos);
   };
 
   const initChart = (canvas) => {
@@ -227,21 +295,17 @@
         }
       }
       canvas.addEventListener('mousemove', (e) => {
-        chart._foleoCursor = { x: e.clientX, y: e.clientY };
-        if (tooltipVisible && tooltipEl) {
-          const rect = tooltipEl.getBoundingClientRect();
-          const pad = 12;
-          const vw = window.innerWidth || 0;
-          let x = e.clientX + pad;
-          if (vw && rect.width && x + rect.width > vw - 8) {
-            x = e.clientX - rect.width - pad;
-          }
-          tooltipEl.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(e.clientY + 12)}px, 0)`;
+        const canvasRect = canvas.getBoundingClientRect();
+        chart._foleoCursor = {
+          x: e.clientX - canvasRect.left,
+          y: e.clientY - canvasRect.top
+        };
+        if (tooltipVisible && tooltipEl && tooltipChart === chart) {
+          positionTooltip(chart, chart.tooltip, chart._foleoCursor);
         }
       }, { passive: true });
       canvas.addEventListener('mouseleave', () => {
-        if (tooltipEl) tooltipEl.classList.remove('is-visible');
-        tooltipVisible = false;
+        hideTooltip();
       });
       const chart = new window.Chart(ctx, config);
     } catch (e) {
@@ -300,4 +364,20 @@
   } else {
     boot();
   }
+  document.addEventListener('touchstart', (e) => {
+    if (!tooltipVisible || !tooltipEl) return;
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest('.foleo-chart')) return;
+    hideTooltip();
+  }, { passive: true });
+  document.addEventListener('pointerdown', (e) => {
+    if (!tooltipVisible || !tooltipEl) return;
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest('.foleo-chart')) return;
+    hideTooltip();
+  }, { passive: true });
+  window.addEventListener('scroll', hideTooltip, { passive: true });
+  window.addEventListener('resize', hideTooltip, { passive: true });
 })();

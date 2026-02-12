@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('FOLEO_CORE_VERSION')) {
-  define('FOLEO_CORE_VERSION', '0.3.2');
+  define('FOLEO_CORE_VERSION', '0.3.3');
 }
 
 if (!defined('FOLEO_CORE_FILE')) {
