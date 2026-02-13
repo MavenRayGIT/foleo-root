@@ -11,6 +11,10 @@
 
 ## Key Decisions
 - Rationale for major architectural choices.
+- Client-admin styling is now partitioned into four layers to isolate breakage risk:
+  - Layer 1 tokens/base theme and Layer 2 reusable FOLEO patterns in `assets/css/admin-client.css`.
+  - Layer 3 screen composition in `assets/css/foleo-v1.css`.
+  - Layer 4 WordPress adapter overrides in `assets/css/admin-client-wp-adapter.css` and `assets/js/admin-client-wp-adapter.js`.
 
 ## Cadence and Roles
 - ChatGPT is Architect (strategy, constraints, design, decisions, roadmap, risk framing).

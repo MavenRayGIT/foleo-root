@@ -22,3 +22,13 @@ Default mode: Diagnose + Recommend only. No edits unless user says "Execute".
 ## Session End
 - Capture lessons learned in the correct doc(s).
 - Append a dated entry to CHANGELOG.md.
+
+## FOLEO Client Admin UX (required)
+For any changes to FOLEO client-shell wp-admin UX, you MUST follow:
+- UX-Client-Admin.md (living spec): layer contract, patterns, nav fallback boundaries, and QA checklist.
+
+Rules of engagement
+- Enforce the 4-layer contract. No WP primitive selectors in Layers 1-3.
+- WP markup hacks and DOM remaps live only in Layer 4 files.
+- Left-nav resilience fallback is allowed only under the Layer 4b rules in UX-Client-Admin.md.
+- After any UX change, run the manual QA checklist from UX-Client-Admin.md and report results.

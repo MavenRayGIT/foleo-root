@@ -1,0 +1,604 @@
+body.foleo-client-shell-active .foleo-v1 {
+  display: grid;
+  gap: 16px;
+}
+
+body.foleo-client-shell-active .foleo-v1--detail {
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+body.foleo-client-shell-active .foleo-v1__progress,
+body.foleo-client-shell-active .foleo-v1__drawer,
+body.foleo-client-shell-active .foleo-v1__truth-card {
+  background: var(--bd-panel, #fff);
+  border: 1px solid var(--bd-border, #e3e7ee);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+body.foleo-client-shell-active .foleo-v1__progress {
+  grid-column: 1 / -1;
+  padding: 16px 14px 14px;
+  margin-bottom: 20px;
+}
+
+body.foleo-client-shell-active .foleo-v1__steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0 6px;
+  position: relative;
+}
+
+body.foleo-client-shell-active .foleo-v1__steps li {
+  padding: 28px 8px 0;
+  border-radius: 0;
+  color: var(--bd-text, #0f172a);
+  opacity: 1;
+  text-align: center;
+  position: relative;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+body.foleo-client-shell-active .foleo-v1__steps li::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: calc(50% + 18px);
+  right: calc(-50% + 18px);
+  border-top: 2px solid #fff;
+  z-index: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__steps li:last-child::after {
+  display: none;
+}
+
+body.foleo-client-shell-active .foleo-v1__steps li::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #fff;
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+body.foleo-client-shell-active .foleo-v1__steps li.is-active {
+  color: #111827;
+}
+
+body.foleo-client-shell-active .foleo-v1__steps li.is-active::before {
+  background: #2563eb;
+}
+
+body.foleo-client-shell-active .foleo-v1__drawer {
+  min-height: 120px;
+  padding: 16px;
+}
+
+body.foleo-client-shell-active .foleo-v1__review-form--setup {
+  gap: 12px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-top {
+  display: grid;
+  grid-template-columns: minmax(260px, 480px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 0px;
+}
+
+body.foleo-client-shell-active.dashboard_page_foleo-v1-detail .foleo-admin-theme-scope {
+  margin-top: 40px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-name {
+  display: grid;
+  gap: 6px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-name > span {
+  font-size: 11px;
+  font-weight: 300;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-name input[type="text"] {
+  height: 38px;
+  font-size: 23px;
+  line-height: 1.2;
+  font-weight: 500;
+  padding: 0 12px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-status-inline {
+  display: grid;
+  gap: 0px;
+  font-size: 13px;
+  min-width: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-status-inline p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-status-inline span {
+  opacity: 0.75;
+  margin-right: 4px;
+}
+
+body.foleo-client-shell-active .foleo-v1__status-sep {
+  margin: 0 6px;
+  opacity: 0.5;
+}
+
+body.foleo-client-shell-active .foleo-v1__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body.foleo-client-shell-active .foleo-v1__section-head h1,
+body.foleo-client-shell-active .foleo-v1__section-head h2 {
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1--workspace .foleo-v1__section-head {
+  margin-bottom: 60px;
+}
+
+body.foleo-client-shell-active .foleo-v1__cta-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+body.foleo-client-shell-active .foleo-v1__card-grid,
+body.foleo-client-shell-active .foleo-v1__picker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 1600px) {
+  body.foleo-client-shell-active .foleo-v1__card-grid,
+  body.foleo-client-shell-active .foleo-v1__picker-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1280px) {
+  body.foleo-client-shell-active .foleo-v1__card-grid,
+  body.foleo-client-shell-active .foleo-v1__picker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  body.foleo-client-shell-active .foleo-v1__card-grid,
+  body.foleo-client-shell-active .foleo-v1__picker-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+body.foleo-client-shell-active .foleo-v1__card,
+body.foleo-client-shell-active .foleo-v1__picker-card,
+body.foleo-client-shell-active .foleo-v1__row {
+  border: 1px solid var(--bd-border, #e3e7ee);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+}
+
+body.foleo-client-shell-active .foleo-v1__card h3,
+body.foleo-client-shell-active .foleo-v1__picker-card h3,
+body.foleo-client-shell-active .foleo-v1__row h3 {
+  margin: 0 0 6px;
+}
+
+body.foleo-client-shell-active .foleo-v1__card-media {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--bd-border, #e3e7ee);
+  border-radius: 5px;
+  background: #f3f4f6;
+  margin-bottom: 12px;
+}
+
+body.foleo-client-shell-active .foleo-v1__card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+body.foleo-client-shell-active .foleo-v1__action-form {
+  display: inline-block;
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__rows {
+  display: grid;
+  gap: 10px;
+}
+
+body.foleo-client-shell-active .foleo-v1__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+body.foleo-client-shell-active .foleo-v1__row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+body.foleo-client-shell-active .foleo-v1__artifact {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--bd-border, #e3e7ee);
+}
+
+body.foleo-client-shell-active .foleo-v1__artifact h3 {
+  margin: 0 0 8px;
+}
+
+body.foleo-client-shell-active .foleo-v1__artifact-form {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 10px;
+}
+
+body.foleo-client-shell-active .foleo-v1__artifact-current {
+  margin: 0 0 10px;
+}
+
+body.foleo-client-shell-active .foleo-v1__artifact-history {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
+body.foleo-client-shell-active .foleo-v1__artifact-history li {
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__truth {
+  position: sticky;
+  top: 24px;
+}
+
+body.foleo-client-shell-active .foleo-v1__truth-card {
+  padding: 14px;
+}
+
+body.foleo-client-shell-active .foleo-v1__truth-card h2 {
+  margin-top: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__review-form {
+  display: grid;
+  gap: 10px;
+}
+
+body.foleo-client-shell-active .foleo-v1__field {
+  display: grid;
+  gap: 4px;
+}
+
+body.foleo-client-shell-active .foleo-v1__field > span {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+body.foleo-client-shell-active .foleo-v1__field--toggle {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+body.foleo-client-shell-active .foleo-v1__field--toggle > span {
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__field--toggle-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  grid-template-columns: none;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-status {
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 10px 12px;
+  margin: 0;
+  grid-column: 1 / -1;
+}
+
+body.foleo-client-shell-active .foleo-v1__progress--plain {
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  border-radius: 5px;
+  box-shadow: none;
+  padding: 24px 14px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-status p {
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-status--warning {
+  border-color: #f59e0b;
+  background: #fff7ed;
+  color: #b45309;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-status--error {
+  border-color: #dc2626;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-panel {
+  border: 1px solid var(--bd-border, #e3e7ee);
+  border-radius: 5px;
+  padding: 14px;
+  background: #fff;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-panel h3 {
+  margin: 0 0 8px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-actions--header {
+  align-self: start;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-actions-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 480px) minmax(0, 1fr);
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-actions-row .foleo-v1__setup-actions--header {
+  grid-column: 2;
+  justify-content: flex-end;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-actions--bottom {
+  margin-top: 14px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) minmax(0, 1fr) minmax(220px, 360px);
+  gap: 16px;
+  align-items: start;
+}
+
+body.foleo-client-shell-active .foleo-v1__main > .foleo-v1__setup-panel + .foleo-v1__setup-panel {
+  margin-top: 14px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-row > h3 {
+  margin-top: 2px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-row-copy p {
+  margin: 0 0 6px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-row-copy p:last-child {
+  margin-bottom: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-row-actions {
+  display: grid;
+  gap: 8px;
+}
+
+body.foleo-client-shell-active .foleo-v1__setup-properties {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body.foleo-client-shell-active .foleo-v1__truth-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+body.foleo-client-shell-active .foleo-v1__truth-card dl {
+  margin: 0 0 12px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+body.foleo-client-shell-active .foleo-v1__truth-card dt {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+body.foleo-client-shell-active .foleo-v1__truth-card dd {
+  margin: 0 0 6px;
+  word-break: break-word;
+}
+
+body.foleo-client-shell-active .foleo-v1__workspace-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+body.foleo-client-shell-active .foleo-v1__inline-form {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+body.foleo-client-shell-active .foleo-v1__inline-form input[type="text"] {
+  width: 150px;
+}
+
+body.foleo-client-shell-active .foleo-v1__chooser-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+body.foleo-client-shell-active .foleo-v1__split-label {
+  margin: 6px 0 12px;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+body.foleo-client-shell-active .foleo-v1__feature-panel {
+  display: grid;
+  grid-template-columns: minmax(220px, 420px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 60px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+body.foleo-client-shell-active .foleo-v1__feature-panel h2 {
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__feature-panel p {
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__template-meta {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+
+body.foleo-client-shell-active .foleo-v1__template-meta p {
+  margin: 0;
+  color: #475569;
+  font-size: 13px;
+}
+
+body.foleo-client-shell-active .foleo-v1__template-meta strong {
+  color: #111827;
+}
+
+body.foleo-client-shell-active .foleo-v1__template-section {
+  margin-top: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__template-head {
+  display: grid;
+  grid-template-columns: minmax(220px, 420px) minmax(0, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+body.foleo-client-shell-active .foleo-v1__template-head h2 {
+  margin: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1__template-head p {
+  margin: 0 0 8px;
+}
+
+body.foleo-client-shell-active .foleo-v1__template-head p:last-child {
+  margin-bottom: 0;
+}
+
+body.foleo-client-shell-active .foleo-v1--new .foleo-v1__main {
+  margin-bottom: 64px;
+}
+
+@media (max-width: 1200px) {
+  body.foleo-client-shell-active .foleo-v1--detail {
+    grid-template-columns: 1fr;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__setup-top {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__setup-actions-row {
+    grid-template-columns: 1fr;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__setup-actions-row .foleo-v1__setup-actions--header {
+    grid-column: 1;
+    justify-content: flex-start;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__setup-name input[type="text"] {
+    font-size: 14px;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__steps {
+    grid-template-columns: repeat(5, minmax(120px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__truth {
+    grid-column: auto;
+    position: static;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__chooser-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__feature-panel {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__template-head {
+    grid-template-columns: 1fr;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__row-actions {
+    justify-content: flex-start;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__setup-properties {
+    grid-template-columns: 1fr;
+  }
+
+  body.foleo-client-shell-active .foleo-v1__setup-row {
+    grid-template-columns: 1fr;
+  }
+}

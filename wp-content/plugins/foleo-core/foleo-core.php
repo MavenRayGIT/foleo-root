@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('FOLEO_CORE_VERSION')) {
-  define('FOLEO_CORE_VERSION', '0.3.3');
+  define('FOLEO_CORE_VERSION', '0.4.55');
 }
 
 if (!defined('FOLEO_CORE_FILE')) {
@@ -20,6 +20,10 @@ if (!defined('FOLEO_CORE_FILE')) {
 
 if (!defined('FOLEO_COMPILER_REWRITE_VERSION')) {
   define('FOLEO_COMPILER_REWRITE_VERSION', '1');
+}
+
+if (!defined('FOLEO_DRAFT_REWRITE_VERSION')) {
+  define('FOLEO_DRAFT_REWRITE_VERSION', '1');
 }
 
 if (!defined('FOLEO_CORE_LOADED')) {
@@ -61,6 +65,7 @@ foleo_core_require($foleo_core_dir . 'includes/admin_client/search_visibility.ph
 foleo_core_require($foleo_core_dir . 'includes/admin_client/editor_block.php');
 foleo_core_require($foleo_core_dir . 'includes/admin_client/profile.php');
 foleo_core_require($foleo_core_dir . 'includes/admin_client/settings.php');
+foleo_core_require($foleo_core_dir . 'includes/admin_client/foleo_v1.php');
 foleo_core_require($foleo_core_dir . 'includes/admin_client/theme.php');
 
 foleo_core_require($foleo_core_dir . 'includes/binder/schema.php');

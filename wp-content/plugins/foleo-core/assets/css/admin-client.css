@@ -1,4 +1,4 @@
-/* Admin client presentation layer styles (right pane only). */
+/* Layer 1/2: FOLEO-scoped tokens + reusable patterns. */
 body.foleo-client-shell-active #wpbody-content {
   --bd-accent: rgb(37, 99, 235);
   --bd-bg: #f2f4f7;
@@ -7,105 +7,36 @@ body.foleo-client-shell-active #wpbody-content {
   --bd-text: #0f172a;
   --bd-radius-btn: 3px;
   --bd-font: Avenir, "Avenir Next", Arial, system-ui, sans-serif;
-
   --foleo-bg: #f2f4f7;
   --foleo-text: #0f172a;
-
   background: var(--bd-bg);
-  color: var(--bd-text);
-  font-family: var(--bd-font);
   padding-bottom: 24px;
 }
 
-body.foleo-client-shell-active #wpbody-content a {
+body.foleo-client-shell-active {
+  background: var(--bd-bg, #f2f4f7);
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope {
+  color: var(--bd-text);
+  font-family: var(--bd-font);
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope a {
   color: var(--bd-accent);
 }
 
-body.foleo-client-shell-active #wpbody-content .wrap {
-  padding-top: 16px;
-}
-
-body.foleo-client-shell-active #wpbody-content .wrap h1,
-body.foleo-client-shell-active #wpbody-content .wrap h2,
-body.foleo-client-shell-active #wpbody-content .wrap h3 {
+body.foleo-client-shell-active .foleo-admin-theme-scope h1,
+body.foleo-client-shell-active .foleo-admin-theme-scope h2,
+body.foleo-client-shell-active .foleo-admin-theme-scope h3 {
   color: var(--bd-text);
   font-family: var(--bd-font);
   font-weight: 500;
 }
 
-body.foleo-client-shell-active #wpbody-content .wrap .wp-heading-inline {
-  font-weight: 500;
-}
-
-body.foleo-client-shell-active #wpbody-content .notice,
-body.foleo-client-shell-active #wpbody-content .update-nag,
-body.foleo-client-shell-active #wpbody-content .wrap .tablenav {
-  background: var(--bd-panel);
-  border: 1px solid var(--bd-border);
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-}
-
-body.foleo-client-shell-active #wpbody-content .wrap .tablenav {
-  padding: 12px;
-  margin: 12px 0;
-}
-
-body.foleo-client-shell-active #wpbody-content .notice {
-  padding: 12px 14px;
-}
-
-body.foleo-client-shell-active #wpbody-content .wp-list-table {
-  background: var(--bd-panel);
-  border: 1px solid var(--bd-border);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-body.foleo-client-shell-active #wpbody-content .wp-list-table thead th,
-body.foleo-client-shell-active #wpbody-content .wp-list-table tfoot th {
-  background: #f7f8fb;
-  border-bottom: 1px solid var(--bd-border);
-}
-
-body.foleo-client-shell-active #wpbody-content .wp-list-table tbody tr {
-  border-bottom: 1px solid var(--bd-border);
-}
-
-body.foleo-client-shell-active #wpbody-content .wp-list-table tbody tr:hover {
-  background: #f6f7fa;
-}
-
-body.foleo-client-shell-active #wpbody-content .wp-list-table a {
-  color: var(--bd-accent);
-}
-
-body.foleo-client-shell-active #wpbody-content .button,
-body.foleo-client-shell-active #wpbody-content .button-primary,
-body.foleo-client-shell-active #wpbody-content .page-title-action,
-body.foleo-client-shell-active #wpbody-content .tablenav .button {
-  background: transparent;
-  color: var(--bd-accent);
-  border: 1px solid var(--bd-accent);
-  border-radius: var(--bd-radius-btn);
-  height: 37px;
-  line-height: 35px;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 0 16px;
-  box-shadow: none;
-}
-
-body.foleo-client-shell-active #wpbody-content .button:hover,
-body.foleo-client-shell-active #wpbody-content .button-primary:hover,
-body.foleo-client-shell-active #wpbody-content .page-title-action:hover,
-body.foleo-client-shell-active #wpbody-content .tablenav .button:hover {
-  background: rgba(37, 99, 235, 0.08);
-}
-
-body.foleo-client-shell-active #wpbody-content input[type="text"],
-body.foleo-client-shell-active #wpbody-content input[type="search"],
-body.foleo-client-shell-active #wpbody-content select {
+body.foleo-client-shell-active .foleo-admin-theme-scope input[type="text"],
+body.foleo-client-shell-active .foleo-admin-theme-scope input[type="search"],
+body.foleo-client-shell-active .foleo-admin-theme-scope select {
   background: var(--bd-panel);
   color: var(--bd-text);
   border: 1px solid var(--bd-border);
@@ -117,13 +48,150 @@ body.foleo-client-shell-active #wpbody-content select {
   font-family: var(--bd-font);
 }
 
-body.foleo-client-shell-active #wpbody-content input[type="text"]:focus,
-body.foleo-client-shell-active #wpbody-content input[type="search"]:focus,
-body.foleo-client-shell-active #wpbody-content select:focus,
-body.foleo-client-shell-active #wpbody-content .button:focus,
-body.foleo-client-shell-active #wpbody-content .button-primary:focus,
-body.foleo-client-shell-active #wpbody-content .page-title-action:focus {
+body.foleo-client-shell-active .foleo-admin-theme-scope input[type="text"]:focus,
+body.foleo-client-shell-active .foleo-admin-theme-scope input[type="search"]:focus,
+body.foleo-client-shell-active .foleo-admin-theme-scope select:focus {
   border-color: var(--bd-accent);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
   outline: none;
+}
+
+/* Reusable Admin UX patterns. */
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-views {
+  margin: 6px 0 14px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-views a {
+  color: var(--bd-accent);
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-views a[aria-current="page"],
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-views a.current {
+  color: var(--bd-text);
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid var(--bd-border);
+  box-shadow: none;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action {
+  border: 1px solid var(--bd-accent);
+  color: var(--bd-accent);
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12);
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action:hover,
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action:focus {
+  border-color: var(--bd-text);
+  color: var(--bd-text);
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 0;
+  padding: 0 16px;
+  height: 38px;
+  line-height: 36px;
+  font-size: 15px;
+  border-radius: 3px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12);
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action-btn--primary {
+  border: 1px solid var(--bd-accent);
+  color: var(--bd-accent);
+  background: #fff;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action-btn--primary:hover,
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action-btn--primary:focus {
+  border-color: var(--bd-text);
+  color: var(--bd-text);
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action-btn--secondary {
+  border: 1px solid #d1d5db;
+  color: #111827;
+  background: #fff;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action-btn--secondary:hover,
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-page-action-btn--secondary:focus {
+  border-color: #111827;
+  color: #111827;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-utilitybar {
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  box-shadow: none;
+  padding: 12px 14px;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-panel--feature {
+  background: rgba(37, 99, 235, 0.38);
+  border-color: rgba(37, 99, 235, 0.48);
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn {
+  border-radius: 3px;
+  height: 34px;
+  line-height: 32px;
+  font-size: 13px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12);
+  padding: 0 14px;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn--secondary {
+  border: 1px solid #d1d5db;
+  color: #111827;
+  background: #fff;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn--secondary:hover {
+  border-color: #111827;
+  color: #111827;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn--primary {
+  border: 1px solid var(--bd-accent);
+  color: var(--bd-accent);
+  background: #fff;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn--primary:hover {
+  border-color: #111827;
+  color: #111827;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn--delete:hover,
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn--delete:hover .dashicons {
+  border-color: #dc2626 !important;
+  color: #dc2626 !important;
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn--utility {
+  background: #eceff3;
+  border: 0;
+  color: #8b8f97;
+  text-transform: lowercase;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.18);
+}
+
+body.foleo-client-shell-active .foleo-admin-theme-scope .foleo-ui-btn--utility:hover {
+  background: #dfe4ea;
+  border: 0;
+  color: #7a808a;
 }

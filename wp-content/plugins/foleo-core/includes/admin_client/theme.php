@@ -124,8 +124,18 @@ add_action('admin_head', function () {
   </style>';
 });
 
-add_action('admin_enqueue_scripts', function () {
-  if (!foleo_is_client_shell_context()) {
+add_action('admin_enqueue_scripts', function ($hook_suffix) {
+  $is_client_shell = foleo_is_client_shell_context();
+  $is_foleo_list = false;
+  if ($hook_suffix === 'edit.php' && function_exists('get_current_screen')) {
+    $screen = get_current_screen();
+    $is_foleo_list = $screen && $screen->base === 'edit' && $screen->post_type === 'foleo_page';
+  }
+  if (!$is_foleo_list) {
+    $post_type = isset($_GET['post_type']) ? sanitize_key(wp_unslash($_GET['post_type'])) : '';
+    $is_foleo_list = ($hook_suffix === 'edit.php' && $post_type === 'foleo_page');
+  }
+  if (!$is_client_shell && !$is_foleo_list) {
     return;
   }
 
@@ -135,6 +145,52 @@ add_action('admin_enqueue_scripts', function () {
     array(),
     FOLEO_CORE_VERSION
   );
+
+  wp_enqueue_style(
+    'foleo-admin-client-wp-adapter',
+    foleo_core_asset_url('assets/css/admin-client-wp-adapter.css'),
+    array('foleo-admin-client'),
+    FOLEO_CORE_VERSION
+  );
+
+  wp_enqueue_script(
+    'foleo-admin-client-wp-adapter',
+    foleo_core_asset_url('assets/js/admin-client-wp-adapter.js'),
+    array(),
+    FOLEO_CORE_VERSION,
+    true
+  );
+
+  wp_add_inline_script(
+    'foleo-admin-client-wp-adapter',
+    'window.foleoAdminAdapter = ' . wp_json_encode(array(
+      'workspaceUrl' => admin_url('admin.php?page=foleo-workspace'),
+    )) . ';',
+    'before'
+  );
+
+  if ($is_foleo_list) {
+    wp_enqueue_style(
+      'foleo-admin-client-wp-list-adapter',
+      foleo_core_asset_url('assets/css/admin-client-wp-list-adapter.css'),
+      array('foleo-admin-client-wp-adapter'),
+      FOLEO_CORE_VERSION
+    );
+  }
+}, 20);
+
+add_filter('admin_footer_text', function ($footer_text) {
+  if (!foleo_is_client_shell_context()) {
+    return $footer_text;
+  }
+  return 'FOLEO Client Workspace';
+}, 20);
+
+add_filter('update_footer', function ($footer_text) {
+  if (!foleo_is_client_shell_context()) {
+    return $footer_text;
+  }
+  return '';
 }, 20);
 
 add_filter('admin_body_class', function ($classes) {

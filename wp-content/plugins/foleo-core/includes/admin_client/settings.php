@@ -5,21 +5,6 @@ if (!defined('ABSPATH')) {
 }
 
 add_action('admin_menu', function () {
-  if (!foleo_is_client_shell_context()) {
-    return;
-  }
-
-  add_submenu_page(
-    'index.php',
-    'FOLEO Settings',
-    'Settings',
-    'edit_posts',
-    'foleo-settings',
-    'foleo_render_settings_page'
-  );
-}, 999);
-
-add_action('admin_menu', function () {
   if (!current_user_can('manage_options')) {
     return;
   }
