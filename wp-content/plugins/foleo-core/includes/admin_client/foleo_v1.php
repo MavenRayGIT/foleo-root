@@ -649,6 +649,8 @@ function foleo_v1_ensure_draft_meta_defaults($post_id) {
     return '';
   }
 
+  foleo_v1_ensure_slot_meta_defaults($post_id);
+
   $token = get_post_meta($post_id, 'foleo_draft_token', true);
   $token = is_string($token) ? trim($token) : '';
   if ($token === '') {
@@ -899,8 +901,20 @@ add_action('init', function () {
 
 add_filter('query_vars', function ($vars) {
   $vars[] = 'foleo_draft_token';
+  $vars[] = 'foleo_preview_token';
   return $vars;
 });
+
+add_filter('redirect_canonical', function ($redirect_url, $requested_url) {
+  $preview_token = get_query_var('foleo_preview_token');
+  if (is_string($preview_token) && $preview_token !== '') {
+    return false;
+  }
+  if (isset($_GET['foleo_preview_token']) && is_string($_GET['foleo_preview_token']) && $_GET['foleo_preview_token'] !== '') {
+    return false;
+  }
+  return $redirect_url;
+}, 10, 2);
 
 add_action('init', function () {
   $stored_version = get_option('foleo_draft_rewrite_version');
@@ -935,6 +949,207 @@ add_action('wp_loaded', function () {
   update_option('foleo_rewrite_needs_flush', '0', true);
 }, 15);
 
+add_action('rest_api_init', function () {
+  register_rest_route('foleo/v1', '/slots/video-sign', array(
+    'methods' => 'POST',
+    'permission_callback' => '__return_true',
+    'callback' => function (WP_REST_Request $request) {
+      $foleo_id = absint($request->get_param('foleoId'));
+      $mode = sanitize_key((string) $request->get_param('mode'));
+      if (!in_array($mode, array('preview', 'live'), true)) {
+        $mode = 'preview';
+      }
+      $preview_token = sanitize_text_field((string) $request->get_param('previewToken'));
+      $preview_token = preg_replace('/[^A-Za-z0-9]/', '', $preview_token);
+      $slot_keys = $request->get_param('slotKeys');
+      $slot_keys = is_array($slot_keys) ? $slot_keys : array();
+      $slot_keys = array_values(array_filter(array_map(function ($value) {
+        return sanitize_text_field((string) $value);
+      }, $slot_keys)));
+
+      $post = $foleo_id ? get_post($foleo_id) : null;
+      if (!($post instanceof WP_Post) || $post->post_type !== 'foleo_page') {
+        return new WP_REST_Response(array(
+          'items' => array(),
+          'error' => 'invalid_foleo',
+        ), 400);
+      }
+
+      // POC mode: allow preview signing for any valid FOLEO id.
+      // Token/capability checks will be tightened in production pass.
+
+      if (empty($slot_keys)) {
+        return new WP_REST_Response(array(
+          'items' => array(),
+        ), 200);
+      }
+
+      $bindings = foleo_v1_get_slot_bindings($foleo_id);
+      $expires = time() + 300;
+      $items = array();
+      foreach ($slot_keys as $slot_key) {
+        if (!isset($bindings[$slot_key]) || !is_array($bindings[$slot_key])) {
+          continue;
+        }
+        $binding = $bindings[$slot_key];
+        $type = sanitize_key((string) (isset($binding['type']) ? $binding['type'] : ''));
+        $provider = sanitize_key((string) (isset($binding['provider']) ? $binding['provider'] : ''));
+        $video_id = sanitize_text_field((string) (isset($binding['bunny_video_id']) ? $binding['bunny_video_id'] : ''));
+        if ($type !== 'video' || $provider !== 'bunny_stream' || $video_id === '') {
+          continue;
+        }
+
+        $hls_url = foleo_v1_bunny_signed_url('/' . rawurlencode($video_id) . '/playlist.m3u8', $expires);
+        if (is_wp_error($hls_url)) {
+          return new WP_REST_Response(array(
+            'items' => array(),
+            'error' => $hls_url->get_error_code(),
+            'message' => $hls_url->get_error_message(),
+          ), 500);
+        }
+
+        $poster_url = foleo_v1_bunny_signed_url('/' . rawurlencode($video_id) . '/thumbnail.jpg', $expires);
+        if (is_wp_error($poster_url)) {
+          $poster_url = '';
+        }
+
+        $items[] = array(
+          'slotKey' => $slot_key,
+          'type' => 'video',
+          'provider' => 'bunny_stream',
+          'hlsUrl' => $hls_url,
+          'posterUrl' => $poster_url,
+          'expiresAt' => $expires,
+          'mode' => $mode,
+        );
+      }
+
+      return new WP_REST_Response(array(
+        'items' => $items,
+      ), 200);
+    },
+    'args' => array(
+      'foleoId' => array(
+        'required' => true,
+        'type' => 'integer',
+      ),
+      'mode' => array(
+        'required' => false,
+        'type' => 'string',
+      ),
+      'slotKeys' => array(
+        'required' => true,
+        'type' => 'array',
+      ),
+      'previewToken' => array(
+        'required' => false,
+        'type' => 'string',
+      ),
+    ),
+  ));
+});
+
+add_action('template_redirect', function () {
+  $preview_token = get_query_var('foleo_preview_token');
+  if (!is_string($preview_token) || $preview_token === '') {
+    $preview_token = isset($_GET['foleo_preview_token']) ? sanitize_text_field(wp_unslash($_GET['foleo_preview_token'])) : '';
+  }
+  if ($preview_token === '') {
+    return;
+  }
+  $preview_token = preg_replace('/[^A-Za-z0-9]/', '', $preview_token);
+  if ($preview_token === '') {
+    return;
+  }
+
+  $posts = get_posts(array(
+    'post_type' => 'foleo_page',
+    'post_status' => array('publish', 'draft', 'pending', 'future', 'private'),
+    'posts_per_page' => 1,
+    'fields' => 'ids',
+    'meta_key' => 'foleo_draft_token',
+    'meta_value' => $preview_token,
+    'no_found_rows' => true,
+    'suppress_filters' => true,
+  ));
+  $foleo_id = !empty($posts) ? (int) $posts[0] : 0;
+  if ($foleo_id <= 0 && is_user_logged_in() && current_user_can('edit_posts')) {
+    $manual_foleo_id = isset($_GET['foleo_preview_foleo_id']) ? absint($_GET['foleo_preview_foleo_id']) : 0;
+    if ($manual_foleo_id > 0) {
+      $manual_post = get_post($manual_foleo_id);
+      if ($manual_post instanceof WP_Post && $manual_post->post_type === 'foleo_page' && current_user_can('edit_post', $manual_foleo_id)) {
+        $foleo_id = $manual_foleo_id;
+      }
+    }
+    if ($foleo_id <= 0 && function_exists('get_queried_object_id')) {
+      $current_page_id = (int) get_queried_object_id();
+      if ($current_page_id > 0) {
+        $mapped = get_posts(array(
+          'post_type' => 'foleo_page',
+          'post_status' => array('publish', 'draft', 'pending', 'future', 'private'),
+          'posts_per_page' => 1,
+          'fields' => 'ids',
+          'meta_key' => 'foleo_page_id',
+          'meta_value' => $current_page_id,
+          'no_found_rows' => true,
+          'suppress_filters' => true,
+        ));
+        if (!empty($mapped[0]) && current_user_can('edit_post', (int) $mapped[0])) {
+          $foleo_id = (int) $mapped[0];
+        }
+      }
+    }
+  }
+  if ($foleo_id <= 0) {
+      return;
+  }
+  $mapped_page_id = absint(get_post_meta($foleo_id, 'foleo_page_id', true));
+  if ($mapped_page_id > 0 && function_exists('get_queried_object_id')) {
+    $current_id = (int) get_queried_object_id();
+    if ($current_id > 0 && $current_id !== $mapped_page_id) {
+      return;
+    }
+  }
+
+  $manifest = foleo_v1_slot_manifest_for_post($foleo_id);
+  $validation_html = $mapped_page_id > 0 ? (string) get_post_field('post_content', $mapped_page_id, 'raw') : '';
+  $validation = foleo_v1_slot_validation_report($foleo_id, $validation_html);
+  $GLOBALS['foleo_slot_hydration_context'] = array(
+    'foleo_id' => $foleo_id,
+    'mode' => 'preview',
+    'preview_token' => $preview_token,
+    'manifest' => $manifest,
+    'validation' => $validation,
+  );
+}, 12);
+
+add_action('wp_footer', function () {
+  if (!isset($GLOBALS['foleo_slot_hydration_context']) || !is_array($GLOBALS['foleo_slot_hydration_context'])) {
+    return;
+  }
+  $ctx = $GLOBALS['foleo_slot_hydration_context'];
+  $foleo_id = isset($ctx['foleo_id']) ? absint($ctx['foleo_id']) : 0;
+  if ($foleo_id <= 0) {
+    return;
+  }
+
+  $config = array(
+    'foleoId' => $foleo_id,
+    'mode' => isset($ctx['mode']) ? sanitize_key((string) $ctx['mode']) : 'preview',
+    'previewToken' => isset($ctx['preview_token']) ? sanitize_text_field((string) $ctx['preview_token']) : '',
+    'signEndpoint' => rest_url('foleo/v1/slots/video-sign'),
+    'manifest' => isset($ctx['manifest']) && is_array($ctx['manifest']) ? $ctx['manifest'] : array(),
+    'validation' => isset($ctx['validation']) && is_array($ctx['validation']) ? $ctx['validation'] : array(),
+  );
+
+  echo '<link rel="stylesheet" href="https://cdn.vidstack.io/player/styles/default/theme.css">';
+  echo '<link rel="stylesheet" href="https://cdn.vidstack.io/player/styles/default/layouts/video.css">';
+  echo '<script type="module" src="https://cdn.vidstack.io/player"></script>';
+  echo '<script type="module" src="https://cdn.vidstack.io/player/layouts/default"></script>';
+  echo '<script id="foleo-slot-hydration-config" type="application/json">' . wp_json_encode($config) . '</script>';
+  echo '<script src="' . esc_url(foleo_core_asset_url('assets/js/foleo-slot-hydration.js')) . '" defer></script>';
+}, 40);
+
 add_action('template_redirect', function () {
   $token = get_query_var('foleo_draft_token');
   if (!is_string($token) || $token === '') {
@@ -966,6 +1181,20 @@ add_action('template_redirect', function () {
     foleo_v1_draft_404();
   }
 
+  $mapped_page_id = absint(get_post_meta($post_id, 'foleo_page_id', true));
+  if ($mapped_page_id > 0) {
+    $mapped_page = get_post($mapped_page_id);
+    if ($mapped_page instanceof WP_Post && $mapped_page->post_type === 'page' && $mapped_page->post_status !== 'trash') {
+      $target_url = add_query_arg(array(
+        'foleo_preview_token' => $token,
+      ), get_permalink($mapped_page_id));
+      if ($target_url) {
+        wp_safe_redirect($target_url);
+        exit;
+      }
+    }
+  }
+
   $raw_json = get_post_meta($post_id, 'foleo_draft_json', true);
   $payload = foleo_v1_parse_draft_payload($raw_json, $post);
   $title = isset($payload['title']) ? (string) $payload['title'] : 'FOLEO Draft';
@@ -986,6 +1215,7 @@ add_action('template_redirect', function () {
   echo '<section class="hero">';
   echo '<h1>' . esc_html(isset($hero['headline']) ? (string) $hero['headline'] : '') . '</h1>';
   echo '<p>' . esc_html(isset($hero['subhead']) ? (string) $hero['subhead'] : '') . '</p>';
+  echo '<div data-foleo-slot="hero.video_primary" data-foleo-slot-type="video" style="margin:0 0 16px;min-height:220px;border:1px solid #e3e7ee;border-radius:8px;background:#f8fafc;display:grid;place-items:center;color:#64748b">Video slot: hero.video_primary</div>';
   $cta_text = isset($hero['cta']['text']) ? (string) $hero['cta']['text'] : 'Learn More';
   $cta_href = isset($hero['cta']['href']) ? esc_url((string) $hero['cta']['href']) : '#';
   if ($cta_href === '') {
@@ -1066,6 +1296,197 @@ function foleo_v1_review_doc_upload_url($post_id, $args = array()) {
     'foleo_page_id' => absint($post_id),
   );
   return add_query_arg(array_merge($base, $args), admin_url('admin.php'));
+}
+
+function foleo_v1_slot_manifest_registry() {
+  return array(
+    'default_template' => array(
+      '1.0' => array(
+        'required_slots' => array(
+          array(
+            'key' => 'hero.video_primary',
+            'type' => 'video',
+            'required' => true,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+function foleo_v1_slot_manifest_for_post($post_id) {
+  $registry = foleo_v1_slot_manifest_registry();
+  $template_id = sanitize_key((string) get_post_meta($post_id, 'foleo_template_id', true));
+  if ($template_id === '') {
+    $template_id = sanitize_key((string) get_post_meta($post_id, 'foleo_template_source_id', true));
+  }
+  if ($template_id === '' || !isset($registry[$template_id])) {
+    $template_id = 'default_template';
+  }
+
+  $schema_version = sanitize_text_field((string) get_post_meta($post_id, 'foleo_slot_schema_version', true));
+  if ($schema_version === '' || !isset($registry[$template_id][$schema_version])) {
+    $schema_version = '1.0';
+  }
+
+  $manifest = isset($registry[$template_id][$schema_version]) ? $registry[$template_id][$schema_version] : array('required_slots' => array());
+  return array(
+    'template_id' => $template_id,
+    'slot_schema_version' => $schema_version,
+    'required_slots' => isset($manifest['required_slots']) && is_array($manifest['required_slots']) ? $manifest['required_slots'] : array(),
+  );
+}
+
+function foleo_v1_default_slot_bindings() {
+  return array(
+    'hero.video_primary' => array(
+      'type' => 'video',
+      'provider' => 'bunny_stream',
+      'bunny_video_id' => '4f3d8f34-b606-4a56-9645-9b1c09c76e1f',
+    ),
+  );
+}
+
+function foleo_v1_get_slot_bindings($post_id) {
+  $raw = get_post_meta($post_id, 'foleo_slot_bindings', true);
+  $bindings = is_array($raw) ? $raw : array();
+  if (empty($bindings)) {
+    $bindings = foleo_v1_default_slot_bindings();
+  }
+  return $bindings;
+}
+
+function foleo_v1_ensure_slot_meta_defaults($post_id) {
+  $template_id = sanitize_key((string) get_post_meta($post_id, 'foleo_template_id', true));
+  if ($template_id === '') {
+    $legacy_source_id = sanitize_key((string) get_post_meta($post_id, 'foleo_template_source_id', true));
+    update_post_meta($post_id, 'foleo_template_id', $legacy_source_id !== '' ? $legacy_source_id : 'default_template');
+  }
+
+  if (get_post_meta($post_id, 'foleo_slot_schema_version', true) === '') {
+    update_post_meta($post_id, 'foleo_slot_schema_version', '1.0');
+  }
+
+  if (get_post_meta($post_id, 'foleo_page_forked', true) === '') {
+    update_post_meta($post_id, 'foleo_page_forked', '0');
+  }
+
+  $bindings = get_post_meta($post_id, 'foleo_slot_bindings', true);
+  if (!is_array($bindings) || empty($bindings)) {
+    update_post_meta($post_id, 'foleo_slot_bindings', foleo_v1_default_slot_bindings());
+  }
+}
+
+function foleo_v1_collect_slots_from_html($html) {
+  $slots = array();
+  $html = is_string($html) ? $html : '';
+  if ($html === '') {
+    return $slots;
+  }
+
+  if (preg_match_all('/<[^>]+data-foleo-slot=(["\'])([^"\']+)\\1[^>]*>/i', $html, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      $slot_key = sanitize_text_field((string) $match[2]);
+      if ($slot_key === '') {
+        continue;
+      }
+      $slot_type = '';
+      if (preg_match('/data-foleo-slot-type=(["\'])([^"\']+)\\1/i', $match[0], $type_match)) {
+        $slot_type = sanitize_key((string) $type_match[2]);
+      }
+      $slots[$slot_key] = array(
+        'slotKey' => $slot_key,
+        'type' => $slot_type !== '' ? $slot_type : 'unknown',
+      );
+    }
+  }
+
+  return $slots;
+}
+
+function foleo_v1_slot_validation_report($post_id, $html = '') {
+  $manifest = foleo_v1_slot_manifest_for_post($post_id);
+  $required = isset($manifest['required_slots']) && is_array($manifest['required_slots']) ? $manifest['required_slots'] : array();
+  $slots = foleo_v1_collect_slots_from_html($html);
+
+  $found = array();
+  $missing = array();
+  $required_count = 0;
+  foreach ($required as $item) {
+    if (!is_array($item) || empty($item['key'])) {
+      continue;
+    }
+    $required_count++;
+    $key = sanitize_text_field((string) $item['key']);
+    $type = sanitize_key((string) (isset($item['type']) ? $item['type'] : ''));
+    $is_required = isset($item['required']) ? (bool) $item['required'] : true;
+
+    if (isset($slots[$key])) {
+      $found[] = array(
+        'slotKey' => $key,
+        'type' => $type !== '' ? $type : $slots[$key]['type'],
+      );
+      continue;
+    }
+
+    $missing[] = array(
+      'slotKey' => $key,
+      'type' => $type,
+      'required' => $is_required,
+      'message' => 'Required slot not found in page DOM.',
+    );
+  }
+
+  $severity = 'ok';
+  foreach ($missing as $item) {
+    if (!empty($item['required'])) {
+      $severity = 'error';
+      break;
+    }
+  }
+  if ($severity === 'ok' && !empty($missing)) {
+    $severity = 'warn';
+  }
+
+  return array(
+    'template_id' => isset($manifest['template_id']) ? $manifest['template_id'] : 'default_template',
+    'slot_schema_version' => $manifest['slot_schema_version'],
+    'severity' => $severity,
+    'totals' => array(
+      'required' => $required_count,
+      'found' => count($found),
+      'missing' => count($missing),
+    ),
+    'found' => array_values($found),
+    'missing' => array_values($missing),
+  );
+}
+
+function foleo_v1_bunny_token_key() {
+  if (defined('FOLEO_BUNNY_TOKEN_KEY')) {
+    $defined_key = constant('FOLEO_BUNNY_TOKEN_KEY');
+    if (is_string($defined_key) && $defined_key !== '') {
+      return $defined_key;
+    }
+  }
+  $env = getenv('FOLEO_BUNNY_TOKEN_KEY');
+  if (is_string($env) && trim($env) !== '') {
+    return trim($env);
+  }
+  return '';
+}
+
+function foleo_v1_bunny_signed_url($path, $expires) {
+  $key = foleo_v1_bunny_token_key();
+  $path = '/' . ltrim((string) $path, '/');
+  $expires = absint($expires);
+  if ($key === '' || $expires <= 0) {
+    return new WP_Error('missing_bunny_signing_key', 'Missing Bunny signing key.');
+  }
+
+  $digest = hash('sha256', $key . $path . $expires, true);
+  $token = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
+  return 'https://stream.foleo.co' . $path . '?token=' . rawurlencode($token) . '&expires=' . rawurlencode((string) $expires);
 }
 
 function foleo_v1_redirect($url) {
@@ -1934,7 +2355,7 @@ function foleo_render_workspace_shell() {
 
   echo '<div class="wrap foleo-admin-theme-scope">';
   echo '<h1>Workspace</h1>';
-  echo '<div class="foleo-v1 foleo-v1--workspace">';
+  echo '<div class="foleo-v1 foleo-v1--workspace foleo-page--workspace">';
   echo '<section class="foleo-v1__drawer">';
   echo '<h2>Get started</h2>';
   echo '<div class="foleo-v1__cta-grid">';
@@ -2106,14 +2527,144 @@ function foleo_render_assets_shell() {
     wp_die('Forbidden', 403);
   }
 
+  $post_id = isset($_GET['foleo_page_id']) ? absint($_GET['foleo_page_id']) : 0;
+  if ($post_id <= 0) {
+    $latest = get_posts(array(
+      'post_type' => 'foleo_page',
+      'post_status' => array('publish', 'draft', 'pending', 'future', 'private'),
+      'posts_per_page' => 1,
+      'orderby' => 'modified',
+      'order' => 'DESC',
+      'author' => get_current_user_id(),
+      'meta_query' => array(
+        'relation' => 'OR',
+        array(
+          'key' => 'foleo_is_library_item',
+          'compare' => 'NOT EXISTS',
+        ),
+        array(
+          'key' => 'foleo_is_library_item',
+          'value' => '1',
+          'compare' => '!=',
+        ),
+      ),
+    ));
+    if (!empty($latest[0]) && $latest[0] instanceof WP_Post) {
+      $post_id = (int) $latest[0]->ID;
+    }
+  }
+
+  $post = $post_id > 0 ? get_post($post_id) : null;
+  if (!($post instanceof WP_Post) || $post->post_type !== 'foleo_page') {
+    echo '<div class="wrap foleo-admin-theme-scope">';
+    echo '<h1>Content Upload</h1>';
+    echo '<p>No FOLEO selected yet. Start by creating a FOLEO template instance.</p>';
+    echo '<p><a class="button foleo-ui-page-action-btn foleo-ui-page-action-btn--primary" href="' . esc_url(admin_url('admin.php?page=foleo-v1-new')) . '">Add a FOLEO</a></p>';
+    echo '</div>';
+    return;
+  }
+
+  if (!current_user_can('edit_post', $post->ID)) {
+    wp_die('Forbidden', 403);
+  }
+
+  $step = isset($_GET['foleo_step']) ? sanitize_key((string) wp_unslash($_GET['foleo_step'])) : 'upload';
+  if (!in_array($step, array('upload', 'report', 'preview'), true)) {
+    $step = 'upload';
+  }
+
+  $draft_token = trim((string) get_post_meta($post->ID, 'foleo_draft_token', true));
+  $draft_url = $draft_token !== '' ? foleo_v1_draft_url($draft_token) : '';
+  $live_url = trim((string) get_post_meta($post->ID, 'foleo_live_url', true));
+  $readiness = get_post_meta($post->ID, 'foleo_readiness_score', true);
+  $readiness = is_numeric($readiness) ? (int) $readiness : 0;
+
+  $upload_url = add_query_arg(array(
+    'page' => 'foleo-assets',
+    'foleo_page_id' => $post->ID,
+    'foleo_step' => 'upload',
+  ), admin_url('admin.php'));
+  $report_url = add_query_arg(array(
+    'page' => 'foleo-assets',
+    'foleo_page_id' => $post->ID,
+    'foleo_step' => 'report',
+  ), admin_url('admin.php'));
+  $preview_url = add_query_arg(array(
+    'page' => 'foleo-assets',
+    'foleo_page_id' => $post->ID,
+    'foleo_step' => 'preview',
+  ), admin_url('admin.php'));
+  $setup_url = add_query_arg(array(
+    'page' => 'foleo-v1-detail',
+    'foleo_page_id' => $post->ID,
+  ), admin_url('admin.php'));
+
+  $active_step = 1;
+  if ($step === 'report') {
+    $active_step = 2;
+  } elseif ($step === 'preview') {
+    $active_step = 3;
+  }
+
+  $mapped_page_id = absint(get_post_meta($post->ID, 'foleo_page_id', true));
+  $validation_html = $mapped_page_id > 0 ? (string) get_post_field('post_content', $mapped_page_id, 'raw') : '';
+  $slot_validation = foleo_v1_slot_validation_report($post->ID, $validation_html);
+
+  $content_config = array(
+    'foleoPageId' => $post->ID,
+    'step' => $step,
+    'slotValidation' => $slot_validation,
+    'routes' => array(
+      'upload' => $upload_url,
+      'report' => $report_url,
+      'preview' => $preview_url,
+      'setup' => $setup_url,
+    ),
+  );
+
   echo '<div class="wrap foleo-admin-theme-scope">';
-  echo '<h1>Assets</h1>';
-  echo '<div class="foleo-v1 foleo-v1--assets"><main class="foleo-v1__main">';
-  echo '<section class="foleo-v1__drawer"><h2>Images</h2><p>Upload and organize image files for your FOLEOs.</p><a class="button button-primary" href="' . esc_url(admin_url('upload.php')) . '">Open Images</a></section>';
-  echo '<section class="foleo-v1__drawer"><h2>Documents</h2><p>Store source documents and Review Doc files.</p><a class="button button-primary" href="' . esc_url(admin_url('upload.php')) . '">Open Documents</a></section>';
-  echo '<section class="foleo-v1__drawer"><h2>Videos</h2><p>Coming soon.</p></section>';
-  echo '<section class="foleo-v1__drawer"><h2>Charts</h2><p>Coming soon.</p></section>';
-  echo '</main></div>';
+  echo '<div class="foleo-v1 foleo-v1--assets foleo-page--assets foleo-page--content-shell foleo-page--content-' . esc_attr($step) . '">';
+  echo '<div class="foleo-v1__setup-top foleo-v1__build-top">';
+  echo '<label class="foleo-v1__setup-name foleo-v1__build-name">';
+  echo '<span>Foleo Unique Name</span>';
+  echo '<h1 class="foleo-ui-type-page foleo-v1__build-name-heading">' . esc_html(get_the_title($post->ID) ?: 'Untitled FOLEO') . '</h1>';
+  echo '</label>';
+  echo '<div class="foleo-v1__setup-status-inline">';
+  echo '<p><span>Status</span> ' . esc_html(foleo_v1_workspace_status($post->ID)) . '</p>';
+  echo '<p><span>Draft URL</span> ' . ($draft_url !== '' ? '<a href="' . esc_url($draft_url) . '" target="_blank" rel="noopener noreferrer">' . esc_html($draft_url) . '</a>' : 'Not generated yet') . '</p>';
+  echo '<p><span>Live URL</span> ' . ($live_url !== '' ? '<a href="' . esc_url($live_url) . '" target="_blank" rel="noopener noreferrer">' . esc_html($live_url) . '</a>' : 'Not published') . ' <span class="foleo-v1__status-sep">|</span> <span>Readiness Score</span> ' . esc_html((string) $readiness) . '</p>';
+  echo '</div>';
+  echo '</div>';
+  echo '<div class="foleo-v1__setup-actions-row foleo-v1__build-actions-row">';
+  echo '<div class="foleo-v1__setup-actions foleo-v1__setup-actions--header">';
+  if ($step === 'report') {
+    echo '<a class="button foleo-ui-page-action-btn foleo-ui-page-action-btn--secondary" href="' . esc_url($upload_url) . '">Back to Content Upload</a>';
+    echo '<a class="button foleo-ui-page-action-btn foleo-ui-page-action-btn--primary" href="' . esc_url($preview_url) . '">Save &amp; Continue</a>';
+  } elseif ($step === 'preview') {
+    echo '<a class="button foleo-ui-page-action-btn foleo-ui-page-action-btn--secondary" href="' . esc_url($report_url) . '">Back to Content Report</a>';
+    echo '<a class="button foleo-ui-page-action-btn foleo-ui-page-action-btn--primary" href="' . esc_url($setup_url) . '">Save &amp; Continue</a>';
+  } else {
+    echo '<a class="button foleo-ui-page-action-btn foleo-ui-page-action-btn--secondary" href="' . esc_url($setup_url) . '">Back</a>';
+    echo '<a class="button foleo-ui-page-action-btn foleo-ui-page-action-btn--primary" href="' . esc_url($report_url) . '">Save &amp; Continue</a>';
+  }
+  echo '</div>';
+  echo '</div>';
+
+  echo '<aside class="foleo-v1__progress foleo-v1__progress--plain" aria-label="Build Progress">';
+  echo '<ol class="foleo-v1__steps">';
+  echo '<li><span>Setup</span></li>';
+  echo '<li' . ($active_step === 1 ? ' class="is-active"' : '') . '><span>Content Upload</span></li>';
+  echo '<li' . ($active_step === 2 ? ' class="is-active"' : '') . '><span>Content Report</span></li>';
+  echo '<li' . ($active_step === 3 ? ' class="is-active"' : '') . '><span>Preview &amp; Approval</span></li>';
+  echo '<li><span>Live</span></li>';
+  echo '</ol>';
+  echo '</aside>';
+
+  echo '<main class="foleo-v1__main">';
+  echo '<div class="foleo-v1__content-app" data-foleo-content-app></div>';
+  echo '</main>';
+  echo '<script type="application/json" id="foleo-content-ui-config">' . wp_json_encode($content_config) . '</script>';
+  echo '</div>';
   echo '</div>';
 }
 
@@ -2127,7 +2678,7 @@ function foleo_render_setup_shell() {
 
   echo '<div class="wrap foleo-admin-theme-scope">';
   echo '<h1>Setup</h1>';
-  echo '<div class="foleo-v1 foleo-v1--setup"><main class="foleo-v1__main">';
+  echo '<div class="foleo-v1 foleo-v1--setup foleo-page--setup-shell"><main class="foleo-v1__main">';
   echo '<section class="foleo-v1__drawer" id="foleo-brand"><h2>Brand</h2><p>Set logo, colors, and fonts for your FOLEOs.</p><p class="description">Brand controls are available in this section in v1.</p></section>';
   echo '</main></div>';
   echo '</div>';
@@ -2211,7 +2762,7 @@ function foleo_render_v1_new_shell() {
   echo '</section>';
   echo '<p class="foleo-v1__split-label">or</p>';
 
-  echo '<div class="foleo-v1 foleo-v1--new">';
+  echo '<div class="foleo-v1 foleo-v1--new foleo-page--new">';
   echo '<main class="foleo-v1__main">';
   $template_items = array_merge($your_foleos, $library_foleos);
   if ($style_filter !== 'all') {
@@ -2326,7 +2877,7 @@ function foleo_render_v1_detail_shell() {
   $has_seo_meta = metadata_exists('post', $post->ID, 'foleo_public_seo_enabled') || metadata_exists('post', $post->ID, 'foleo_seo_enabled');
   $seo_visibility_ui = ($has_seo_meta && $public_seo_enabled === '1') ? 'findable' : 'hidden';
 
-  echo '<div class="wrap foleo-admin-theme-scope">';
+  echo '<div class="wrap foleo-admin-theme-scope foleo-page--detail-shell">';
   $setup_status = isset($_GET['setup_status']) ? sanitize_key((string) wp_unslash($_GET['setup_status'])) : '';
   $setup_codes_raw = isset($_GET['setup_codes']) ? sanitize_text_field((string) wp_unslash($_GET['setup_codes'])) : '';
   $setup_codes = $setup_codes_raw !== '' ? array_filter(array_map('trim', explode(',', $setup_codes_raw))) : array();
@@ -2373,12 +2924,13 @@ function foleo_render_v1_detail_shell() {
   echo '</div>';
   echo '</div>';
 
-  echo '<div class="foleo-v1 foleo-v1--detail">';
+  // TODO: Toggle foleo-page--setup by active workflow step when step routing is implemented.
+  echo '<div class="foleo-v1 foleo-v1--detail foleo-page--detail foleo-page--setup">';
   echo '<aside class="foleo-v1__progress foleo-v1__progress--plain" aria-label="Build Progress">';
   echo '<ol class="foleo-v1__steps">';
   echo '<li class="is-active"><span>Setup</span></li>';
-  echo '<li><span>Assets</span></li>';
-  echo '<li><span>AI Pass</span></li>';
+  echo '<li><span>Content Upload</span></li>';
+  echo '<li><span>Content Report</span></li>';
   echo '<li><span>Preview &amp; Approval</span></li>';
   echo '<li><span>Live</span></li>';
   echo '</ol>';

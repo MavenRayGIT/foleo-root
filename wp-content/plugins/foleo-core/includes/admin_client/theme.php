@@ -126,6 +126,10 @@ add_action('admin_head', function () {
 
 add_action('admin_enqueue_scripts', function ($hook_suffix) {
   $is_client_shell = foleo_is_client_shell_context();
+  if (!$is_client_shell) {
+    return;
+  }
+
   $is_foleo_list = false;
   if ($hook_suffix === 'edit.php' && function_exists('get_current_screen')) {
     $screen = get_current_screen();
@@ -134,9 +138,6 @@ add_action('admin_enqueue_scripts', function ($hook_suffix) {
   if (!$is_foleo_list) {
     $post_type = isset($_GET['post_type']) ? sanitize_key(wp_unslash($_GET['post_type'])) : '';
     $is_foleo_list = ($hook_suffix === 'edit.php' && $post_type === 'foleo_page');
-  }
-  if (!$is_client_shell && !$is_foleo_list) {
-    return;
   }
 
   wp_enqueue_style(

@@ -1,39 +1,39 @@
-body.foleo-client-shell-active .foleo-v1 {
+.foleo-admin-theme-scope .foleo-v1 {
   display: grid;
   gap: 16px;
 }
 
-body.foleo-client-shell-active .foleo-v1--detail {
+.foleo-admin-theme-scope .foleo-page--detail {
   grid-template-columns: 1fr;
   align-items: start;
 }
 
-body.foleo-client-shell-active .foleo-v1__progress,
-body.foleo-client-shell-active .foleo-v1__drawer,
-body.foleo-client-shell-active .foleo-v1__truth-card {
+.foleo-admin-theme-scope .foleo-v1__drawer,
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth-card,
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__progress {
   background: var(--bd-panel, #fff);
   border: 1px solid var(--bd-border, #e3e7ee);
   border-radius: 10px;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
 }
 
-body.foleo-client-shell-active .foleo-v1__progress {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__progress {
   grid-column: 1 / -1;
   padding: 16px 14px 14px;
   margin-bottom: 20px;
 }
 
-body.foleo-client-shell-active .foleo-v1__steps {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__steps {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
+  gap: 0;
   margin: 0;
   padding: 0 6px;
   position: relative;
 }
 
-body.foleo-client-shell-active .foleo-v1__steps li {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__steps li {
   padding: 28px 8px 0;
   border-radius: 0;
   color: var(--bd-text, #0f172a);
@@ -44,26 +44,26 @@ body.foleo-client-shell-active .foleo-v1__steps li {
   line-height: 1.15;
 }
 
-body.foleo-client-shell-active .foleo-v1__steps li::after {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__steps li::after {
   content: "";
   position: absolute;
   top: 10px;
   left: calc(50% + 18px);
   right: calc(-50% + 18px);
-  border-top: 2px solid #fff;
+  border-top: 2px solid var(--bd-surface, #fff);
   z-index: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__steps li:last-child::after {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__steps li:last-child::after {
   display: none;
 }
 
-body.foleo-client-shell-active .foleo-v1__steps li::before {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__steps li::before {
   content: "";
   width: 16px;
   height: 16px;
   border-radius: 999px;
-  background: #fff;
+  background: var(--bd-surface, #fff);
   position: absolute;
   top: 2px;
   left: 50%;
@@ -71,24 +71,25 @@ body.foleo-client-shell-active .foleo-v1__steps li::before {
   z-index: 1;
 }
 
-body.foleo-client-shell-active .foleo-v1__steps li.is-active {
-  color: #111827;
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__steps li.is-active {
+  color: var(--bd-text-strong, #111827);
 }
 
-body.foleo-client-shell-active .foleo-v1__steps li.is-active::before {
-  background: #2563eb;
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__steps li.is-active::before {
+  background: var(--bd-accent, #2563eb);
 }
 
-body.foleo-client-shell-active .foleo-v1__drawer {
+.foleo-admin-theme-scope .foleo-v1__drawer {
   min-height: 120px;
   padding: 16px;
 }
 
-body.foleo-client-shell-active .foleo-v1__review-form--setup {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__review-form--setup {
   gap: 12px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-top {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-top,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-top {
   display: grid;
   grid-template-columns: minmax(260px, 480px) minmax(0, 1fr);
   gap: 14px;
@@ -96,21 +97,24 @@ body.foleo-client-shell-active .foleo-v1__setup-top {
   margin-bottom: 0px;
 }
 
-body.foleo-client-shell-active.dashboard_page_foleo-v1-detail .foleo-admin-theme-scope {
+.foleo-admin-theme-scope.foleo-page--detail-shell,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell {
   margin-top: 40px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-name {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-name,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-name {
   display: grid;
   gap: 6px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-name > span {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-name > span,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-name > span {
   font-size: 11px;
   font-weight: 300;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-name input[type="text"] {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-name input[type="text"] {
   height: 38px;
   font-size: 23px;
   line-height: 1.2;
@@ -118,210 +122,218 @@ body.foleo-client-shell-active .foleo-v1__setup-name input[type="text"] {
   padding: 0 12px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-status-inline {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-status-inline,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-status-inline {
   display: grid;
   gap: 0px;
   font-size: 13px;
   min-width: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-status-inline p {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-status-inline p,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-status-inline p {
   margin: 0;
   overflow-wrap: anywhere;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-status-inline span {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-status-inline span,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-status-inline span {
   opacity: 0.75;
   margin-right: 4px;
 }
 
-body.foleo-client-shell-active .foleo-v1__status-sep {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__status-sep,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__status-sep {
   margin: 0 6px;
   opacity: 0.5;
 }
 
-body.foleo-client-shell-active .foleo-v1__section-head {
+.foleo-admin-theme-scope .foleo-v1__build-name-heading {
+  margin: 0;
+}
+
+.foleo-admin-theme-scope .foleo-v1__section-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-body.foleo-client-shell-active .foleo-v1__section-head h1,
-body.foleo-client-shell-active .foleo-v1__section-head h2 {
+.foleo-admin-theme-scope .foleo-v1__section-head h1,
+.foleo-admin-theme-scope .foleo-v1__section-head h2 {
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1--workspace .foleo-v1__section-head {
+.foleo-admin-theme-scope .foleo-page--workspace .foleo-v1__section-head {
   margin-bottom: 60px;
 }
 
-body.foleo-client-shell-active .foleo-v1__cta-grid {
+.foleo-admin-theme-scope .foleo-page--workspace .foleo-v1__cta-grid {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
 }
 
-body.foleo-client-shell-active .foleo-v1__card-grid,
-body.foleo-client-shell-active .foleo-v1__picker-grid {
+.foleo-admin-theme-scope .foleo-v1__card-grid,
+.foleo-admin-theme-scope .foleo-v1__picker-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
 @media (max-width: 1600px) {
-  body.foleo-client-shell-active .foleo-v1__card-grid,
-  body.foleo-client-shell-active .foleo-v1__picker-grid {
+  .foleo-admin-theme-scope .foleo-v1__card-grid,
+  .foleo-admin-theme-scope .foleo-v1__picker-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 1280px) {
-  body.foleo-client-shell-active .foleo-v1__card-grid,
-  body.foleo-client-shell-active .foleo-v1__picker-grid {
+  .foleo-admin-theme-scope .foleo-v1__card-grid,
+  .foleo-admin-theme-scope .foleo-v1__picker-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 760px) {
-  body.foleo-client-shell-active .foleo-v1__card-grid,
-  body.foleo-client-shell-active .foleo-v1__picker-grid {
+  .foleo-admin-theme-scope .foleo-v1__card-grid,
+  .foleo-admin-theme-scope .foleo-v1__picker-grid {
     grid-template-columns: 1fr;
   }
 }
 
-body.foleo-client-shell-active .foleo-v1__card,
-body.foleo-client-shell-active .foleo-v1__picker-card,
-body.foleo-client-shell-active .foleo-v1__row {
+.foleo-admin-theme-scope .foleo-v1__card,
+.foleo-admin-theme-scope .foleo-v1__picker-card,
+.foleo-admin-theme-scope .foleo-v1__row {
   border: 1px solid var(--bd-border, #e3e7ee);
   border-radius: 8px;
   padding: 12px;
-  background: #fff;
+  background: var(--bd-surface, #fff);
 }
 
-body.foleo-client-shell-active .foleo-v1__card h3,
-body.foleo-client-shell-active .foleo-v1__picker-card h3,
-body.foleo-client-shell-active .foleo-v1__row h3 {
+.foleo-admin-theme-scope .foleo-v1__card h3,
+.foleo-admin-theme-scope .foleo-v1__picker-card h3,
+.foleo-admin-theme-scope .foleo-v1__row h3 {
   margin: 0 0 6px;
 }
 
-body.foleo-client-shell-active .foleo-v1__card-media {
+.foleo-admin-theme-scope .foleo-v1__card-media {
   width: 100%;
   aspect-ratio: 1 / 1;
   border: 1px solid var(--bd-border, #e3e7ee);
   border-radius: 5px;
-  background: #f3f4f6;
+  background: var(--bd-surface-subtle, #f3f4f6);
   margin-bottom: 12px;
 }
 
-body.foleo-client-shell-active .foleo-v1__card-actions {
+.foleo-admin-theme-scope .foleo-v1__card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 10px;
 }
 
-body.foleo-client-shell-active .foleo-v1__action-form {
+.foleo-admin-theme-scope .foleo-v1__action-form {
   display: inline-block;
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__rows {
+.foleo-admin-theme-scope .foleo-v1__rows {
   display: grid;
   gap: 10px;
 }
 
-body.foleo-client-shell-active .foleo-v1__row {
+.foleo-admin-theme-scope .foleo-v1__row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
-body.foleo-client-shell-active .foleo-v1__row-actions {
+.foleo-admin-theme-scope .foleo-v1__row-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   justify-content: flex-end;
 }
 
-body.foleo-client-shell-active .foleo-v1__artifact {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__artifact {
   margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid var(--bd-border, #e3e7ee);
 }
 
-body.foleo-client-shell-active .foleo-v1__artifact h3 {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__artifact h3 {
   margin: 0 0 8px;
 }
 
-body.foleo-client-shell-active .foleo-v1__artifact-form {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__artifact-form {
   display: grid;
   gap: 10px;
   margin: 0 0 10px;
 }
 
-body.foleo-client-shell-active .foleo-v1__artifact-current {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__artifact-current {
   margin: 0 0 10px;
 }
 
-body.foleo-client-shell-active .foleo-v1__artifact-history {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__artifact-history {
   margin: 0;
   padding-left: 18px;
   display: grid;
   gap: 6px;
 }
 
-body.foleo-client-shell-active .foleo-v1__artifact-history li {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__artifact-history li {
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__truth {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth {
   position: sticky;
   top: 24px;
 }
 
-body.foleo-client-shell-active .foleo-v1__truth-card {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth-card {
   padding: 14px;
 }
 
-body.foleo-client-shell-active .foleo-v1__truth-card h2 {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth-card h2 {
   margin-top: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__review-form {
+.foleo-admin-theme-scope .foleo-v1__review-form {
   display: grid;
   gap: 10px;
 }
 
-body.foleo-client-shell-active .foleo-v1__field {
+.foleo-admin-theme-scope .foleo-v1__field {
   display: grid;
   gap: 4px;
 }
 
-body.foleo-client-shell-active .foleo-v1__field > span {
+.foleo-admin-theme-scope .foleo-v1__field > span {
   font-size: 12px;
   opacity: 0.75;
 }
 
-body.foleo-client-shell-active .foleo-v1__field--toggle {
+.foleo-admin-theme-scope .foleo-v1__field--toggle {
   grid-template-columns: 1fr auto;
   align-items: center;
 }
 
-body.foleo-client-shell-active .foleo-v1__field--toggle > span {
+.foleo-admin-theme-scope .foleo-v1__field--toggle > span {
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__field--toggle-inline {
+.foleo-admin-theme-scope .foleo-v1__field--toggle-inline {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   grid-template-columns: none;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-status {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-status {
   border: 1px solid;
   border-radius: 5px;
   padding: 10px 12px;
@@ -329,155 +341,698 @@ body.foleo-client-shell-active .foleo-v1__setup-status {
   grid-column: 1 / -1;
 }
 
-body.foleo-client-shell-active .foleo-v1__progress--plain {
-  background: rgba(0, 0, 0, 0.08);
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__progress--plain {
+  background: var(--bd-overlay-soft, rgba(0, 0, 0, 0.08));
   border: none;
   border-radius: 5px;
   box-shadow: none;
   padding: 24px 14px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-status p {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-status p {
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-status--warning {
-  border-color: #f59e0b;
-  background: #fff7ed;
-  color: #b45309;
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-status--warning {
+  border-color: var(--bd-warning-300, #f59e0b);
+  background: var(--bd-warning-bg, #fff7ed);
+  color: var(--bd-warning-text, #b45309);
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-status--error {
-  border-color: #dc2626;
-  background: #fef2f2;
-  color: #b91c1c;
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-status--error {
+  border-color: var(--bd-danger, #dc2626);
+  background: var(--bd-danger-bg, #fef2f2);
+  color: var(--bd-danger-text, #b91c1c);
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-panel {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-panel {
   border: 1px solid var(--bd-border, #e3e7ee);
   border-radius: 5px;
   padding: 14px;
-  background: #fff;
+  background: var(--bd-surface, #fff);
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-panel h3 {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-panel h3 {
   margin: 0 0 8px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-actions {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-actions,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-actions--header {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-actions--header,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-actions--header {
   align-self: start;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-actions-row {
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-actions-row,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-actions-row {
   display: grid;
   grid-template-columns: minmax(260px, 480px) minmax(0, 1fr);
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-actions-row .foleo-v1__setup-actions--header {
-  grid-column: 2;
+.foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-actions-row .foleo-v1__setup-actions--header,
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-actions-row .foleo-v1__setup-actions--header {
+  grid-column: 2 / 3;
+  justify-self: end;
   justify-content: flex-end;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-actions--bottom {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-actions--bottom {
   margin-top: 14px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-row {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-row {
   display: grid;
   grid-template-columns: minmax(160px, 220px) minmax(0, 1fr) minmax(220px, 360px);
   gap: 16px;
   align-items: start;
 }
 
-body.foleo-client-shell-active .foleo-v1__main > .foleo-v1__setup-panel + .foleo-v1__setup-panel {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__main > .foleo-v1__setup-panel + .foleo-v1__setup-panel {
   margin-top: 14px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-row > h3 {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-row > h3 {
   margin-top: 2px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-row-copy p {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-row-copy p {
   margin: 0 0 6px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-row-copy p:last-child {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-row-copy p:last-child {
   margin-bottom: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-row-actions {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-row-actions {
   display: grid;
   gap: 8px;
 }
 
-body.foleo-client-shell-active .foleo-v1__setup-properties {
+.foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-properties {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
-body.foleo-client-shell-active .foleo-v1__truth-actions {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth-actions {
   display: flex;
   gap: 8px;
   margin-top: 2px;
 }
 
-body.foleo-client-shell-active .foleo-v1__truth-card dl {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth-card dl {
   margin: 0 0 12px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 6px;
 }
 
-body.foleo-client-shell-active .foleo-v1__truth-card dt {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth-card dt {
   font-size: 12px;
   opacity: 0.7;
 }
 
-body.foleo-client-shell-active .foleo-v1__truth-card dd {
+.foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth-card dd {
   margin: 0 0 6px;
   word-break: break-word;
 }
 
-body.foleo-client-shell-active .foleo-v1__workspace-actions {
+.foleo-admin-theme-scope .foleo-page--workspace .foleo-v1__workspace-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
 }
 
-body.foleo-client-shell-active .foleo-v1__inline-form {
+/* Assets module: currently relies on shared drawer/base patterns. */
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__main {
+  display: block;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell {
+  gap: 14px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__progress--plain {
+  background: var(--bd-overlay-soft, rgba(0, 0, 0, 0.08));
+  border: 0;
+  border-radius: 5px;
+  box-shadow: none;
+  padding: 24px 14px 16px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0 6px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__steps li {
+  padding: 28px 8px 0;
+  color: var(--bd-text, #0f172a);
+  text-align: center;
+  position: relative;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__steps li::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: calc(50% + 18px);
+  right: calc(-50% + 18px);
+  border-top: 2px solid var(--bd-surface, #fff);
+  z-index: 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__steps li:last-child::after {
+  display: none;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__steps li::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--bd-surface, #fff);
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__steps li.is-active::before {
+  background: var(--bd-accent, #2563eb);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__steps li.is-active {
+  color: var(--bd-text-strong, #111827);
+  font-weight: 700;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__content-upload-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 380px;
+  grid-template-rows: auto auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__upload-card .foleo-ui-type-subsection { margin: 0 0 12px; }
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__upload-card {
+  min-height: 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__upload-card p {
+  margin: 0 0 10px;
+  max-width: 58ch;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__upload-card-actions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__upload-card .foleo-ui-page-action-btn {
+  margin-top: 24px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__assets-table-wrap {
+  grid-column: 1 / 3;
+  grid-row: 2;
+  padding: 0;
+  overflow: hidden;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__assets-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__assets-table th,
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__assets-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--bd-border, #e3e7ee);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__assets-table th {
+  font-weight: 500;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__asset-name {
+  font-weight: 600;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__asset-has-notes {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 11px;
+  color: var(--bd-notes-text, #0f766e);
+  background: var(--bd-notes-bg, #ecfeff);
+  border: 1px solid var(--bd-notes-border, #99f6e4);
+  border-radius: 99px;
+  padding: 1px 7px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__asset-actions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__asset-actions .foleo-ui-btn {
+  min-width: 38px;
+  padding: 0 8px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__asset-actions .foleo-ui-btn--delete {
+  min-width: 32px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__asset-actions .dashicons {
+  line-height: 30px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__assets-empty {
+  margin: 8px 0;
+  opacity: 0.75;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__content-scorecard {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  background: var(--bd-surface, #fff);
+  border: 1px solid var(--bd-border, #e3e7ee);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px var(--bd-panel-shadow, rgba(15, 23, 42, 0.08));
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  position: relative;
+  align-self: stretch;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__scorecard-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--bd-scrim-light, rgba(255, 255, 255, 0.82));
+  z-index: 4;
+  border-radius: 6px;
+  display: grid;
+  place-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__scorecard-scrim p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--bd-text, #0f172a);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__scorecard-spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 3px solid var(--bd-spinner-track, #cbd5e1);
+  border-top-color: var(--bd-accent, #2563eb);
+  margin: 0 auto;
+  animation: foleo-score-spin 0.9s linear infinite;
+}
+
+@keyframes foleo-score-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__content-scorecard-head .foleo-ui-type-subsection {
+  margin: 0 0 4px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__content-scorecard-head p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-inline-warning {
+  color: var(--bd-warning-text, #b45309);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-inline-warning.is-required {
+  color: var(--bd-danger-text, #b91c1c);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-inline-note {
+  color: var(--bd-text-muted, #64748b);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-bucket {
+  border-top: 1px solid var(--bd-border, #e3e7ee);
+  padding-top: 10px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-bucket header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-bucket .foleo-ui-type-subsection {
+  margin: 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-bucket p {
+  margin: 6px 0 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-bucket strong {
+  font-size: 42px;
+  line-height: 1;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-bucket.is-good strong {
+  color: var(--bd-success-strong, #65a30d);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-bucket.is-warn strong {
+  color: var(--bd-warning, #d97706);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-bucket.is-bad strong {
+  color: var(--bd-danger, #dc2626);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-tokens {
+  border-top: 1px solid var(--bd-border, #e3e7ee);
+  padding-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "main visuals"
+    "main actions";
+  gap: 8px 10px;
+  align-items: start;
+  border-top: 1px solid var(--bd-border, #e3e7ee);
+  padding-top: 10px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token-main {
+  grid-area: main;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token h5,
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token p,
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token small {
+  margin: 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token h5 {
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token.is-muted {
+  opacity: 0.5;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__token-boxes {
+  grid-area: visuals;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  max-width: 84px;
+  align-self: start;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__token-box {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid var(--bd-token-empty-border, #cbd5e1);
+  background: var(--bd-token-empty-bg, #e5e7eb);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__token-box.is-filled {
+  border-color: var(--bd-success, #16a34a);
+  background: var(--bd-token-filled-bg, #86efac);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__content-scorecard footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--bd-border, #e3e7ee);
+  padding-top: 10px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__score-token-actions {
+  grid-area: actions;
+  justify-self: end;
+  align-self: start;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-banner {
+  border: 1px solid var(--bd-warning-300, #f59e0b);
+  border-radius: 5px;
+  padding: 8px 12px;
+  color: var(--bd-warning-text, #b45309);
+  background: var(--bd-warning-bg, #fff7ed);
+  margin-bottom: 40px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-banner.is-success {
+  border-color: var(--bd-success-300, #22c55e);
+  color: var(--bd-success-text, #15803d);
+  background: var(--bd-success-bg, #f0fdf4);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-banner.is-danger {
+  border-color: var(--bd-danger-400, #ef4444);
+  color: var(--bd-danger-text, #b91c1c);
+  background: var(--bd-danger-bg, #fef2f2);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-head .foleo-ui-type-subsection {
+  margin: 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-head {
+  margin-bottom: 40px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 14px;
+  align-items: start;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-main {
+  display: grid;
+  gap: 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-general-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-general-grid .foleo-ui-type-metric {
+  margin: 0 0 8px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-general-grid p {
+  margin: 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-decision {
+  background: var(--bd-surface, #fff);
+  border: 1px solid var(--bd-border, #e3e7ee);
+  border-radius: 5px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-decision-row {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-decision-row ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-decision-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-stack {
+  margin-top: 2px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-section {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 16px 0;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-section + .foleo-v1__report-section {
+  border-top: 1px solid var(--bd-border, #e3e7ee);
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-section .foleo-ui-type-subsection,
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-section .foleo-ui-type-metric,
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-section p {
+  margin: 0 0 8px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-section .foleo-ui-type-subsection span {
+  color: var(--bd-warning, #d97706);
+  margin-left: 6px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-section ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-sources-inline {
+  margin: 0 0 8px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__content-bottom-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__preview-stub {
+  min-height: 160px;
+}
+
+.foleo-v1__content-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--bd-scrim-dark, rgba(15, 23, 42, 0.4));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 20px;
+}
+
+.foleo-v1__content-modal {
+  width: min(520px, 100%);
+  background: var(--bd-surface, #fff);
+  border: 1px solid var(--bd-border-strong, #d1d5db);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px var(--bd-modal-shadow, rgba(15, 23, 42, 0.25));
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.foleo-v1__content-modal h3,
+.foleo-v1__content-modal p {
+  margin: 0;
+}
+
+.foleo-v1__content-modal textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid var(--bd-border-strong, #d1d5db);
+  border-radius: 6px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.foleo-v1__content-modal footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__asset-icon-btn {
+  position: relative;
+}
+
+.foleo-admin-theme-scope .foleo-page--assets .foleo-v1__asset-icon-btn[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--bd-surface, #fff);
+  background: var(--bd-tooltip-bg, rgba(15, 23, 42, 0.94));
+  padding: 4px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+.foleo-admin-theme-scope .foleo-v1__inline-form {
   display: inline-flex;
   gap: 6px;
   align-items: center;
 }
 
-body.foleo-client-shell-active .foleo-v1__inline-form input[type="text"] {
+.foleo-admin-theme-scope .foleo-v1__inline-form input[type="text"] {
   width: 150px;
 }
 
-body.foleo-client-shell-active .foleo-v1__chooser-grid {
+.foleo-admin-theme-scope .foleo-v1__chooser-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 12px;
 }
 
-body.foleo-client-shell-active .foleo-v1__split-label {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__split-label {
   margin: 6px 0 12px;
   font-size: 32px;
   line-height: 1.2;
   font-weight: 500;
 }
 
-body.foleo-client-shell-active .foleo-v1__feature-panel {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__feature-panel {
   display: grid;
   grid-template-columns: minmax(220px, 420px) minmax(0, 1fr) auto;
   align-items: center;
@@ -487,118 +1042,156 @@ body.foleo-client-shell-active .foleo-v1__feature-panel {
   padding-bottom: 10px;
 }
 
-body.foleo-client-shell-active .foleo-v1__feature-panel h2 {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__feature-panel h2 {
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__feature-panel p {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__feature-panel p {
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__template-meta {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-meta {
   margin: 0;
   display: grid;
   gap: 4px;
 }
 
-body.foleo-client-shell-active .foleo-v1__template-meta p {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-meta p {
   margin: 0;
-  color: #475569;
+  color: var(--bd-text-muted, #64748b);
   font-size: 13px;
 }
 
-body.foleo-client-shell-active .foleo-v1__template-meta strong {
-  color: #111827;
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-meta strong {
+  color: var(--bd-text-strong, #111827);
 }
 
-body.foleo-client-shell-active .foleo-v1__template-section {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-section {
   margin-top: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__template-head {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-head {
   display: grid;
   grid-template-columns: minmax(220px, 420px) minmax(0, 1fr);
   gap: 16px;
   margin-bottom: 16px;
 }
 
-body.foleo-client-shell-active .foleo-v1__template-head h2 {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-head h2 {
   margin: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1__template-head p {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-head p {
   margin: 0 0 8px;
 }
 
-body.foleo-client-shell-active .foleo-v1__template-head p:last-child {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-head p:last-child {
   margin-bottom: 0;
 }
 
-body.foleo-client-shell-active .foleo-v1--new .foleo-v1__main {
+.foleo-admin-theme-scope .foleo-page--new .foleo-v1__main {
   margin-bottom: 64px;
 }
 
 @media (max-width: 1200px) {
-  body.foleo-client-shell-active .foleo-v1--detail {
+  .foleo-admin-theme-scope .foleo-page--detail {
     grid-template-columns: 1fr;
   }
 
-  body.foleo-client-shell-active .foleo-v1__setup-top {
+  .foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-top,
+  .foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-top {
     grid-template-columns: 1fr;
     align-items: start;
   }
 
-  body.foleo-client-shell-active .foleo-v1__setup-actions-row {
+  .foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-actions-row,
+  .foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-actions-row {
     grid-template-columns: 1fr;
   }
 
-  body.foleo-client-shell-active .foleo-v1__setup-actions-row .foleo-v1__setup-actions--header {
+  .foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-actions-row .foleo-v1__setup-actions--header,
+  .foleo-admin-theme-scope .foleo-page--assets.foleo-page--content-shell .foleo-v1__setup-actions-row .foleo-v1__setup-actions--header {
     grid-column: 1;
-    justify-content: flex-start;
+    justify-self: end;
+    justify-content: flex-end;
   }
 
-  body.foleo-client-shell-active .foleo-v1__setup-name input[type="text"] {
+  .foleo-admin-theme-scope.foleo-page--detail-shell .foleo-v1__setup-name input[type="text"] {
     font-size: 14px;
   }
 
-  body.foleo-client-shell-active .foleo-v1__steps {
+  .foleo-admin-theme-scope .foleo-v1__build-name-heading {
+    font-size: 14px;
+  }
+
+  .foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__steps {
     grid-template-columns: repeat(5, minmax(120px, 1fr));
     overflow-x: auto;
     padding-bottom: 4px;
   }
 
-  body.foleo-client-shell-active .foleo-v1__truth {
+  .foleo-admin-theme-scope .foleo-page--detail .foleo-v1__truth {
     grid-column: auto;
     position: static;
   }
 
-  body.foleo-client-shell-active .foleo-v1__chooser-grid {
+  .foleo-admin-theme-scope .foleo-v1__chooser-grid {
     grid-template-columns: 1fr;
   }
 
-  body.foleo-client-shell-active .foleo-v1__feature-panel {
+  .foleo-admin-theme-scope .foleo-page--new .foleo-v1__feature-panel {
     grid-template-columns: 1fr;
     align-items: start;
   }
 
-  body.foleo-client-shell-active .foleo-v1__template-head {
+  .foleo-admin-theme-scope .foleo-page--new .foleo-v1__template-head {
     grid-template-columns: 1fr;
   }
 
-  body.foleo-client-shell-active .foleo-v1__row {
+  .foleo-admin-theme-scope .foleo-page--assets .foleo-v1__setup-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .foleo-admin-theme-scope .foleo-page--assets .foleo-v1__content-upload-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .foleo-admin-theme-scope .foleo-page--assets .foleo-v1__content-scorecard {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .foleo-admin-theme-scope .foleo-page--assets .foleo-v1__assets-table-wrap {
+    grid-column: 1;
+  }
+
+  .foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-general-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .foleo-admin-theme-scope .foleo-page--assets .foleo-v1__report-section {
+    grid-template-columns: 1fr;
+  }
+
+  .foleo-admin-theme-scope .foleo-v1__row {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  body.foleo-client-shell-active .foleo-v1__row-actions {
+  .foleo-admin-theme-scope .foleo-v1__row-actions {
     justify-content: flex-start;
   }
 
-  body.foleo-client-shell-active .foleo-v1__setup-properties {
+  .foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-properties {
     grid-template-columns: 1fr;
   }
 
-  body.foleo-client-shell-active .foleo-v1__setup-row {
+  .foleo-admin-theme-scope .foleo-page--detail.foleo-page--setup .foleo-v1__setup-row {
     grid-template-columns: 1fr;
   }
 }

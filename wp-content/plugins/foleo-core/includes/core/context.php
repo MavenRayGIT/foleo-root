@@ -31,7 +31,7 @@ if (!function_exists('foleo_get_compiler_post_id')) {
 
 if (!function_exists('foleo_is_builder_request')) {
   function foleo_is_builder_request() {
-    if (defined('BREAKDANCE_IS_EDITING') && BREAKDANCE_IS_EDITING) {
+    if (defined('BREAKDANCE_IS_EDITING') && (bool) constant('BREAKDANCE_IS_EDITING')) {
       return true;
     }
 
@@ -57,14 +57,43 @@ if (!function_exists('foleo_client_shell_enabled')) {
   }
 }
 
+if (!function_exists('foleo_is_foleo_list_screen')) {
+  function foleo_is_foleo_list_screen() {
+    if (!is_admin() || is_network_admin()) {
+      return false;
+    }
+
+    if (function_exists('get_current_screen')) {
+      $screen = get_current_screen();
+      if ($screen && $screen->base === 'edit' && $screen->post_type === 'foleo_page') {
+        return true;
+      }
+    }
+
+    global $pagenow;
+    $post_type = isset($_GET['post_type']) ? sanitize_key(wp_unslash($_GET['post_type'])) : '';
+    return $pagenow === 'edit.php' && $post_type === 'foleo_page';
+  }
+}
+
 if (!function_exists('foleo_is_client_shell_context')) {
   function foleo_is_client_shell_context() {
     if (!is_admin() || is_network_admin()) {
       return false;
     }
+
+    if (!foleo_client_shell_enabled()) {
+      return false;
+    }
+
+    if (foleo_is_foleo_list_screen()) {
+      return true;
+    }
+
     if (!foleo_is_client_editor()) {
       return false;
     }
-    return foleo_client_shell_enabled();
+
+    return true;
   }
 }

@@ -1,19 +1,18 @@
 (() => {
   const isClientShell = document.body.classList.contains('foleo-client-shell-active');
+  if (!isClientShell) {
+    return;
+  }
   const isFoleoList =
     document.body.classList.contains('post-type-foleo_page') &&
     document.body.classList.contains('edit-php');
-
-  if (!isClientShell && !isFoleoList) {
-    return;
-  }
 
   const workspaceUrl =
     (window.foleoAdminAdapter && window.foleoAdminAdapter.workspaceUrl) ||
     '/wp-admin/admin.php?page=foleo-workspace';
 
   const wrap = document.querySelector('#wpbody-content .wrap');
-  if (wrap && isClientShell) {
+  if (wrap) {
     wrap.classList.add('foleo-admin-theme-scope');
   }
 
@@ -57,17 +56,80 @@
   };
 
   const applyFoleoListRemap = () => {
-    const topNav = document.querySelector('.tablenav.top');
-    const searchBox = document.querySelector('.search-box');
-    const pageAction = document.querySelector('.page-title-action');
-
-    if (pageAction) {
-      pageAction.classList.add('foleo-ui-page-action');
+    const listRoot = document.querySelector('#wpbody-content .wrap.foleo-page--list');
+    if (!listRoot) {
+      return;
     }
 
-    const utilityButtons = document.querySelectorAll('.tablenav input[type="submit"].action');
+    const topNav = listRoot.querySelector('.tablenav.top');
+    const bottomNav = listRoot.querySelector('.tablenav.bottom');
+    const views = listRoot.querySelector('.subsubsub');
+    const searchBox = listRoot.querySelector('.search-box');
+    const pageAction = listRoot.querySelector('.page-title-action');
+    const titleLinks = listRoot.querySelectorAll('.wp-list-table .column-title .row-title, .wp-list-table .manage-column.column-title a');
+    const rowTitleLinks = listRoot.querySelectorAll('.wp-list-table .column-title .row-title');
+    const sortIndicators = listRoot.querySelectorAll('.wp-list-table .column-title .sorting-indicator');
+    const actionButtons = listRoot.querySelectorAll(
+      '.wp-list-table .column-foleo_primary_action .button, .wp-list-table .column-foleo_get_url .button'
+    );
+
+    if (views) {
+      views.classList.add('foleo-list-views');
+      views.querySelectorAll('a').forEach((link) => {
+        link.classList.add('foleo-list-views__link');
+      });
+    }
+
+    if (topNav) {
+      topNav.classList.add('foleo-list-utilitybar', 'foleo-list-utilitybar--top');
+    }
+    if (bottomNav) {
+      bottomNav.classList.add('foleo-list-utilitybar', 'foleo-list-utilitybar--bottom');
+    }
+    if (searchBox) {
+      searchBox.classList.add('foleo-list-searchbox');
+    }
+
+    if (pageAction) {
+      pageAction.classList.add('foleo-ui-page-action', 'foleo-list-page-action');
+    }
+
+    titleLinks.forEach((link) => {
+      link.classList.add('foleo-list-title-link');
+    });
+    rowTitleLinks.forEach((link) => {
+      link.classList.add('foleo-list-row-title');
+    });
+    sortIndicators.forEach((indicator) => {
+      indicator.classList.add('foleo-list-sort-indicator');
+    });
+
+    actionButtons.forEach((button) => {
+      const text = (button.textContent || '').trim().toLowerCase();
+      const isDelete =
+        button.classList.contains('foleo-v1-btn-action--delete') ||
+        button.classList.contains('foleo-v1-action-delete') ||
+        !!button.querySelector('.dashicons-trash');
+      const isPrimary =
+        button.classList.contains('foleo-v1-btn-action--primary') ||
+        button.classList.contains('foleo-v1-action-primary') ||
+        text === 'edit';
+
+      button.classList.add('foleo-list-action-btn');
+      button.classList.remove('foleo-list-action-btn--primary', 'foleo-list-action-btn--secondary', 'foleo-list-action-btn--delete');
+
+      if (isDelete) {
+        button.classList.add('foleo-list-action-btn--delete');
+      } else if (isPrimary) {
+        button.classList.add('foleo-list-action-btn--primary');
+      } else {
+        button.classList.add('foleo-list-action-btn--secondary');
+      }
+    });
+
+    const utilityButtons = listRoot.querySelectorAll('.tablenav input[type="submit"].action');
     utilityButtons.forEach((button) => {
-      button.classList.add('foleo-v1-btn-utility', 'foleo-ui-btn', 'foleo-ui-btn--utility');
+      button.classList.add('foleo-ui-btn', 'foleo-ui-btn--utility');
     });
 
     if (topNav) {
@@ -96,7 +158,7 @@
         searchSubmit.value = '';
         searchSubmit.title = 'Search';
         searchSubmit.setAttribute('aria-label', 'Search');
-        searchSubmit.classList.add('foleo-v1-search-icon-btn', 'foleo-v1-btn-utility', 'foleo-ui-btn', 'foleo-ui-btn--utility');
+        searchSubmit.classList.add('foleo-v1-search-icon-btn', 'foleo-ui-btn', 'foleo-ui-btn--utility');
       }
     }
   };
@@ -108,6 +170,9 @@
       suppressSeoNotice();
     }
     if (isFoleoList) {
+      if (wrap) {
+        wrap.classList.add('foleo-page--list');
+      }
       applyFoleoListRemap();
     }
   };
@@ -123,7 +188,7 @@
   const retryTimer = window.setInterval(() => {
     runShellAdapters();
     retries += 1;
-    if (((!isClientShell) || document.querySelector('#adminmenu .foleo-admin-logo')) || retries >= 8) {
+    if (document.querySelector('#adminmenu .foleo-admin-logo') || retries >= 8) {
       window.clearInterval(retryTimer);
     }
   }, 200);

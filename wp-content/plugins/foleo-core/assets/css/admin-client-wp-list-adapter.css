@@ -1,218 +1,212 @@
 /* Layer 4: FOLEO list-screen adapter (native edit.php list-table remap). */
 
-body.post-type-foleo_page.edit-php .wrap > h1.wp-heading-inline {
-  margin-bottom: 6px !important;
-  font-weight: 500 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list > h1.wp-heading-inline {
+  margin-bottom: 6px;
+  font-weight: 500;
 }
 
-body.post-type-foleo_page.edit-php .wrap {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list {
   position: relative;
 }
 
-body.post-type-foleo_page.edit-php .wrap .page-title-action {
-  border: 1px solid #3b82f6 !important;
-  color: #2563eb !important;
-  background: #fff !important;
-  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12) !important;
-  border-radius: 3px !important;
-  height: 36px !important;
-  line-height: 34px !important;
-  font-size: 14px !important;
-  position: absolute !important;
-  right: 0 !important;
-  top: 52px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-page-action {
+  border: 1px solid #3b82f6;
+  color: #2563eb;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12);
+  border-radius: 3px;
+  height: 36px;
+  line-height: 34px;
+  font-size: 14px;
+  position: absolute;
+  right: 0;
+  top: 52px;
 }
 
-body.post-type-foleo_page.edit-php .wrap .page-title-action:hover,
-body.post-type-foleo_page.edit-php .wrap .page-title-action:focus {
-  border-color: #111827 !important;
-  color: #111827 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-page-action:hover,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-page-action:focus {
+  border-color: #111827;
+  color: #111827;
 }
 
-body.post-type-foleo_page.edit-php .subsubsub {
-  margin: 6px 0 14px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-views {
+  margin: 6px 0 14px;
   font-size: 16px;
   line-height: 1.2;
   padding-right: 170px;
 }
 
-body.post-type-foleo_page.edit-php .subsubsub a {
-  color: #2563eb !important;
-  font-weight: 500 !important;
-  padding: 4px 8px !important;
-  border-radius: 3px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-views .foleo-list-views__link {
+  color: #2563eb;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 3px;
 }
 
-body.post-type-foleo_page.edit-php .subsubsub a.current {
-  color: #111827 !important;
-  font-weight: 700 !important;
-  background: #fff !important;
-  border: 1px solid #e5e7eb !important;
-  box-shadow: none !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-views .foleo-list-views__link.current {
+  color: #111827;
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
   position: static;
 }
 
-body.post-type-foleo_page.edit-php .subsubsub a.current:after {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-views .foleo-list-views__link.current:after {
   content: none;
 }
 
-body.post-type-foleo_page.edit-php .tablenav {
-  border-radius: 5px !important;
-  background: rgba(0, 0, 0, 0.08) !important;
-  border: none !important;
-  box-shadow: none !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar {
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  box-shadow: none;
 }
 
-body.post-type-foleo_page.edit-php .tablenav.top,
-body.post-type-foleo_page.edit-php .tablenav.bottom {
-  padding: 12px 14px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar--top,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar--bottom {
+  padding: 12px 14px;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav.top .search-box {
-  float: left !important;
-  margin: 0 0 0 10px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar--top .foleo-list-searchbox {
+  float: left;
+  margin: 0 0 0 10px;
   display: inline-flex;
   align-items: center;
   gap: 0;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions select,
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions input[type="search"] {
-  height: 32px !important;
-  line-height: 30px !important;
-  font-size: 13px !important;
-  border-radius: 3px !important;
-  min-height: 32px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions select,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions input[type="search"] {
+  height: 32px;
+  line-height: 30px;
+  font-size: 13px;
+  border-radius: 3px;
+  min-height: 32px;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .search-box input[type="search"] {
-  border-radius: 3px 0 0 3px !important;
-  border-right: 0 !important;
-  height: 30px !important;
-  min-height: 30px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-searchbox input[type="search"] {
+  border-radius: 3px 0 0 3px;
+  border-right: 0;
+  height: 30px;
+  min-height: 30px;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .search-box .foleo-v1-search-icon-btn {
-  width: 34px !important;
-  min-width: 34px !important;
-  padding: 0 !important;
-  border-radius: 0 3px 3px 0 !important;
-  border-left: 1px solid #2563eb !important;
-  background: #fff !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-searchbox .foleo-v1-search-icon-btn {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+  border-radius: 0 3px 3px 0;
+  border-left: 1px solid #2563eb;
+  background: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
   text-indent: -9999px;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .search-box .foleo-v1-search-icon-btn:hover {
-  background-color: rgba(37, 99, 235, 0.08) !important;
-  border-color: #1d4ed8 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-searchbox .foleo-v1-search-icon-btn:hover {
+  background-color: rgba(37, 99, 235, 0.08);
+  border-color: #1d4ed8;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions .foleo-v1-btn-utility {
-  background: #eceff3 !important;
-  border: 0 !important;
-  color: #8b8f97 !important;
-  text-transform: lowercase;
-  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.18) !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions .foleo-ui-btn--utility {
+  border-radius: 3px;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions .foleo-v1-btn-utility:hover {
-  background: #dfe4ea !important;
-  border: 0 !important;
-  color: #7a808a !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions .foleo-ui-btn--utility:hover {
+  border: 0;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .search-box .foleo-v1-search-icon-btn.foleo-v1-btn-utility {
-  border-left: 0 !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b8f97' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size: 14px 14px !important;
-  background-clip: padding-box !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-searchbox .foleo-v1-search-icon-btn.foleo-ui-btn--utility {
+  border-left: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b8f97' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 14px;
+  background-clip: padding-box;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .search-box .foleo-v1-search-icon-btn.foleo-v1-btn-utility:hover {
-  border-left: 0 !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a808a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size: 14px 14px !important;
-  background-clip: padding-box !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-searchbox .foleo-v1-search-icon-btn.foleo-ui-btn--utility:hover {
+  border-left: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a808a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 14px;
+  background-clip: padding-box;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions .button,
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions .button.action,
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions input[type="submit"] {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions .button:not(.foleo-ui-btn--utility),
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions .button.action:not(.foleo-ui-btn--utility),
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions input[type="submit"]:not(.foleo-ui-btn--utility) {
   background: #fff;
   border-color: #2563eb;
   color: #2563eb;
   box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12);
-  height: 31px !important;
-  line-height: 29px !important;
-  font-size: 13px !important;
-  border-radius: 3px !important;
-  min-height: 31px !important;
-  padding: 0 12px !important;
+  height: 31px;
+  line-height: 29px;
+  font-size: 13px;
+  border-radius: 3px;
+  min-height: 31px;
+  padding: 0 12px;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions .button:hover,
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions .button.action:hover,
-body.post-type-foleo_page.edit-php #wpbody-content .tablenav .actions input[type="submit"]:hover {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions .button:not(.foleo-ui-btn--utility):hover,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions .button.action:not(.foleo-ui-btn--utility):hover,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-utilitybar .actions input[type="submit"]:not(.foleo-ui-btn--utility):hover {
   background: rgba(37, 99, 235, 0.08);
   border-color: #1d4ed8;
   color: #1d4ed8;
 }
 
-body.post-type-foleo_page.edit-php .column-foleo_seo_visibility,
-body.post-type-foleo_page.edit-php .column-foleo_status,
-body.post-type-foleo_page.edit-php .column-foleo_get_url {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .column-foleo_seo_visibility,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .column-foleo_status,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .column-foleo_get_url {
   width: 12%;
 }
 
-body.post-type-foleo_page.edit-php .column-foleo_primary_action {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .column-foleo_primary_action {
   width: 30%;
 }
 
-body.post-type-foleo_page.edit-php .foleo-v1-list-seo-toggle {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-v1-list-seo-toggle {
   display: inline-flex;
   gap: 4px;
   align-items: center;
 }
 
-body.post-type-foleo_page.edit-php .foleo-v1-list-seo-toggle a {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-v1-list-seo-toggle a {
   text-decoration: none;
   color: #2563eb;
   font-weight: 400;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
 }
 
-body.post-type-foleo_page.edit-php .foleo-v1-list-seo-toggle span {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-v1-list-seo-toggle span {
   color: #9ca3af;
 }
 
-body.post-type-foleo_page.edit-php .foleo-v1-list-seo-toggle a.is-active {
-  color: #111827 !important;
-  font-weight: 700 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-v1-list-seo-toggle a.is-active {
+  color: #111827;
+  font-weight: 700;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table thead th,
-body.post-type-foleo_page.edit-php .wp-list-table tfoot th {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table thead th,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table tfoot th {
   background: #fff !important;
   border-bottom: 1px solid #d1d5db !important;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table.striped > tbody > :nth-child(odd),
-body.post-type-foleo_page.edit-php .wp-list-table.striped > tbody > :nth-child(even) {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table.striped > tbody > :nth-child(odd),
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table.striped > tbody > :nth-child(even) {
   background: #fff !important;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table tbody td,
-body.post-type-foleo_page.edit-php .wp-list-table tbody th {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table tbody td,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table tbody th {
   border-bottom: 1px solid #d1d5db !important;
   background: #fff !important;
   vertical-align: middle !important;
@@ -222,98 +216,87 @@ body.post-type-foleo_page.edit-php .wp-list-table tbody th {
   padding-right: 12px !important;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-btn-action,
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_get_url .button,
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_primary_action .button {
-  border: 1px solid #d1d5db !important;
-  color: #111827 !important;
-  background: #fff !important;
-  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12) !important;
-  border-radius: 3px !important;
-  height: 32px !important;
-  line-height: 30px !important;
-  font-size: 12px !important;
-  padding: 0 12px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-action-btn {
+  border: 1px solid #d1d5db;
+  color: #111827;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12);
+  border-radius: 3px;
+  height: 32px;
+  line-height: 30px;
+  font-size: 12px;
+  padding: 0 12px;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_primary_action {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table .column-foleo_primary_action {
   white-space: nowrap;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-btn-action:hover,
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_get_url .button:hover,
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_primary_action .button:hover {
-  border-color: #111827 !important;
-  color: #111827 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-action-btn:hover {
+  border-color: #111827;
+  color: #111827;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table tfoot {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table tfoot {
   display: none;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table {
-  border: 1px solid #d1d5db !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table {
+  border: 0 !important;
   border-radius: 5px !important;
   overflow: hidden;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table th,
-body.post-type-foleo_page.edit-php .wp-list-table td {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table th,
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .wp-list-table td {
   border-left: 0 !important;
   border-right: 0 !important;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .column-title .row-title,
-body.post-type-foleo_page.edit-php .wp-list-table .manage-column.column-title a {
-  color: #111827 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-title-link {
+  color: #111827;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .column-title .row-title {
-  font-weight: 600 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-row-title {
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   min-height: 20px;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .column-title .sorting-indicator:before {
-  color: #2563eb !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-sort-indicator:before {
+  color: #2563eb;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-btn-action--primary,
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-action-primary,
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_primary_action .button.foleo-v1-btn-action--primary,
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_primary_action .button.foleo-v1-action-primary {
-  border-color: #2563eb !important;
-  color: #2563eb !important;
-  background: #fff !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-action-btn.foleo-list-action-btn--primary {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #fff;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-btn-action--primary:hover,
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-action-primary:hover,
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_primary_action .button.foleo-v1-btn-action--primary:hover,
-body.post-type-foleo_page.edit-php .wp-list-table .column-foleo_primary_action .button.foleo-v1-action-primary:hover {
-  border-color: #111827 !important;
-  color: #111827 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-action-btn.foleo-list-action-btn--primary:hover {
+  border-color: #111827;
+  color: #111827;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-btn-action--delete,
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-action-delete {
-  padding: 0 8px !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-action-btn.foleo-list-action-btn--delete {
+  padding: 0 8px;
   min-width: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-body.post-type-foleo_page.edit-php #wpbody-content .wp-list-table .column-foleo_primary_action .button.foleo-v1-btn-action--delete:hover,
-body.post-type-foleo_page.edit-php #wpbody-content .wp-list-table .column-foleo_primary_action .button.foleo-v1-action-delete:hover,
-body.post-type-foleo_page.edit-php #wpbody-content .wp-list-table .column-foleo_primary_action .button.foleo-v1-btn-action--delete:hover .dashicons,
-body.post-type-foleo_page.edit-php #wpbody-content .wp-list-table .column-foleo_primary_action .button.foleo-v1-action-delete:hover .dashicons {
-  border-color: #dc2626 !important;
-  color: #dc2626 !important;
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-action-btn.foleo-list-action-btn--delete:hover {
+  border-color: #dc2626;
+  color: #dc2626;
 }
 
-body.post-type-foleo_page.edit-php .wp-list-table .foleo-v1-action-delete .dashicons {
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-action-btn.foleo-list-action-btn--delete:hover .dashicons {
+  color: #dc2626;
+}
+
+body.foleo-client-shell-active.edit-php.post-type-foleo_page .foleo-page--list .foleo-list-action-btn.foleo-list-action-btn--delete .dashicons {
   font-size: 16px;
   width: 16px;
   height: 16px;
